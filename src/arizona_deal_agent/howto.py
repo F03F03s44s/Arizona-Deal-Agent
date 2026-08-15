@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Sequence
 
+from .brand import PRODUCT, PROGRAM
+
 DEFAULT_LISTINGS = "data/sample_listings.csv"
 
 SCENARIOS: dict[str, dict[str, object]] = {
@@ -56,26 +58,33 @@ def scenario_argv(name: str, listings: str) -> list[str]:
 
 def format_command(argv: Sequence[str]) -> str:
     parts = [f"'{part}'" if any(ch.isspace() for ch in part) else part for part in argv]
-    return "arizona-deal-agent " + " ".join(parts)
+    return PROGRAM + " " + " ".join(parts)
 
 
 def render_howto(listings: str = DEFAULT_LISTINGS) -> str:
-    """Operator guide printed by `arizona-deal-agent howto`."""
+    """Operator guide printed by `deals howto`."""
     lines = [
-        "How to use Arizona Deal Agent",
+        f"How to use {PRODUCT}",
         "",
-        "The agent ranks Arizona property listings on price, profitability,",
-        "and affordability, then can transmit the top pick as a shareable note.",
+        "One product: live deal ranking, Arizona property profit ranking,",
+        "How to use, and transmit. Open the page or use the deals command.",
         "",
-        "1. Install once (run these inside the cloned Arizona-Deal-Agent folder)",
+        "0. Open the page (leave the server window open)",
+        "   cd into the folder that contains pyproject.toml (not C:\\Users\\kietl)",
+        "   Windows: double-click start-deals.bat",
+        "   or:  pip install -e \".[web]\"",
+        "        python -m uvicorn app.main:app --host 127.0.0.1 --port 8000",
+        "   Chrome/Opera address bar: http://127.0.0.1:8000",
+        "",
+        "1. Install the command (run these inside the cloned folder)",
         "   python -m venv .venv",
         "   Windows CMD:  .venv\\Scripts\\activate.bat",
         "   Windows PS:   .venv\\Scripts\\Activate.ps1",
         "   macOS/Linux:  source .venv/bin/activate",
         "   pip install -e .",
         "",
-        "2. Find the best-value deals (sample catalog, no file needed)",
-        "   arizona-deal-agent find --top 100",
+        "2. Find the best-value Arizona houses (sample catalog, no file needed)",
+        f"   {PROGRAM} find --top 100",
         f"   or {format_command(['rank', '-i', listings, '--top', '100'])}",
         "",
         "3. Keep only what you can buy",
@@ -85,17 +94,17 @@ def render_howto(listings: str = DEFAULT_LISTINGS) -> str:
         f"   {format_command(['explain', '-i', listings, '--id', 'AZ-003'])}",
         "",
         "5. Score a deal that is not in a file yet",
-        "   arizona-deal-agent score --price 240000 --rent 2100 --rehab 15000 --arv 330000",
+        f"   {PROGRAM} score --price 240000 --rent 2100 --rehab 15000 --arv 330000",
         "",
         "6. Transmit the top pick",
         f"   {format_command(['transmit', '-i', listings, '--to', 'Investment team'])}",
         "",
         "Named scenarios (print this card, or run one with --run):",
-        "  arizona-deal-agent howto --run balanced",
-        "  arizona-deal-agent howto --run profit",
-        "  arizona-deal-agent howto --run affordability",
-        "  arizona-deal-agent howto --run tight",
-        "  arizona-deal-agent howto --run houses",
+        f"  {PROGRAM} howto --run balanced",
+        f"  {PROGRAM} howto --run profit",
+        f"  {PROGRAM} howto --run affordability",
+        f"  {PROGRAM} howto --run tight",
+        f"  {PROGRAM} howto --run houses",
         "",
     ]
     for name, spec in SCENARIOS.items():
@@ -108,7 +117,7 @@ def render_howto(listings: str = DEFAULT_LISTINGS) -> str:
         lines.append(f"  $ {command}")
         lines.append(f"  Sample winner: {expect}")
         lines.append("")
-    lines.append("Full guide: HOW_TO_USE.md   Flags and scoring: arizona-deal-agent --help")
+    lines.append(f"Full guide: HOW_TO_USE.md   Flags and scoring: {PROGRAM} --help")
     return "\n".join(lines)
 
 

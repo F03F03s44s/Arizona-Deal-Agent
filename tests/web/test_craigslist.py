@@ -30,6 +30,13 @@ def test_skips_listings_without_a_price(phoenix_listings):
     assert all(listing.price > 0 for listing in phoenix_listings)
 
 
+def test_free_section_keeps_zero_price_rows(phoenix_payload):
+    priced = parse_search_payload(phoenix_payload)
+    including_free = parse_search_payload(phoenix_payload, allow_free=True)
+    assert len(including_free) == len(priced) + 1
+    assert all(listing.price > 0 for listing in including_free)
+
+
 def test_recovers_city_from_the_listing_slug(phoenix_listings):
     cities = {listing.location for listing in phoenix_listings}
     assert "Apache Junction" in cities
@@ -74,6 +81,24 @@ def test_search_targets_the_phoenix_area(phoenix_payload):
     # The service 400s on any page size other than its own, so a smaller limit
     # must be taken by trimming the response rather than asking for less.
     assert seen["batch"] == f"{craigslist.PHOENIX_AREA_ID}-0-{craigslist.PAGE_SIZE}-0-0"
+
+
+def test_search_can_target_a_topic_section(phoenix_payload):
+    seen: dict[str, str] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.update(dict(request.url.params))
+        return httpx.Response(200, json=phoenix_payload)
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    search("sofa", search_path="fuo", limit=1, client=client)
+    assert seen["searchPath"] == "fuo"
+
+
+def test_search_rejects_an_unknown_section(phoenix_payload):
+    client = httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(200, json=phoenix_payload)))
+    with pytest.raises(CraigslistError, match="unsupported"):
+        search("sofa", search_path="not-a-section", client=client)
 
 
 def test_search_wraps_transport_failures():

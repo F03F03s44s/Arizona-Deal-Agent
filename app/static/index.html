@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Arizona Deal Agent</title>
+    <title>DEALS DEALS DEALS</title>
     <style>
       :root {
         --sand: #f6efe4;
@@ -94,6 +94,7 @@
       tbody tr:nth-child(even) { background: #faf6ee; }
       tbody tr.over-budget { opacity: 0.45; }
       tbody tr.hot td { box-shadow: inset 3px 0 0 var(--cactus); }
+      tbody tr.just-in td { background: #e7f5ea; }
       td a { color: var(--dusk); text-decoration: none; border-bottom: 1px dotted #b7ab97; }
       td a:hover { color: var(--sunset); }
       .num { text-align: right; font-variant-numeric: tabular-nums; }
@@ -116,17 +117,37 @@
       .alert-item pre { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.78rem; background: #faf6ee; border-radius: 8px; padding: 10px; margin: 8px 0 0; max-height: 220px; overflow: auto; }
       .empty { color: var(--muted); font-size: 0.88rem; margin-top: 12px; }
       .status-line { color: var(--cactus); font-size: 0.88rem; font-weight: 600; margin-top: 12px; min-height: 20px; }
+      .topics { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 18px 24px 0; }
+      .topics a {
+        display: inline-block; padding: 8px 14px; border-radius: 999px; text-decoration: none;
+        font-weight: 700; font-size: 0.85rem; color: var(--dusk); background: var(--card);
+        border: 1px solid var(--line);
+      }
+      .topics a.active { background: var(--cactus); color: white; border-color: var(--cactus); }
+      .sources { max-width: 1040px; margin: 12px auto 0; padding: 0 24px; color: var(--muted); font-size: 0.82rem; text-align: center; }
+      .lookup a { color: var(--cactus); margin-right: 8px; font-size: 0.75rem; }
+      .rec-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+      .rec-actions input { padding: 8px 10px; border: 1px solid rgba(255,255,255,0.35); border-radius: 8px; background: rgba(255,255,255,0.12); color: white; }
+      .rec-actions input::placeholder { color: rgba(255,255,255,0.7); }
+      .howto-card { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.78rem; background: #faf6ee; border-radius: 8px; padding: 12px; overflow: auto; max-height: 420px; }
     </style>
   </head>
   <body>
     <header>
-      <h1>&#127796; Arizona Deal Agent</h1>
-      <p>Scrapes Phoenix Craigslist and ranks live listings against comparable asking prices.</p>
+      <h1>DEALS DEALS DEALS</h1>
+      <p id="tagline">One product: live ranking, Arizona property profit ranking, How to use, and transmit.</p>
     </header>
+    <nav id="topics" class="topics" aria-label="Deal topics"></nav>
+    <p id="sources" class="sources"></p>
+    <p class="sources">
+      Verified allowlist only — listing links are HTTPS on Craigslist.org or eBay.com.
+      Other names are official lookup pages we already checked. We never open unknown or shortened URLs.
+      That checks the site, not every seller — meet in public and never wire money to a stranger.
+    </p>
     <main>
       <div class="controls">
         <div class="field">
-          <label for="query">Craigslist search (press Enter)</label>
+          <label for="query">Search this topic (press Enter)</label>
           <input id="query" type="text" value="power tools" style="width: 220px;" />
         </div>
         <div class="field">
@@ -137,7 +158,7 @@
           <label for="weight">Profit vs. affordability: <span id="weightValue" class="weight-value">0.60</span></label>
           <input id="weight" type="range" min="0" max="1" step="0.01" value="0.6" />
         </div>
-        <button id="refreshBtn" class="ghost">Re-scrape listings</button>
+        <button id="refreshBtn" class="ghost">Refresh now</button>
       </div>
 
       <div class="status">
@@ -150,6 +171,11 @@
         <h2>Agent recommendation</h2>
         <div class="title" id="recTitle"></div>
         <div class="meta" id="recMeta"></div>
+        <div class="rec-actions">
+          <input id="transmitTo" type="text" placeholder="To (optional)" style="width: 180px;" />
+          <button id="transmitBtn" type="button">Copy transmit</button>
+        </div>
+        <pre id="transmitPreview" class="howto-card" style="display: none; margin-top: 12px; color: var(--dusk);"></pre>
       </div>
 
       <table>
@@ -158,6 +184,7 @@
             <th>#</th>
             <th>Listing</th>
             <th>Location</th>
+            <th>Source</th>
             <th class="num">Asking</th>
             <th class="num">Comparable</th>
             <th class="num">Profit</th>
@@ -167,6 +194,15 @@
         </thead>
         <tbody id="rows"></tbody>
       </table>
+
+      <section class="panel" id="howto">
+        <h2>How to use</h2>
+        <p class="hint">
+          Same guide as <code>deals howto</code>. Open this page in the Chrome or Opera address bar
+          at <code>http://127.0.0.1:8000</code>, or use the <code>deals</code> command.
+        </p>
+        <pre id="howtoText" class="howto-card">Loading How to use&hellip;</pre>
+      </section>
 
       <section class="panel">
         <h2>Saved searches</h2>
@@ -215,6 +251,15 @@
         String(s ?? "").replace(/[&<>"']/g, (c) =>
           ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
         );
+      function safeHref(url) {
+        try {
+          const parsed = new URL(String(url || ""), location.origin);
+          if (parsed.protocol !== "https:") return "";
+          return String(url);
+        } catch (err) {
+          return "";
+        }
+      }
 
       function debounce(fn, ms) {
         let timer;
@@ -227,20 +272,91 @@
       // A Craigslist page is ~300 listings. All of them feed the comparables
       // and the alerts, but re-rendering every row on each slider tick is what
       // would make the drag feel heavy, so the table shows the best of them.
-      const MAX_ROWS = 25;
+      const MAX_ROWS = 100;
 
       // Slider drags fire faster than the round trip, so responses that arrive
       // out of order must be dropped rather than rendered.
       let requestSeq = 0;
+      let topics = [];
+      let currentTopic = "tools";
+      let seenIds = new Set();
+      let firstPaint = true;
+      let liveTimer = null;
+      const LIVE_POLL_MS = 45000;
 
-      async function rank({ refresh = false } = {}) {
+      function topicFromPath() {
+        const slug = location.pathname.replace(/\/$/, "").replace(/^\//, "");
+        if (!slug || slug === "howto") return "tools";
+        const match = topics.find((t) => t.id === slug || t.path === "/" + slug);
+        if (match) return match.id;
+        const aliases = {
+          houses: "property", house: "property", homes: "property",
+          cars: "autos", car: "autos", auto: "autos",
+          electronic: "electronics", "household-items": "household",
+          silvers: "silver", diamond: "diamonds", jewelry: "gold",
+          "sports-cards": "sports-cards", sportscards: "sports-cards",
+          "pokemon-cards": "pokemon", jersey: "jerseys",
+          rare: "luxury", expensive: "luxury",
+          wholesale: "bulk", pallet: "pallets", bundle: "bundles", bundals: "bundles",
+          clearance: "sales", "big-sales": "sales", deals: "sales",
+          freebies: "free", "high-returns": "free",
+        };
+        return aliases[slug] || "tools";
+      }
+
+      function topicSpec() {
+        return topics.find((t) => t.id === currentTopic);
+      }
+
+      function renderTopicNav() {
+        const nav = document.getElementById("topics");
+        nav.innerHTML = topics
+          .map((t) => {
+            const active = t.id === currentTopic ? " active" : "";
+            return `<a class="${active.trim()}" href="${esc(t.path)}" data-topic="${esc(t.id)}">${esc(t.title)}</a>`;
+          })
+          .join("");
+        const spec = topicSpec();
+        if (spec) document.getElementById("tagline").textContent = spec.blurb;
+      }
+
+      async function loadSources() {
+        const res = await fetch("/api/sources");
+        const sources = await res.json();
+        const forTopic = sources.filter(
+          (s) => s.kind !== "lookup-only" && s.topics.includes(currentTopic)
+        );
+        const lookups = sources.filter((s) => s.kind === "lookup-only" && s.topics.includes(currentTopic));
+        const live = forTopic.map((s) => s.name).join(" · ");
+        const extra = lookups.length
+          ? " Verify on " + lookups.map((s) => s.name).join(", ") + " (we do not scrape those sites)."
+          : "";
+        document.getElementById("sources").textContent =
+          "Verified sources for this page: " + (live || "none") + "." + extra +
+          " Unknown hosts are never linked.";
+      }
+
+      function applyTopicDefaults() {
+        const spec = topicSpec();
+        if (!spec) return;
+        queryInput.value = spec.default_query;
+        budgetInput.value = spec.default_budget;
+        document.getElementById("ssQuery").value = spec.default_query;
+      }
+
+      async function rank({ refresh = false, quiet = false } = {}) {
         const seq = ++requestSeq;
-        const query = queryInput.value.trim() || "power tools";
+        const spec = topicSpec();
+        const query = queryInput.value.trim() || (spec ? spec.default_query : "power tools");
 
         if (refresh) {
-          sourcePill.className = "pill busy";
-          sourcePill.textContent = "re-scraping\u2026";
-          await fetch(`/api/deals?query=${encodeURIComponent(query)}&refresh=true`);
+          if (!quiet) {
+            sourcePill.className = "pill busy";
+            sourcePill.textContent = "updating live listings\u2026";
+          }
+          await fetch(
+            `/api/deals?query=${encodeURIComponent(query)}&topic=${encodeURIComponent(currentTopic)}&refresh=true`
+          );
           if (seq !== requestSeq) return;
         }
 
@@ -251,6 +367,7 @@
             budget: Number(budgetInput.value) || 1,
             profit_weight: Number(weight.value),
             query,
+            topic: currentTopic,
             deals: [],
           }),
         });
@@ -262,14 +379,33 @@
       const rankSoon = debounce(rank, 50);
 
       function render(data) {
-        const live = data.source === "craigslist";
-        sourcePill.className = "pill " + (live ? "live" : "sample");
-        sourcePill.textContent = live ? "live Craigslist \u00b7 Phoenix" : "sample data";
+        const live = String(data.source || "").includes("craigslist");
+        const catalog = String(data.source || "").includes("verified-catalog");
+        const ebay = String(data.source || "").includes("ebay");
+        sourcePill.className = "pill " + (live || catalog || ebay ? "live" : "sample");
+        const when = data.fetched_at ? new Date(data.fetched_at).toLocaleTimeString() : "";
+        const liveLabel = catalog && live
+          ? "LIVE catalog + Craigslist"
+          : catalog
+            ? "verified Arizona catalog"
+            : live && ebay
+              ? "LIVE Craigslist + eBay"
+              : live
+                ? "LIVE Craigslist \u00b7 Phoenix"
+                : ebay
+                  ? "LIVE eBay"
+                  : "sample data";
+        sourcePill.textContent = when ? liveLabel + " \u00b7 updated " + when : liveLabel;
+        const ids = data.ranked.map((s) => s.deal.id);
+        const newcomers = firstPaint ? new Set() : new Set(ids.filter((id) => !seenIds.has(id)));
+        firstPaint = false;
+        seenIds = new Set(ids);
         const total = data.ranked.length;
+        const fresh = newcomers.size ? ` \u00b7 ${newcomers.size} new` : "";
         resultCount.textContent =
           total > MAX_ROWS
-            ? `top ${MAX_ROWS} of ${total} listings ranked for "${data.query ?? ""}"`
-            : `${total} listings ranked for "${data.query ?? ""}"`;
+            ? `top ${MAX_ROWS} of ${total} listings ranked for "${data.query ?? ""}"${fresh}`
+            : `${total} listings ranked for "${data.query ?? ""}"${fresh}`;
         warningEl.textContent = data.warning ?? "";
 
         const rows = document.getElementById("rows");
@@ -277,14 +413,28 @@
           .slice(0, MAX_ROWS)
           .map((s, i) => {
             const d = s.deal;
-            const title = d.url
-              ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a>`
+            const listingHref = safeHref(d.url);
+            const title = listingHref
+              ? `<a href="${esc(listingHref)}" target="_blank" rel="noopener">${esc(d.title)}</a>`
               : esc(d.title);
+            const lookups = (d.lookup_urls || [])
+              .map((l) => {
+                const href = safeHref(l.url);
+                return href
+                  ? `<a href="${esc(href)}" target="_blank" rel="noopener">${esc(l.name)}</a>`
+                  : "";
+              })
+              .join(" ");
+            const sourceLabel = d.source_label || d.source || "\u2014";
+            const verified = d.verified
+              ? '<span class="badge ok">verified site</span>'
+              : '<span class="badge no">unverified</span>';
             return `
-              <tr class="${s.within_budget ? "" : "over-budget"} ${s.score >= 0.9 ? "hot" : ""}">
+              <tr class="${s.within_budget ? "" : "over-budget"} ${s.score >= 0.9 ? "hot" : ""} ${newcomers.has(d.id) ? "just-in" : ""}">
                 <td class="rank-num">${i + 1}</td>
-                <td>${title}</td>
+                <td>${title}${lookups ? `<div class="lookup">${lookups}</div>` : ""}</td>
                 <td class="subtle">${esc(d.location ?? "\u2014")}</td>
+                <td class="subtle">${esc(sourceLabel)}<div>${verified}</div></td>
                 <td class="num">${fmt(d.acquisition_cost)}</td>
                 <td class="num">${fmt(d.market_value)}<div class="subtle">${d.comparable_count} comps</div></td>
                 <td class="num">${fmt(s.profit)}</td>
@@ -298,12 +448,15 @@
         if (data.recommendation) {
           const r = data.recommendation;
           rec.style.display = "block";
-          document.getElementById("recTitle").innerHTML = r.deal.url
-            ? `<a href="${esc(r.deal.url)}" target="_blank" rel="noopener">${esc(r.deal.title)}</a>`
+          const recHref = safeHref(r.deal.url);
+          document.getElementById("recTitle").innerHTML = recHref
+            ? `<a href="${esc(recHref)}" target="_blank" rel="noopener">${esc(r.deal.title)}</a>`
             : esc(r.deal.title);
           document.getElementById("recMeta").textContent =
             `Asking ${fmt(r.deal.acquisition_cost)} \u00b7 comparable ${fmt(r.deal.market_value)} \u00b7 ` +
             `profit ${fmt(r.profit)} (${(r.profit_margin * 100).toFixed(0)}%) \u00b7 score ${r.score.toFixed(3)}`;
+          const preview = document.getElementById("transmitPreview");
+          if (preview && !preview.dataset.locked) preview.style.display = "none";
         } else {
           rec.style.display = "none";
         }
@@ -325,6 +478,71 @@
         if (event.key === "Enter") rank();
       });
       document.getElementById("refreshBtn").addEventListener("click", () => rank({ refresh: true }));
+
+      async function loadHowto() {
+        const res = await fetch("/api/howto");
+        const body = await res.json();
+        document.getElementById("howtoText").textContent = body.text;
+        if (location.pathname.replace(/\/$/, "") === "/howto") {
+          document.getElementById("howto").scrollIntoView({ behavior: "smooth" });
+        }
+      }
+
+      document.getElementById("transmitBtn").addEventListener("click", async () => {
+        const btn = document.getElementById("transmitBtn");
+        const preview = document.getElementById("transmitPreview");
+        const spec = topicSpec();
+        btn.disabled = true;
+        btn.textContent = "Transmitting\u2026";
+        const res = await fetch("/api/transmit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            to: document.getElementById("transmitTo").value.trim() || null,
+            budget: Number(budgetInput.value) || 1,
+            profit_weight: Number(weight.value),
+            query: queryInput.value.trim() || (spec ? spec.default_query : "power tools"),
+            topic: currentTopic,
+          }),
+        });
+        btn.disabled = false;
+        btn.textContent = "Copy transmit";
+        if (!res.ok) {
+          preview.style.display = "block";
+          preview.textContent = "No in-budget deal to transmit.";
+          return;
+        }
+        const body = await res.json();
+        preview.style.display = "block";
+        preview.dataset.locked = "1";
+        preview.textContent = body.text;
+        try {
+          await navigator.clipboard.writeText(body.text);
+          btn.textContent = "Copied";
+          setTimeout(() => { btn.textContent = "Copy transmit"; }, 1500);
+        } catch (err) {
+          btn.textContent = "Copy the text below";
+        }
+      });
+
+      function resetLiveSeen() {
+        seenIds = new Set();
+        firstPaint = true;
+      }
+
+      function startLiveUpdates() {
+        if (liveTimer) clearInterval(liveTimer);
+        liveTimer = setInterval(() => {
+          if (document.hidden) return;
+          rank({ refresh: true, quiet: true });
+          loadSaved();
+          loadAlerts();
+        }, LIVE_POLL_MS);
+      }
+
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) rank({ refresh: true, quiet: true });
+      });
 
       // Saved searches
       const savedStatus = document.getElementById("savedStatus");
@@ -390,6 +608,7 @@
             min_score: Number(document.getElementById("ssScore").value),
             budget: Number(budgetInput.value) || 15000,
             profit_weight: Number(weight.value),
+            topic: currentTopic,
           }),
         });
         if (!res.ok) {
@@ -421,10 +640,42 @@
         }
       });
 
-      document.getElementById("ssQuery").value = queryInput.value;
-      rank();
-      loadSaved();
-      loadAlerts();
+      document.getElementById("topics").addEventListener("click", (event) => {
+        const link = event.target.closest("[data-topic]");
+        if (!link) return;
+        event.preventDefault();
+        currentTopic = link.getAttribute("data-topic");
+        history.pushState({}, "", link.getAttribute("href"));
+        renderTopicNav();
+        loadSources();
+        applyTopicDefaults();
+        resetLiveSeen();
+        rank({ refresh: true });
+      });
+      window.addEventListener("popstate", () => {
+        currentTopic = topicFromPath();
+        renderTopicNav();
+        loadSources();
+        applyTopicDefaults();
+        resetLiveSeen();
+        rank({ refresh: true });
+      });
+
+      async function boot() {
+        const res = await fetch("/api/topics");
+        topics = await res.json();
+        currentTopic = topicFromPath();
+        renderTopicNav();
+        applyTopicDefaults();
+        document.getElementById("ssQuery").value = queryInput.value;
+        await loadSources();
+        loadHowto();
+        rank({ refresh: true });
+        startLiveUpdates();
+        loadSaved();
+        loadAlerts();
+      }
+      boot();
     </script>
   </body>
 </html>

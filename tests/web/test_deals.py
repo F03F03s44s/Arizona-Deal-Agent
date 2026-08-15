@@ -31,6 +31,7 @@ def test_repeated_reads_scrape_once():
 
     assert len(calls) == 1
     assert first.source == "craigslist"
+    assert first.fetched_at is not None
     assert [d.id for d in second.deals] == [d.id for d in first.deals]
 
 

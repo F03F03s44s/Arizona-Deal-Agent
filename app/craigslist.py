@@ -39,6 +39,11 @@ DEFAULT_TIMEOUT = 20.0
 # smaller result set has to be taken by trimming the response.
 PAGE_SIZE = 360
 
+# Craigslist search paths we will call. Anything else is rejected.
+ALLOWED_SEARCH_PATHS = frozenset(
+    {"sss", "rea", "hhh", "cta", "hsh", "ele", "fuo", "tls", "jwa", "cla", "cba", "taa", "sga", "bfa", "zip"}
+)
+
 # Positions within each encoded row.
 _IDX_POSTING_DELTA = 0
 _IDX_DATE_DELTA = 1
@@ -122,8 +127,13 @@ def _location_label(row: list[Any], locations: list[Any], slug: str, title: str)
     return SUBAREA_LABELS.get(entry[2], entry[2])
 
 
-def parse_search_payload(payload: dict[str, Any]) -> list[Listing]:
-    """Decode the JSON search service's position-encoded rows into listings."""
+def parse_search_payload(payload: dict[str, Any], *, allow_free: bool = False) -> list[Listing]:
+    """Decode the JSON search service's position-encoded rows into listings.
+
+    Free-section posts often have a $0 price. Those are kept only when
+    ``allow_free`` is set, and recorded as $1 so the ranking models can
+    treat them as near-zero cost.
+    """
     data = payload.get("data")
     if not isinstance(data, dict):
         raise CraigslistError("Craigslist response had no data section")
@@ -149,7 +159,10 @@ def parse_search_payload(payload: dict[str, Any]) -> list[Listing]:
 
         price_raw = row[_IDX_PRICE]
         if not isinstance(price_raw, (int, float)) or price_raw <= 0:
-            continue
+            if allow_free:
+                price_raw = 1.0
+            else:
+                continue
 
         slug_group = _group(row, _GROUP_SLUG)
         hash_group = _group(row, _GROUP_HASH_ID)
@@ -190,13 +203,21 @@ def search(
     limit: int = PAGE_SIZE,
     timeout: float = DEFAULT_TIMEOUT,
     client: httpx.Client | None = None,
+    search_path: str = "sss",
 ) -> list[Listing]:
-    """Fetch "for sale" listings for ``query`` in one Craigslist area."""
+    """Fetch listings for ``query`` in one Craigslist area.
+
+    ``search_path`` is a Craigslist section (``sss`` for sale, ``rea`` real
+    estate, ``cta`` cars+trucks). Unknown paths are rejected so we never hit
+    an arbitrary endpoint.
+    """
+    if search_path not in ALLOWED_SEARCH_PATHS:
+        raise CraigslistError(f"unsupported Craigslist search path: {search_path}")
     params = {
         "batch": f"{area_id}-0-{PAGE_SIZE}-0-0",
         "cc": "US",
         "lang": "en",
-        "searchPath": "sss",
+        "searchPath": search_path,
         "query": query,
     }
     headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
@@ -215,4 +236,4 @@ def search(
         if owns_client:
             http.close()
 
-    return parse_search_payload(payload)[:limit]
+    return parse_search_payload(payload, allow_free=search_path == "zip")[:limit]

@@ -1,23 +1,21 @@
-# Arizona Deal Agent
+# DEALS DEALS DEALS
 
-MVP that finds Arizona property deals and ranks them by **best value**.
+One product that finds deals and ranks them by **best value**.
 
 Each listing is scored on three axes — price, profitability, and affordability —
 then ranked so the lowest-priced deal that is still profitable and still affordable
 floats to the top, with a plain-language explanation of why it won.
 
-**Start here:** `arizona-deal-agent howto` or [HOW_TO_USE.md](HOW_TO_USE.md).
+**Start here:** open `http://127.0.0.1:8000` or run `deals howto`. Full guide: [HOW_TO_USE.md](HOW_TO_USE.md).
 
-There are currently **two front ends in this repository**, built in parallel and
-kept side by side rather than one overwriting the other:
+This is **one product** — live ranking, Arizona property profit ranking, How to use, and transmit:
 
-| Front end | Deals it looks at | Where |
-| --------- | ----------------- | ----- |
-| CLI (`arizona-deal-agent`) | Arizona property listings you supply, scored on mortgage, cap rate and DSCR | `src/arizona_deal_agent/` |
-| Web app | Live Phoenix Craigslist for-sale listings, priced against comparable listings | `app/` — see [Web app](#web-app-live-craigslist-deals) |
+| How you use it | What it does | Where |
+| -------------- | ------------ | ----- |
+| Page | Live topic pages, value ranking slider, Copy transmit, How to use, email alerts | `app/` |
+| Command (`deals`) | Rank Arizona houses you supply, explain, score, transmit | `src/arizona_deal_agent/` |
 
-They share a name and a philosophy, not code. Consolidating them is an open
-decision.
+The old `arizona-deal-agent` command still works.
 
 ## How to use
 
@@ -72,15 +70,15 @@ source .venv/bin/activate
 pip install -e .
 ```
 
-That installs the `arizona-deal-agent` command. If you would rather not install anything,
+That installs the `deals` command (`arizona-deal-agent` still works). If you would rather not install anything,
 from the repo folder use `python -m arizona_deal_agent` after `set PYTHONPATH=src` (Windows)
 or `PYTHONPATH=src python3 -m arizona_deal_agent` (macOS / Linux).
 
 Print the in-tool How to use card (steps plus named scenarios):
 
 ```bash
-arizona-deal-agent howto
-arizona-deal-agent howto --run profit
+deals howto
+deals howto --run profit
 ```
 
 ### 2. Find the best-value deals
@@ -88,13 +86,13 @@ arizona-deal-agent howto --run profit
 A sample catalog of 13 Arizona properties ships with the repo. Zero-config:
 
 ```bash
-arizona-deal-agent find --top 100
+deals find --top 100
 ```
 
 Or point at your own CSV/JSON:
 
 ```bash
-arizona-deal-agent rank -i data/sample_listings.csv --top 100
+deals rank -i data/sample_listings.csv --top 100
 ```
 
 ```text
@@ -119,7 +117,7 @@ Budget limits are hard filters: anything that breaks one disappears from the lis
 `--include-over-budget` to keep those rows visible and simply marked as not fitting.
 
 ```bash
-arizona-deal-agent rank -i data/sample_listings.csv \
+deals rank -i data/sample_listings.csv \
   --max-price 350000 --budget-cash 90000 --min-cash-flow 0
 ```
 
@@ -135,7 +133,7 @@ Other filters: `--city Tucson` (repeatable), `--min-cap-rate 6`, `--budget-month
 ### 4. Open up one deal
 
 ```bash
-arizona-deal-agent explain -i data/sample_listings.csv --id AZ-003
+deals explain -i data/sample_listings.csv --id AZ-003
 ```
 
 ```text
@@ -185,7 +183,7 @@ SCORES (0-100)
 ### 5. Check a deal you have not put in a file yet
 
 ```bash
-arizona-deal-agent score --price 240000 --rent 2100 --rehab 15000 --arv 330000
+deals score --price 240000 --rent 2100 --rehab 15000 --arv 330000
 ```
 
 Same breakdown as `explain`, straight from the flags. Only `--price` and `--rent` are
@@ -196,14 +194,14 @@ required; taxes and insurance are estimated from the price when you leave them o
 Format the best deal as a copy-paste-ready message for email or chat:
 
 ```bash
-arizona-deal-agent transmit -i data/sample_listings.csv --to "Investment team"
+deals transmit -i data/sample_listings.csv --to "Investment team"
 ```
 
 ```text
 To: Investment team
 
-ARIZONA DEAL RECOMMENDATION
-============================
+DEALS DEALS DEALS RECOMMENDATION
+================================
 3110 E Fort Lowell Rd, Tucson (AZ-003)
 Score 84.8/100 — price 95, profit 65, afford 100
 
@@ -218,7 +216,7 @@ Why this deal:
   • DSCR 1.18 is under the 1.20 lenders look for
   • $79,500 above the 70%-rule offer
 
-— Arizona Deal Agent
+— DEALS DEALS DEALS
 ```
 
 Use `--format json` to pipe the recommendation into another tool. Budget filters
@@ -288,8 +286,8 @@ Defaults describe a conventional 30-year investor loan. Percentages accept eithe
 `--format csv` for a spreadsheet.
 
 ```bash
-arizona-deal-agent rank -i data/sample_listings.csv --format json | jq '.deals[0].scores'
-arizona-deal-agent rank -i data/sample_listings.csv --format csv > ranked.csv
+deals rank -i data/sample_listings.csv --format json | jq '.deals[0].scores'
+deals rank -i data/sample_listings.csv --format csv > ranked.csv
 ```
 
 ## Use it from Python
@@ -307,11 +305,23 @@ best = deals[0]
 print(best.listing.label, round(best.composite_score, 1), best.notes)
 ```
 
-## Web app: live Craigslist deals
+## Page: live ranking, How to use, and transmit
 
-A second front end in `app/` scrapes live Phoenix-area Craigslist listings,
-prices each against comparable listings, and ranks them in a browser UI that
-re-ranks as you drag a profit-vs-affordability slider.
+A second front end in `app/` has a page per topic — houses, household items,
+electronics, furniture, cars, tools, gold, silver, diamonds, designer, luxury
+and rare items, coins, Pokémon cards, sports cards, jerseys, bulk sales,
+pallets, bundles, big sales, and free items with a high estimated return.
+An open page
+**re-pulls live listings about every 45 seconds** so new posts show up without
+a reload. Live rows come from allowlisted Craigslist sections and, when
+`EBAY_OAUTH_TOKEN` is set, the official eBay Browse API. Listing URLs must be
+HTTPS on craigslist.org or ebay.com; unknown hosts, shorteners, and gift-card /
+wire / crypto / replica titles are dropped. Houses also include the curated
+Arizona catalog plus official Zillow / Redfin / Realtor.com lookup links. Those
+sites and eBay HTML pages are **not** scraped. This checks the **site**, not
+every seller.
+
+The UI re-ranks as you drag a profit-vs-affordability slider.
 
 ```bash
 pip install -e ".[dev,web]"

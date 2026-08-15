@@ -58,7 +58,7 @@ def format_money(amount: float) -> str:
 def format_report(result: RankResponse) -> str:
     """Render a human-readable ranking for the terminal."""
     lines = [
-        "Arizona Deal Agent",
+        "DEALS DEALS DEALS",
         f"Budget: {format_money(result.budget)}   "
         f"Profit weight: {result.profit_weight:.2f}",
         "",

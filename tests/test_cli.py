@@ -1,10 +1,13 @@
 """End-to-end exercises of the command line, run in-process via ``main()``."""
 
 import json
+from pathlib import Path
 
 import pytest
 
 from arizona_deal_agent.cli import fraction, main
+
+REPO = Path(__file__).resolve().parents[1]
 
 
 def run(capsys, *argv):
@@ -197,9 +200,9 @@ class TestTransmit:
     def test_formats_top_deal_as_shareable_text(self, capsys, sample_csv):
         code, out, _ = run(capsys, "transmit", "-i", str(sample_csv))
         assert code == 0
-        assert "ARIZONA DEAL RECOMMENDATION" in out
+        assert "DEALS DEALS DEALS RECOMMENDATION" in out
         assert "Why this deal:" in out
-        assert "— Arizona Deal Agent" in out
+        assert "— DEALS DEALS DEALS" in out
 
     def test_recipient_appears_in_header(self, capsys, sample_csv):
         _, out, _ = run(capsys, "transmit", "-i", str(sample_csv), "--to", "Kiet")
@@ -236,10 +239,13 @@ class TestHowto:
     def test_prints_operator_guide(self, capsys):
         code, out, _ = run(capsys, "howto")
         assert code == 0
-        assert "How to use Arizona Deal Agent" in out
-        assert "arizona-deal-agent rank" in out
-        assert "arizona-deal-agent transmit" in out
+        assert "How to use DEALS DEALS DEALS" in out
+        assert "deals rank" in out
+        assert "deals transmit" in out
+        assert "http://127.0.0.1:8000" in out
         assert ".venv\\Scripts\\activate.bat" in out
+        assert "start-deals.bat" in out
+        assert "pyproject.toml" in out
         for name in ("balanced", "profit", "affordability", "tight", "houses"):
             assert name in out
 
@@ -303,9 +309,16 @@ class TestTopLevel:
         with pytest.raises(SystemExit) as excinfo:
             main(["--version"])
         assert excinfo.value.code == 0
-        assert "arizona-deal-agent" in capsys.readouterr().out
+        assert "deals" in capsys.readouterr().out
 
     def test_a_command_is_required(self, capsys):
         with pytest.raises(SystemExit) as excinfo:
             main([])
         assert excinfo.value.code == 2
+
+    def test_start_deals_bat_refuses_the_user_home_folder(self):
+        text = (REPO / "start-deals.bat").read_text(encoding="utf-8")
+        assert "%~dp0" in text
+        assert "pyproject.toml" in text
+        assert "Wrong folder" in text
+        assert "127.0.0.1:8000" in text

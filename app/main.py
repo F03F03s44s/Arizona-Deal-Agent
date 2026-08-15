@@ -1,4 +1,4 @@
-"""FastAPI application exposing the Arizona Deal Agent."""
+"""FastAPI application exposing DEALS DEALS DEALS."""
 
 from __future__ import annotations
 
@@ -17,6 +17,9 @@ from .agent import rank_deals
 from .alerts import AlertService, SavedSearchStore
 from .data import DEFAULT_BUDGET, DEFAULT_QUERY
 from .deals import deal_service
+from arizona_deal_agent.brand import PRODUCT
+from arizona_deal_agent.howto import render_howto
+
 from .models import (
     Alert,
     DealsResponse,
@@ -25,7 +28,14 @@ from .models import (
     SavedSearch,
     SavedSearchCreate,
     SavedSearchRunResult,
+    SourceInfo,
+    TopicInfo,
+    TransmitRequest,
+    TransmitResponse,
 )
+from .topics import get_topic, page_slugs, source_infos, topic_infos
+from .transmit import render_transmit
+from .trust import sanitize_request_deals
 
 logger = logging.getLogger(__name__)
 
@@ -77,31 +87,92 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Arizona Deal Agent",
-    description="Scrapes Phoenix Craigslist and ranks listings by profitability and affordability.",
+    title=PRODUCT,
+    description=(
+        f"{PRODUCT}: live ranking, Arizona property profit ranking, How to use, "
+        "and transmit in one product. Listing links are HTTPS Craigslist.org or "
+        "eBay.com only. Unknown hosts and scam-signal titles are dropped."
+    ),
     version=__version__,
     lifespan=lifespan,
 )
 
 
+def _budget_for(topic: str | None) -> float:
+    spec = get_topic(topic)
+    return spec.default_budget if spec else DEFAULT_BUDGET
+
+
 @app.get("/api/health")
 def health() -> dict[str, str]:
-    return {"status": "ok", "version": __version__}
+    return {"status": "ok", "version": __version__, "product": PRODUCT}
+
+
+@app.get("/api/product")
+def product() -> dict[str, str]:
+    return {
+        "name": PRODUCT,
+        "command": "deals",
+        "page": "http://127.0.0.1:8000",
+    }
+
+
+@app.get("/api/howto")
+def howto() -> dict[str, str]:
+    return {"product": PRODUCT, "text": render_howto()}
+
+
+@app.post("/api/transmit", response_model=TransmitResponse)
+def transmit(request: TransmitRequest) -> TransmitResponse:
+    """Rank the current topic and format the winner as a shareable note."""
+    ranked = rank(
+        RankRequest(
+            budget=request.budget,
+            profit_weight=request.profit_weight,
+            query=request.query,
+            topic=request.topic,
+            deals=[],
+        )
+    )
+    if ranked.recommendation is None:
+        raise HTTPException(status_code=404, detail="No in-budget deal to transmit")
+    return TransmitResponse(
+        text=render_transmit(ranked.recommendation, recipient=request.to),
+        recipient=request.to,
+        topic=ranked.topic,
+        query=ranked.query,
+    )
+
+
+@app.get("/api/topics", response_model=list[TopicInfo])
+def list_topics() -> list[TopicInfo]:
+    return topic_infos()
+
+
+@app.get("/api/sources", response_model=list[SourceInfo])
+def list_sources() -> list[SourceInfo]:
+    return source_infos()
 
 
 @app.get("/api/deals", response_model=DealsResponse)
 def list_deals(
-    query: str = Query(default=DEFAULT_QUERY, description="Craigslist search terms."),
-    refresh: bool = Query(default=False, description="Bypass the scrape cache."),
+    query: str | None = Query(default=None, description="Search terms."),
+    topic: str | None = Query(default=None, description="Topic page id or alias."),
+    refresh: bool = Query(default=False, description="Bypass the scrape cache and pull live listings."),
 ) -> DealsResponse:
-    """Scrape (or serve from cache) Phoenix listings for a search."""
-    sourced = deal_service.get_deals(query, refresh=refresh)
+    """Source (or serve from cache) allowlisted listings for a topic."""
+    if get_topic(topic) is None and topic:
+        raise HTTPException(status_code=404, detail=f"Unknown topic: {topic}")
+    search = query if topic is not None else (query or DEFAULT_QUERY)
+    sourced = deal_service.get_deals(search, topic=topic, refresh=refresh)
     return DealsResponse(
-        budget=DEFAULT_BUDGET,
+        budget=_budget_for(topic),
         query=sourced.query,
         source=sourced.source,
         deals=sourced.deals,
         warning=sourced.warning,
+        topic=sourced.topic,
+        fetched_at=sourced.fetched_at,
     )
 
 
@@ -112,17 +183,26 @@ def rank(request: RankRequest) -> RankResponse:
     Caller-supplied deals win; otherwise the cached scrape for ``query`` is
     used, which keeps repeated slider-driven calls off the network.
     """
-    if request.deals:
-        ranked = rank_deals(request.deals, request.budget, request.profit_weight)
-        return ranked.model_copy(update={"source": "request", "query": request.query})
+    if request.topic and get_topic(request.topic) is None:
+        raise HTTPException(status_code=404, detail=f"Unknown topic: {request.topic}")
 
-    sourced = deal_service.get_deals(request.query)
+    if request.deals:
+        ranked = rank_deals(
+            sanitize_request_deals(request.deals), request.budget, request.profit_weight
+        )
+        return ranked.model_copy(
+            update={"source": "request", "query": request.query, "topic": request.topic}
+        )
+
+    sourced = deal_service.get_deals(request.query, topic=request.topic)
     ranked = rank_deals(sourced.deals, request.budget, request.profit_weight)
     return ranked.model_copy(
         update={
             "source": sourced.source,
             "query": sourced.query,
             "warning": sourced.warning,
+            "topic": sourced.topic,
+            "fetched_at": sourced.fetched_at,
         }
     )
 
@@ -162,6 +242,13 @@ def list_alerts(limit: int = Query(default=20, ge=1, le=200)) -> list[Alert]:
 
 @app.get("/")
 def index() -> FileResponse:
+    return FileResponse(STATIC_DIR / "index.html")
+
+
+@app.get("/{topic_path}")
+def topic_page(topic_path: str) -> FileResponse:
+    if topic_path not in page_slugs():
+        raise HTTPException(status_code=404, detail="Unknown topic page")
     return FileResponse(STATIC_DIR / "index.html")
 
 
