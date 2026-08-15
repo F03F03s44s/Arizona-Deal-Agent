@@ -30,7 +30,9 @@ from .models import (
 logger = logging.getLogger(__name__)
 
 STATIC_DIR = Path(__file__).parent / "static"
-DATA_DIR = Path(os.getenv("DEAL_AGENT_DATA_DIR", "data"))
+# Not "data/": that directory holds the CLI's sample listings, which are
+# tracked, whereas saved searches are local runtime state.
+DATA_DIR = Path(os.getenv("DEAL_AGENT_DATA_DIR", ".agent-state"))
 
 store = SavedSearchStore(DATA_DIR / "saved_searches.json")
 alert_service = AlertService(store=store, deals=deal_service)

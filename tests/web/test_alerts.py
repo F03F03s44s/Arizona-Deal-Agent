@@ -16,8 +16,8 @@ from app.alerts import (
 )
 from app.deals import DealService
 from app.models import SavedSearchCreate
-from tests.conftest import make_listing
-from tests.smtp_stub import StubSmtpServer
+from tests.web.conftest import make_listing
+from tests.web.smtp_stub import StubSmtpServer
 
 # One clear bargain (40 against a 230 median) plus four ordinary drills.
 LISTINGS = [

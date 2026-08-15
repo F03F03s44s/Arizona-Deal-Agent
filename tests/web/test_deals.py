@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from app.craigslist import CraigslistError
 from app.deals import DealService
-from tests.conftest import make_listing
+from tests.web.conftest import make_listing
 
 LISTINGS = [
     make_listing("1", "Ryobi table saw", 200),

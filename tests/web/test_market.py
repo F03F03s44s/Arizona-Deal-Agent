@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from app.market import listings_to_deals, title_tokens
-from tests.conftest import make_listing
+from tests.web.conftest import make_listing
 
 
 def test_title_tokens_drop_filler_words():

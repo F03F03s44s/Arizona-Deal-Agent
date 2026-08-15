@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arizona-deal-agent"
+version = "0.1.0"
+description = "Find Arizona property deals and rank them by best value."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = []
+
+[project.optional-dependencies]
+# The CLI is deliberately stdlib-only; the web app is what needs third-party
+# packages, so installing it stays opt-in.
+web = [
+  "fastapi==0.115.6",
+  "uvicorn[standard]==0.34.0",
+  "pydantic==2.10.4",
+  "email-validator==2.2.0",
+  "httpx==0.28.1",
+]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+arizona-deal-agent = "arizona_deal_agent.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
