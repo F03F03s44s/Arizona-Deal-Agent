@@ -20,7 +20,7 @@ python3 -m venv .venv
 .venv/bin/pip install -e ".[dev,web]"
 
 # CLI
-arizona-deal-agent find --top 5
+arizona-deal-agent find --top 100
 
 # Web app
 .venv/bin/uvicorn app.main:app --reload --port 8000   # http://localhost:8000
@@ -44,7 +44,7 @@ throwaway server in `tests/web/smtp_stub.py`.
 
 | Command | Purpose |
 | ------- | ------- |
-| `howto` | Print How to use, or `--run` a named scenario (`balanced`, `profit`, `affordability`, `tight`) |
+| `howto` | Print How to use, or `--run` a named scenario (`balanced`, `profit`, `affordability`, `tight`, `houses`) |
 | `find` | Find Arizona deals and rank by best value (sample catalog by default) |
 | `rank` | Score a listings file and show the best deals |
 | `explain` | Full breakdown for one listing by id |

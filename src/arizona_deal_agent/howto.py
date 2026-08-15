@@ -10,19 +10,19 @@ SCENARIOS: dict[str, dict[str, object]] = {
     "balanced": {
         "title": "Balanced",
         "why": "Default mix: price 0.25, profit 0.40, affordability 0.35.",
-        "extra": ["--top", "5"],
+        "extra": ["--top", "100"],
         "expect": "AZ-003  3110 E Fort Lowell Rd, Tucson  (score 84.8)",
     },
     "profit": {
         "title": "Max profit",
         "why": "Rank purely on returns (cap rate, cash-on-cash, DSCR, cash flow).",
-        "extra": ["--top", "5", "--weight-profit", "1", "--weight-price", "0", "--weight-afford", "0"],
+        "extra": ["--top", "100", "--weight-profit", "1", "--weight-price", "0", "--weight-afford", "0"],
         "expect": "AZ-012  5402 S 12th Ave, Tucson  (score 65.6)",
     },
     "affordability": {
         "title": "Max affordability",
         "why": "Rank on rent coverage / budget headroom only.",
-        "extra": ["--top", "5", "--weight-afford", "1", "--weight-price", "0", "--weight-profit", "0"],
+        "extra": ["--top", "100", "--weight-afford", "1", "--weight-price", "0", "--weight-profit", "0"],
         "expect": "AZ-003  3110 E Fort Lowell Rd, Tucson  (score 100.0)",
     },
     "tight": {
@@ -30,6 +30,12 @@ SCENARIOS: dict[str, dict[str, object]] = {
         "why": "Hard filters: list price ≤ $350k, cash to close ≤ $90k, cash flow ≥ $0.",
         "extra": ["--max-price", "350000", "--budget-cash", "90000", "--min-cash-flow", "0"],
         "expect": "AZ-003  3110 E Fort Lowell Rd, Tucson  (only row that still qualifies)",
+    },
+    "houses": {
+        "title": "Houses",
+        "why": "Rank Arizona house listings (top 100).",
+        "extra": ["--top", "100"],
+        "expect": "AZ-003  3110 E Fort Lowell Rd, Tucson  (score 84.8)",
     },
 }
 
@@ -69,8 +75,8 @@ def render_howto(listings: str = DEFAULT_LISTINGS) -> str:
         "   pip install -e .",
         "",
         "2. Find the best-value deals (sample catalog, no file needed)",
-        "   arizona-deal-agent find --top 5",
-        f"   or {format_command(['rank', '-i', listings, '--top', '5'])}",
+        "   arizona-deal-agent find --top 100",
+        f"   or {format_command(['rank', '-i', listings, '--top', '100'])}",
         "",
         "3. Keep only what you can buy",
         f"   {format_command(['rank', '-i', listings, '--max-price', '350000', '--budget-cash', '90000', '--min-cash-flow', '0'])}",
@@ -89,6 +95,7 @@ def render_howto(listings: str = DEFAULT_LISTINGS) -> str:
         "  arizona-deal-agent howto --run profit",
         "  arizona-deal-agent howto --run affordability",
         "  arizona-deal-agent howto --run tight",
+        "  arizona-deal-agent howto --run houses",
         "",
     ]
     for name, spec in SCENARIOS.items():

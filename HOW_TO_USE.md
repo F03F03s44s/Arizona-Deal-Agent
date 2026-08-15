@@ -1,6 +1,28 @@
 # How to use Arizona Deal Agent
 
-The agent is a **CLI**. Point it at a listings file. It scores every property on
+## Open the page in Chrome or Opera
+
+That page is **not on Google**. It is a local page on your PC: `http://127.0.0.1:8000`.
+
+1. In PowerShell, from the repo folder, start the server (leave the window open):
+
+```powershell
+# from the unzipped or cloned Arizona-Deal-Agent folder
+.\.venv\Scripts\Activate.ps1
+pip install -e ".[web]"
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+2. Open **Chrome** or **Opera**.
+3. Click the **address bar** at the very top (the box that shows `opera://startpage` or a website URL). Do **not** type in the Google search box on google.com.
+4. Type exactly: `http://127.0.0.1:8000`
+5. Press Enter.
+
+You should see “Arizona Deal Agent” and the live Phoenix Craigslist deal list (search box, profit slider, and optional email alerts).
+
+Or run `powershell -ExecutionPolicy Bypass -File scripts\open-ui.ps1` from the repo folder; it starts the server and opens the browser.
+
+The agent is also a **CLI**. Point it at a listings file. It scores every property on
 price, profitability, and affordability, ranks them, and can **transmit** the
 top pick as a shareable recommendation.
 
@@ -28,7 +50,7 @@ python -m venv .venv
 .venv\Scripts\activate.bat
 pip install -e .
 arizona-deal-agent howto
-arizona-deal-agent find --top 5
+arizona-deal-agent find --top 100
 ```
 
 `dir pyproject.toml` must show that file. If it says file not found, you are in the wrong folder.
@@ -58,7 +80,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\.venv\Scripts\Activate.ps1
 pip install -e .
 arizona-deal-agent howto
-arizona-deal-agent find --top 5
+arizona-deal-agent find --top 100
 ```
 
 **macOS / Linux**
@@ -73,8 +95,8 @@ pip install -e .
 
 | Step | Command |
 | ---- | ------- |
-| Find best-value deals (sample catalog, no `-i`) | `arizona-deal-agent find --top 5` |
-| Rank a listings file | `arizona-deal-agent rank -i data/sample_listings.csv --top 5` |
+| Find best-value deals (sample catalog, no `-i`) | `arizona-deal-agent find --top 100` |
+| Rank a listings file | `arizona-deal-agent rank -i data/sample_listings.csv --top 100` |
 | Keep only what you can buy | `arizona-deal-agent rank -i data/sample_listings.csv --max-price 350000 --budget-cash 90000 --min-cash-flow 0` |
 | Open the winner | `arizona-deal-agent explain -i data/sample_listings.csv --id AZ-003` |
 | Score a deal not in a file | `arizona-deal-agent score --price 240000 --rent 2100 --rehab 15000 --arv 330000` |
@@ -82,8 +104,8 @@ pip install -e .
 
 Without installing, from the repo folder:
 
-- Windows CMD: `set PYTHONPATH=src` then `python -m arizona_deal_agent find --top 5`
-- macOS / Linux: `PYTHONPATH=src python3 -m arizona_deal_agent find --top 5`
+- Windows CMD: `set PYTHONPATH=src` then `python -m arizona_deal_agent find --top 100`
+- macOS / Linux: `PYTHONPATH=src python3 -m arizona_deal_agent find --top 100`
 
 ## Named scenarios
 
@@ -94,13 +116,15 @@ arizona-deal-agent howto --run balanced
 arizona-deal-agent howto --run profit
 arizona-deal-agent howto --run affordability
 arizona-deal-agent howto --run tight
+arizona-deal-agent howto --run houses
 ```
 
 Against `data/sample_listings.csv`:
 
 | Scenario | What it does | Sample winner |
 | -------- | ------------ | ------------- |
-| `balanced` | Default weights (price 0.25 / profit 0.40 / afford 0.35), top 5 | AZ-003 3110 E Fort Lowell Rd, Tucson (84.8) |
+| `balanced` | Default weights (price 0.25 / profit 0.40 / afford 0.35), top 100 | AZ-003 3110 E Fort Lowell Rd, Tucson (84.8) |
+| `houses` | Same catalog — Arizona houses, top 100 | AZ-003 3110 E Fort Lowell Rd, Tucson (84.8) |
 | `profit` | `--weight-profit 1` (returns only) | AZ-012 5402 S 12th Ave, Tucson (65.6) |
 | `affordability` | `--weight-afford 1` (rent coverage / headroom) | AZ-003 3110 E Fort Lowell Rd, Tucson (100.0) |
 | `tight` | `--max-price 350000 --budget-cash 90000 --min-cash-flow 0` | AZ-003 only — everything else is filtered out |
@@ -148,7 +172,7 @@ arizona-deal-agent transmit -i data/sample_listings.csv --format json
 ## Tests
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[dev,web]"
 pytest
 ```
 
