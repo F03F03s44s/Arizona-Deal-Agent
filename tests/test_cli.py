@@ -1,10 +1,13 @@
 """End-to-end exercises of the command line, run in-process via ``main()``."""
 
 import json
+from pathlib import Path
 
 import pytest
 
 from arizona_deal_agent.cli import fraction, main
+
+REPO = Path(__file__).resolve().parents[1]
 
 
 def run(capsys, *argv):
@@ -241,6 +244,8 @@ class TestHowto:
         assert "deals transmit" in out
         assert "http://127.0.0.1:8000" in out
         assert ".venv\\Scripts\\activate.bat" in out
+        assert "start-deals.bat" in out
+        assert "pyproject.toml" in out
         for name in ("balanced", "profit", "affordability", "tight", "houses"):
             assert name in out
 
@@ -310,3 +315,10 @@ class TestTopLevel:
         with pytest.raises(SystemExit) as excinfo:
             main([])
         assert excinfo.value.code == 2
+
+    def test_start_deals_bat_refuses_the_user_home_folder(self):
+        text = (REPO / "start-deals.bat").read_text(encoding="utf-8")
+        assert "%~dp0" in text
+        assert "pyproject.toml" in text
+        assert "Wrong folder" in text
+        assert "127.0.0.1:8000" in text

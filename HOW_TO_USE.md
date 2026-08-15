@@ -4,14 +4,30 @@
 
 That page is **not on Google**. It is a local page on your PC: `http://127.0.0.1:8000`.
 
-1. In PowerShell, from the repo folder, start the server (leave the window open):
+Do **not** run these from `C:\Users\kietl`. That is your user folder. The project
+is a folder **inside** it that contains `pyproject.toml`.
 
-```powershell
-# from the unzipped or cloned Arizona-Deal-Agent folder
-.\.venv\Scripts\Activate.ps1
+**Easiest:** open the unzipped `Arizona-Deal-Agent-main` folder and double-click `start-deals.bat`. Leave that window open.
+
+Or in **Command Prompt** (your `C:\>` window), paste this whole block:
+
+```bat
+cd /d C:\Users\%USERNAME%\Arizona-Deal-Agent-main
+dir pyproject.toml
+start-deals.bat
+```
+
+`dir pyproject.toml` must show that file. If it says file not found, the project is not there yet — use the 60-second download below, then run `start-deals.bat` again.
+
+If you already have a Command Prompt in the **project** folder (you can see `pyproject.toml`):
+
+```bat
+.venv\Scripts\activate.bat
 pip install -e ".[web]"
 python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
+
+In Command Prompt use `activate.bat`. `Activate.ps1` is only for PowerShell.
 
 2. Open **Chrome** or **Opera**.
 3. Click the **address bar** at the very top (the box that shows `opera://startpage` or a website URL). Do **not** type in the Google search box on google.com.
