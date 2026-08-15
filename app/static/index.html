@@ -22,15 +22,15 @@
         color: var(--dusk);
         min-height: 100vh;
       }
-      header { padding: 30px 24px 6px; text-align: center; }
+      header { padding: 28px 24px 6px; text-align: center; }
       header h1 { margin: 0; font-size: 2rem; letter-spacing: -0.5px; }
       header p { color: var(--muted); margin: 8px 0 0; }
-      main { max-width: 1040px; margin: 0 auto; padding: 16px 24px 56px; }
+      main { max-width: 1120px; margin: 0 auto; padding: 16px 24px 56px; }
 
       .controls {
         display: flex;
         flex-wrap: wrap;
-        gap: 20px;
+        gap: 18px;
         align-items: flex-end;
         background: var(--card);
         padding: 20px;
@@ -38,42 +38,48 @@
         box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08);
       }
       .field { display: flex; flex-direction: column; gap: 6px; }
-      .field label { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+      .field label { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
       .field input[type="text"],
       .field input[type="number"],
-      .field input[type="email"] {
+      .field input[type="email"],
+      .field select {
         padding: 8px 10px;
         border: 1px solid #d8cdbb;
         border-radius: 8px;
-        font-size: 1rem;
+        font-size: 0.95rem;
+        background: white;
         width: 160px;
       }
-      .field input[type="range"] { width: 220px; }
+      .field input[type="range"] { width: 200px; }
       .weight-value { font-variant-numeric: tabular-nums; color: var(--cactus); font-weight: 700; }
 
       button {
         background: var(--sunset);
         color: white;
         border: none;
-        padding: 10px 20px;
+        padding: 9px 18px;
         border-radius: 8px;
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         font-weight: 600;
         cursor: pointer;
         transition: transform 0.05s ease, background 0.2s;
       }
       button:hover { background: #c15a24; }
       button:active { transform: translateY(1px); }
+      button:disabled { opacity: 0.55; cursor: default; }
       button.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); }
       button.ghost:hover { background: #f2ebdf; color: var(--dusk); }
-      button.small { padding: 6px 12px; font-size: 0.82rem; }
+      button.small { padding: 5px 11px; font-size: 0.8rem; }
 
       .status { display: flex; align-items: center; gap: 10px; margin: 14px 2px 0; flex-wrap: wrap; min-height: 24px; }
-      .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.3px; }
+      .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.3px; }
       .pill.live { background: #dceede; color: var(--cactus); }
       .pill.sample { background: #f7e6c9; color: #96651a; }
       .pill.busy { background: #e4e0ea; color: var(--muted); }
+      .pill.hot { background: #fbe0d3; color: #b04a1f; }
+      .pill.dealer { background: #e2e8f6; color: #2f4d8f; }
       .warn { color: #a2521f; font-size: 0.85rem; }
+      .subtle { color: var(--muted); font-size: 0.78rem; }
 
       .recommendation {
         margin: 16px 0 8px;
@@ -84,60 +90,101 @@
         box-shadow: 0 6px 18px rgba(63, 125, 78, 0.25);
       }
       .recommendation h2 { margin: 0 0 4px; font-size: 1rem; opacity: 0.85; font-weight: 600; }
-      .recommendation .title { font-size: 1.35rem; font-weight: 700; }
+      .recommendation .title { font-size: 1.3rem; font-weight: 700; }
       .recommendation .title a { color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.45); }
-      .recommendation .meta { margin-top: 6px; opacity: 0.92; font-size: 0.92rem; }
+      .recommendation .meta { margin-top: 6px; opacity: 0.92; font-size: 0.9rem; }
 
-      table { width: 100%; border-collapse: collapse; margin-top: 18px; background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08); }
-      th, td { padding: 10px 12px; text-align: left; font-size: 0.9rem; }
-      thead th { background: #efe6d6; color: var(--muted); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
+      table { width: 100%; border-collapse: collapse; margin-top: 16px; background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08); }
+      th, td { padding: 9px 11px; text-align: left; font-size: 0.88rem; vertical-align: top; }
+      thead th { background: #efe6d6; color: var(--muted); text-transform: uppercase; font-size: 0.68rem; letter-spacing: 0.5px; }
       tbody tr:nth-child(even) { background: #faf6ee; }
       tbody tr.over-budget { opacity: 0.45; }
       tbody tr.hot td { box-shadow: inset 3px 0 0 var(--cactus); }
       td a { color: var(--dusk); text-decoration: none; border-bottom: 1px dotted #b7ab97; }
       td a:hover { color: var(--sunset); }
       .num { text-align: right; font-variant-numeric: tabular-nums; }
-      .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; }
+      .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.68rem; font-weight: 700; }
       .badge.ok { background: #dceede; color: var(--cactus); }
       .badge.no { background: #f6dcd1; color: #b04a1f; }
       .rank-num { font-weight: 700; color: var(--sunset); }
-      .subtle { color: var(--muted); font-size: 0.78rem; }
 
-      .panel { margin-top: 28px; background: var(--card); border-radius: 14px; padding: 20px; box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08); }
-      .panel h2 { margin: 0 0 4px; font-size: 1.1rem; }
-      .panel .hint { margin: 0 0 16px; color: var(--muted); font-size: 0.85rem; }
-      .saved-form { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
-      .saved-list { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+      .panel { margin-top: 24px; background: var(--card); border-radius: 14px; padding: 20px; box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08); }
+      .panel h2 { margin: 0 0 4px; font-size: 1.08rem; }
+      .panel .hint { margin: 0 0 14px; color: var(--muted); font-size: 0.85rem; }
+      .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+
+      .feed { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; max-height: 340px; overflow: auto; }
+      .feed li { border: 1px solid var(--line); border-left: 3px solid var(--cactus); border-radius: 8px; padding: 10px 12px; animation: slide-in 0.35s ease; }
+      .feed li.property { border-left-color: #2f4d8f; }
+      @keyframes slide-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+      .feed .headline { font-weight: 600; }
+      .feed .headline a { color: var(--dusk); text-decoration: none; border-bottom: 1px dotted #b7ab97; }
+
+      .detail { margin-top: 16px; border: 1px solid var(--line); border-radius: 12px; padding: 18px; background: var(--card); box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08); }
+      .detail h3 { margin: 0 0 2px; font-size: 1.15rem; }
+      .detail .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 14px; }
+      .detail .box { border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+      .detail .box h4 { margin: 0 0 8px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+      .detail .box div { font-size: 0.88rem; margin-bottom: 4px; }
+      .detail pre { white-space: pre-wrap; font-family: inherit; font-size: 0.88rem; background: #faf6ee; border-radius: 8px; padding: 12px; margin: 12px 0 0; max-height: 200px; overflow: auto; }
+      .shots { display: flex; gap: 8px; overflow-x: auto; margin-top: 12px; }
+      .shots img { height: 96px; border-radius: 8px; border: 1px solid var(--line); }
+      .kv { display: flex; gap: 6px; font-size: 0.86rem; }
+      .kv span:first-child { color: var(--muted); min-width: 92px; }
+
+      .saved-form, .watch-form { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
+      .saved-list { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
       .saved-item { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
       .saved-item .who { font-weight: 600; }
       .saved-actions { display: flex; gap: 8px; }
       .alert-item { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-top: 10px; }
       .alert-item .subject { font-weight: 700; }
-      .alert-item pre { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.78rem; background: #faf6ee; border-radius: 8px; padding: 10px; margin: 8px 0 0; max-height: 220px; overflow: auto; }
-      .empty { color: var(--muted); font-size: 0.88rem; margin-top: 12px; }
-      .status-line { color: var(--cactus); font-size: 0.88rem; font-weight: 600; margin-top: 12px; min-height: 20px; }
+      .alert-item pre { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.76rem; background: #faf6ee; border-radius: 8px; padding: 10px; margin: 8px 0 0; max-height: 200px; overflow: auto; }
+      .empty { color: var(--muted); font-size: 0.86rem; margin-top: 12px; }
+      .status-line { color: var(--cactus); font-size: 0.86rem; font-weight: 600; margin-top: 12px; min-height: 20px; }
+      .targets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+      .chip { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font-size: 0.8rem; }
+      .chip button { background: none; color: var(--muted); border: none; padding: 0; font-size: 1rem; line-height: 1; }
+      .chip button:hover { color: #b04a1f; background: none; }
+      .sources { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
     </style>
   </head>
   <body>
     <header>
       <h1>&#127796; Arizona Deal Agent</h1>
-      <p>Scrapes Phoenix Craigslist and ranks live listings against comparable asking prices.</p>
+      <p>Scans Arizona Craigslist for goods and property, prices each against comparable listings, and calls out new deals the moment they appear.</p>
     </header>
     <main>
       <div class="controls">
         <div class="field">
-          <label for="query">Craigslist search (press Enter)</label>
-          <input id="query" type="text" value="power tools" style="width: 220px;" />
+          <label for="query">Search (press Enter)</label>
+          <input id="query" type="text" value="power tools" style="width: 180px;" />
+        </div>
+        <div class="field">
+          <label for="category">Category</label>
+          <select id="category" style="width: 190px;"></select>
+        </div>
+        <div class="field">
+          <label for="area">Area</label>
+          <select id="area" style="width: 150px;"></select>
+        </div>
+        <div class="field">
+          <label for="seller">Seller</label>
+          <select id="seller" style="width: 175px;">
+            <option value="">Anyone</option>
+            <option value="owner">Private sellers</option>
+            <option value="dealer">Dealers &amp; wholesalers</option>
+          </select>
         </div>
         <div class="field">
           <label for="budget">Budget ($)</label>
-          <input id="budget" type="number" min="1" step="50" value="15000" />
+          <input id="budget" type="number" min="1" step="50" value="15000" style="width: 120px;" />
         </div>
         <div class="field">
           <label for="weight">Profit vs. affordability: <span id="weightValue" class="weight-value">0.60</span></label>
           <input id="weight" type="range" min="0" max="1" step="0.01" value="0.6" />
         </div>
-        <button id="refreshBtn" class="ghost">Re-scrape listings</button>
+        <button id="refreshBtn" class="ghost">Re-scrape</button>
       </div>
 
       <div class="status">
@@ -146,23 +193,66 @@
         <span id="warning" class="warn"></span>
       </div>
 
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>&#128225; Just posted</h2>
+            <p class="hint">
+              The agent keeps scanning its watch list in the background and pushes anything new
+              here the instant it finds it &mdash; no refresh needed.
+            </p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <span id="streamPill" class="pill busy">connecting&hellip;</span>
+            <button id="sweepBtn" class="small">Scan now</button>
+          </div>
+        </div>
+
+        <form id="watchForm" class="watch-form">
+          <div class="field">
+            <label for="watchInterval">Scan every (seconds)</label>
+            <input id="watchInterval" type="number" min="15" max="3600" step="15" value="60" style="width: 120px;" />
+          </div>
+          <div class="field">
+            <label for="watchScore">Notify above score</label>
+            <input id="watchScore" type="number" min="0" max="1" step="0.01" value="0.9" style="width: 120px;" />
+          </div>
+          <div class="field">
+            <label for="watchEmail">Also email me at</label>
+            <input id="watchEmail" type="email" placeholder="optional" style="width: 200px;" />
+          </div>
+          <button type="submit" class="small">Save watch settings</button>
+          <button type="button" id="addTargetBtn" class="small ghost">Watch current filters</button>
+        </form>
+        <div id="watchStatus" class="status-line"></div>
+        <div id="targets" class="targets"></div>
+        <div id="sources" class="sources"></div>
+
+        <ul id="feed" class="feed"></ul>
+        <div id="feedEmpty" class="empty">Nothing new yet. New postings show up here as they are found.</div>
+      </section>
+
       <div id="recommendation" class="recommendation" style="display: none;">
         <h2>Agent recommendation</h2>
         <div class="title" id="recTitle"></div>
         <div class="meta" id="recMeta"></div>
       </div>
 
+      <div id="detail"></div>
+
       <table>
         <thead>
           <tr>
             <th>#</th>
             <th>Listing</th>
-            <th>Location</th>
+            <th>Where</th>
+            <th>Seller</th>
             <th class="num">Asking</th>
             <th class="num">Comparable</th>
             <th class="num">Profit</th>
             <th class="num">Score</th>
             <th>Budget</th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="rows"></tbody>
@@ -171,17 +261,17 @@
       <section class="panel">
         <h2>Saved searches</h2>
         <p class="hint">
-          The agent re-runs these on a schedule and emails you the moment a listing scores at or
-          above your threshold. Each listing is only ever emailed once.
+          Re-run on a schedule; you get an email the moment a listing scores at or above your
+          threshold. Each listing is only ever emailed once.
         </p>
         <form id="savedForm" class="saved-form">
           <div class="field">
             <label for="ssQuery">Search</label>
-            <input id="ssQuery" type="text" required style="width: 200px;" />
+            <input id="ssQuery" type="text" required style="width: 190px;" />
           </div>
           <div class="field">
             <label for="ssEmail">Email me at</label>
-            <input id="ssEmail" type="email" required placeholder="you@example.com" style="width: 220px;" />
+            <input id="ssEmail" type="email" required placeholder="you@example.com" style="width: 210px;" />
           </div>
           <div class="field">
             <label for="ssScore">Alert above score</label>
@@ -203,6 +293,9 @@
 
     <script>
       const queryInput = document.getElementById("query");
+      const categorySel = document.getElementById("category");
+      const areaSel = document.getElementById("area");
+      const sellerSel = document.getElementById("seller");
       const budgetInput = document.getElementById("budget");
       const weight = document.getElementById("weight");
       const weightValue = document.getElementById("weightValue");
@@ -215,6 +308,14 @@
         String(s ?? "").replace(/[&<>"']/g, (c) =>
           ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
         );
+
+      function ago(seconds) {
+        if (seconds == null) return "just found";
+        if (seconds < 90) return "seconds ago";
+        if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`;
+        if (seconds < 86400) return `${Math.floor(seconds / 3600)} hr ago`;
+        return `${Math.floor(seconds / 86400)} days ago`;
+      }
 
       function debounce(fn, ms) {
         let timer;
@@ -233,14 +334,27 @@
       // out of order must be dropped rather than rendered.
       let requestSeq = 0;
 
+      function filters() {
+        return {
+          query: queryInput.value.trim(),
+          category: categorySel.value || "sss",
+          area_id: Number(areaSel.value) || 18,
+          seller_type: sellerSel.value || null,
+        };
+      }
+
       async function rank({ refresh = false } = {}) {
         const seq = ++requestSeq;
-        const query = queryInput.value.trim() || "power tools";
+        const f = filters();
 
         if (refresh) {
           sourcePill.className = "pill busy";
           sourcePill.textContent = "re-scraping\u2026";
-          await fetch(`/api/deals?query=${encodeURIComponent(query)}&refresh=true`);
+          const params = new URLSearchParams({
+            query: f.query, category: f.category, area_id: f.area_id, refresh: "true",
+          });
+          if (f.seller_type) params.set("seller_type", f.seller_type);
+          await fetch(`/api/deals?${params}`);
           if (seq !== requestSeq) return;
         }
 
@@ -250,8 +364,8 @@
           body: JSON.stringify({
             budget: Number(budgetInput.value) || 1,
             profit_weight: Number(weight.value),
-            query,
             deals: [],
+            ...f,
           }),
         });
         const data = await res.json();
@@ -264,32 +378,42 @@
       function render(data) {
         const live = data.source === "craigslist";
         sourcePill.className = "pill " + (live ? "live" : "sample");
-        sourcePill.textContent = live ? "live Craigslist \u00b7 Phoenix" : "sample data";
+        sourcePill.textContent = live
+          ? `live Craigslist \u00b7 ${areaSel.options[areaSel.selectedIndex]?.text ?? ""}`
+          : "sample data";
         const total = data.ranked.length;
+        const what = data.query || categorySel.options[categorySel.selectedIndex]?.text || "";
         resultCount.textContent =
           total > MAX_ROWS
-            ? `top ${MAX_ROWS} of ${total} listings ranked for "${data.query ?? ""}"`
-            : `${total} listings ranked for "${data.query ?? ""}"`;
+            ? `top ${MAX_ROWS} of ${total} listings ranked for "${what}"`
+            : `${total} listings ranked for "${what}"`;
         warningEl.textContent = data.warning ?? "";
 
-        const rows = document.getElementById("rows");
-        rows.innerHTML = data.ranked
+        document.getElementById("rows").innerHTML = data.ranked
           .slice(0, MAX_ROWS)
           .map((s, i) => {
             const d = s.deal;
             const title = d.url
               ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a>`
               : esc(d.title);
+            const seller = d.seller_type
+              ? `<span class="pill ${d.seller_type === "dealer" ? "dealer" : ""}">${
+                  d.seller_type === "dealer" ? "dealer" : "owner"
+                }</span>`
+              : '<span class="subtle">&mdash;</span>';
+            const beds = d.bedrooms ? `<div class="subtle">${d.bedrooms} bed${d.area_sqft ? ` \u00b7 ${d.area_sqft} sqft` : ""}</div>` : "";
             return `
               <tr class="${s.within_budget ? "" : "over-budget"} ${s.score >= 0.9 ? "hot" : ""}">
                 <td class="rank-num">${i + 1}</td>
-                <td>${title}</td>
+                <td>${title}${beds}</td>
                 <td class="subtle">${esc(d.location ?? "\u2014")}</td>
+                <td>${seller}</td>
                 <td class="num">${fmt(d.acquisition_cost)}</td>
                 <td class="num">${fmt(d.market_value)}<div class="subtle">${d.comparable_count} comps</div></td>
                 <td class="num">${fmt(s.profit)}</td>
                 <td class="num">${s.score.toFixed(3)}</td>
                 <td><span class="badge ${s.within_budget ? "ok" : "no"}">${s.within_budget ? "in budget" : "over"}</span></td>
+                <td><button class="small ghost" data-detail="${esc(d.id)}">Details</button></td>
               </tr>`;
           })
           .join("");
@@ -309,24 +433,219 @@
         }
       }
 
-      weight.addEventListener("input", () => {
-        weightValue.textContent = Number(weight.value).toFixed(2);
-        rankSoon();
-      });
-      budgetInput.addEventListener("input", rankSoon);
+      // -- listing detail --------------------------------------------------
 
-      // Budget and weight re-rank cached data, but a new query means a new
-      // scrape, so it waits for the search to actually be committed.
-      queryInput.addEventListener("input", () => {
-        document.getElementById("ssQuery").value = queryInput.value;
-      });
-      queryInput.addEventListener("change", () => rank());
-      queryInput.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") rank();
-      });
-      document.getElementById("refreshBtn").addEventListener("click", () => rank({ refresh: true }));
+      async function showDetail(dealId) {
+        const box = document.getElementById("detail");
+        box.innerHTML = '<div class="detail">Loading listing\u2026</div>';
+        box.scrollIntoView({ behavior: "smooth", block: "nearest" });
 
-      // Saved searches
+        const res = await fetch(`/api/deals/${encodeURIComponent(dealId)}/detail`);
+        if (!res.ok) {
+          box.innerHTML = '<div class="detail">Could not load that listing.</div>';
+          return;
+        }
+        const d = await res.json();
+
+        const attrs = Object.entries(d.attributes || {})
+          .map(([k, v]) => `<div class="kv"><span>${esc(k)}</span><span>${esc(v)}</span></div>`)
+          .join("") || '<div class="subtle">None listed.</div>';
+
+        const contact = [];
+        if (d.phones?.length) contact.push(`<div class="kv"><span>Phone</span><span>${d.phones.map(esc).join(", ")}</span></div>`);
+        if (d.emails?.length) contact.push(`<div class="kv"><span>Email</span><span>${d.emails.map(esc).join(", ")}</span></div>`);
+        contact.push(`<div class="kv"><span>Reply</span><span><a href="${esc(d.url)}" target="_blank" rel="noopener">Open listing &amp; hit reply</a></span></div>`);
+        if (d.other_listings_url) {
+          contact.push(`<div class="kv"><span>Same seller</span><span><a href="${esc(d.other_listings_url)}" target="_blank" rel="noopener">Their other listings</a></span></div>`);
+        }
+
+        const where = [];
+        if (d.address) where.push(`<div class="kv"><span>Address</span><span>${esc(d.address)}</span></div>`);
+        if (d.map_url) where.push(`<div class="kv"><span>Map</span><span><a href="${esc(d.map_url)}" target="_blank" rel="noopener">Open in Google Maps</a></span></div>`);
+        if (d.latitude != null) where.push(`<div class="kv"><span>Coordinates</span><span>${d.latitude.toFixed(5)}, ${d.longitude.toFixed(5)}</span></div>`);
+        if (!where.length) where.push('<div class="subtle">The seller did not publish a location.</div>');
+
+        const shots = (d.images || []).slice(0, 8)
+          .map((src) => `<img src="${esc(src)}" alt="" loading="lazy" />`).join("");
+
+        box.innerHTML = `
+          <div class="detail">
+            <h3><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a></h3>
+            <div class="subtle">
+              ${d.price != null ? fmt(d.price) : ""}
+              ${d.category_label ? " \u00b7 " + esc(d.category_label) : ""}
+              ${d.seller_type ? " \u00b7 by " + esc(d.seller_type) : ""}
+              ${d.posted_at ? " \u00b7 posted " + new Date(d.posted_at).toLocaleString() : ""}
+              ${d.updated_at ? " \u00b7 updated " + new Date(d.updated_at).toLocaleString() : ""}
+            </div>
+            <div style="margin-top:10px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <span class="pill ${d.status === "active" ? "live" : "hot"}">${esc(d.status)}</span>
+              <button class="small ghost" data-check="${esc(dealId)}">Check if still available</button>
+              <span id="availability" class="subtle"></span>
+            </div>
+            ${shots ? `<div class="shots">${shots}</div>` : ""}
+            <div class="grid">
+              <div class="box"><h4>Where to go</h4>${where.join("")}</div>
+              <div class="box"><h4>Who to contact</h4>${contact.join("")}
+                <div class="subtle" style="margin-top:8px">${esc(d.contact_note)}</div>
+              </div>
+              <div class="box"><h4>Details</h4>${attrs}</div>
+            </div>
+            ${d.description ? `<pre>${esc(d.description)}</pre>` : ""}
+          </div>`;
+      }
+
+      async function checkAvailability(dealId) {
+        const out = document.getElementById("availability");
+        if (out) out.textContent = "checking\u2026";
+        const res = await fetch(`/api/deals/${encodeURIComponent(dealId)}/availability`);
+        const data = await res.json();
+        if (out) {
+          out.textContent = data.still_available
+            ? `Still listed (checked ${new Date(data.checked_at).toLocaleTimeString()})`
+            : `No longer listed \u2014 ${data.status}`;
+        }
+      }
+
+      document.addEventListener("click", (event) => {
+        const detailId = event.target.getAttribute?.("data-detail");
+        const checkId = event.target.getAttribute?.("data-check");
+        if (detailId) showDetail(detailId);
+        if (checkId) checkAvailability(checkId);
+      });
+
+      // -- live feed -------------------------------------------------------
+
+      const feed = document.getElementById("feed");
+      const feedEmpty = document.getElementById("feedEmpty");
+
+      function addFinding(f, { prepend = true } = {}) {
+        feedEmpty.style.display = "none";
+        const d = f.deal.deal;
+        const li = document.createElement("li");
+        if (f.is_property) li.className = "property";
+        li.innerHTML = `
+          <div class="headline">
+            ${d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a>` : esc(d.title)}
+            ${f.is_fresh ? '<span class="pill hot">just posted</span>' : ""}
+          </div>
+          <div class="subtle">
+            ${esc(f.target_label)} \u00b7 ${ago(f.age_seconds)} \u00b7
+            asking ${fmt(d.acquisition_cost)} vs ${fmt(d.market_value)} comparable \u00b7
+            score ${f.deal.score.toFixed(3)}
+            ${d.location ? " \u00b7 " + esc(d.location) : ""}
+          </div>
+          <div style="margin-top:6px"><button class="small ghost" data-detail="${esc(d.id)}">Details</button></div>`;
+        if (prepend) feed.prepend(li);
+        else feed.append(li);
+        while (feed.children.length > 40) feed.lastChild.remove();
+      }
+
+      function connectStream() {
+        const pill = document.getElementById("streamPill");
+        const stream = new EventSource("/api/watch/stream");
+        stream.onopen = () => {
+          pill.className = "pill live";
+          pill.textContent = "live";
+        };
+        stream.onmessage = (event) => addFinding(JSON.parse(event.data));
+        stream.onerror = () => {
+          pill.className = "pill busy";
+          pill.textContent = "reconnecting\u2026";
+        };
+      }
+
+      async function loadFindings() {
+        const res = await fetch("/api/watch/findings");
+        const findings = await res.json();
+        feed.innerHTML = "";
+        findings.forEach((f) => addFinding(f, { prepend: false }));
+        feedEmpty.style.display = findings.length ? "none" : "block";
+      }
+
+      async function loadWatch() {
+        const res = await fetch("/api/watch");
+        const w = await res.json();
+        document.getElementById("watchInterval").value = w.interval;
+        document.getElementById("watchScore").value = w.min_score;
+        if (w.email) document.getElementById("watchEmail").value = w.email;
+        document.getElementById("targets").innerHTML = w.targets
+          .map(
+            (t) => `<span class="chip">${t.is_property ? "&#127968;" : "&#128230;"} ${esc(t.label)}
+              <button data-untarget="${esc(t.key)}" title="Stop watching">&times;</button></span>`
+          )
+          .join("");
+        const swept = w.last_swept_at ? new Date(w.last_swept_at).toLocaleTimeString() : "not yet";
+        document.getElementById("watchStatus").textContent =
+          `${w.enabled ? "Scanning" : "Paused"} \u00b7 every ${w.interval}s \u00b7 ` +
+          `notify above ${w.min_score} \u00b7 last swept ${swept}` +
+          (w.last_error ? ` \u00b7 ${w.last_error}` : "");
+        return w;
+      }
+
+      async function saveWatch(targets) {
+        const current = await (await fetch("/api/watch")).json();
+        const res = await fetch("/api/watch", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            enabled: true,
+            interval: Number(document.getElementById("watchInterval").value) || 60,
+            min_score: Number(document.getElementById("watchScore").value),
+            budget: 1000000,
+            profit_weight: Number(weight.value),
+            email: document.getElementById("watchEmail").value.trim() || null,
+            targets: targets ?? current.targets,
+          }),
+        });
+        if (!res.ok) {
+          document.getElementById("watchStatus").textContent = "Could not save those watch settings.";
+          return;
+        }
+        await loadWatch();
+      }
+
+      document.getElementById("watchForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        saveWatch();
+      });
+
+      document.getElementById("addTargetBtn").addEventListener("click", async () => {
+        const current = await (await fetch("/api/watch")).json();
+        const f = filters();
+        const target = { area_id: f.area_id, category: f.category, query: f.query, seller_type: f.seller_type, source: "craigslist" };
+        const exists = current.targets.some(
+          (t) => t.area_id === target.area_id && t.category === target.category &&
+                 (t.query || "") === (target.query || "") && (t.seller_type || null) === target.seller_type
+        );
+        if (exists) {
+          document.getElementById("watchStatus").textContent = "Already watching those filters.";
+          return;
+        }
+        await saveWatch([...current.targets, target]);
+      });
+
+      document.getElementById("targets").addEventListener("click", async (event) => {
+        const key = event.target.getAttribute("data-untarget");
+        if (!key) return;
+        const current = await (await fetch("/api/watch")).json();
+        await saveWatch(current.targets.filter((t) => t.key !== key));
+      });
+
+      document.getElementById("sweepBtn").addEventListener("click", async (event) => {
+        event.target.disabled = true;
+        event.target.textContent = "Scanning\u2026";
+        const res = await fetch("/api/watch/sweep", { method: "POST" });
+        const found = await res.json();
+        document.getElementById("watchStatus").textContent =
+          found.length ? `Found ${found.length} new listing(s).` : "Swept every target; nothing new since the last scan.";
+        await Promise.all([loadWatch(), loadFindings(), loadAlerts()]);
+        event.target.disabled = false;
+        event.target.textContent = "Scan now";
+      });
+
+      // -- saved searches --------------------------------------------------
+
       const savedStatus = document.getElementById("savedStatus");
 
       async function loadSaved() {
@@ -421,10 +740,54 @@
         }
       });
 
-      document.getElementById("ssQuery").value = queryInput.value;
-      rank();
-      loadSaved();
-      loadAlerts();
+      // -- wiring ----------------------------------------------------------
+
+      weight.addEventListener("input", () => {
+        weightValue.textContent = Number(weight.value).toFixed(2);
+        rankSoon();
+      });
+      budgetInput.addEventListener("input", rankSoon);
+
+      // Budget and weight re-rank cached data, but changing what is searched
+      // means a new scrape, so those wait for the change to be committed.
+      queryInput.addEventListener("input", () => {
+        document.getElementById("ssQuery").value = queryInput.value;
+      });
+      queryInput.addEventListener("change", () => rank());
+      queryInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") rank();
+      });
+      [categorySel, areaSel, sellerSel].forEach((el) =>
+        el.addEventListener("change", () => rank())
+      );
+      document.getElementById("refreshBtn").addEventListener("click", () => rank({ refresh: true }));
+
+      async function boot() {
+        const meta = await (await fetch("/api/meta")).json();
+        categorySel.innerHTML = Object.entries(meta.categories)
+          .map(([label, path]) => `<option value="${esc(path)}"${path === "sss" ? " selected" : ""}>${esc(label)}</option>`)
+          .join("");
+        areaSel.innerHTML = Object.entries(meta.areas)
+          .map(([id, name]) => `<option value="${esc(id)}"${id === "18" ? " selected" : ""}>${esc(name)}</option>`)
+          .join("");
+        document.getElementById("sources").innerHTML = meta.sources
+          .map(
+            (s) => `<span class="chip" title="${esc(s.note)}">
+              ${s.enabled ? "&#9679;" : "&#9675;"} ${esc(s.label)}
+              <span class="subtle">${s.enabled ? "scanning" : "unavailable"}</span></span>`
+          )
+          .join("");
+
+        document.getElementById("ssQuery").value = queryInput.value;
+        rank();
+        loadWatch();
+        loadFindings();
+        loadSaved();
+        loadAlerts();
+        connectStream();
+      }
+
+      boot();
     </script>
   </body>
 </html>
