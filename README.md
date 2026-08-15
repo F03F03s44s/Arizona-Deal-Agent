@@ -1,9 +1,10 @@
 # Arizona Deal Agent
 
-Finds the lowest-priced Arizona property that is still profitable and still affordable.
+MVP that finds Arizona property deals and ranks them by **best value**.
 
-Point it at a list of properties and it scores every one on three axes — price, profitability
-and affordability — then ranks them and tells you why the winner won.
+Each listing is scored on three axes — price, profitability, and affordability —
+then ranked so the lowest-priced deal that is still profitable and still affordable
+floats to the top, with a plain-language explanation of why it won.
 
 **Start here:** `arizona-deal-agent howto` or [HOW_TO_USE.md](HOW_TO_USE.md).
 
@@ -31,9 +32,15 @@ arizona-deal-agent howto
 arizona-deal-agent howto --run profit
 ```
 
-### 2. Rank a list of deals
+### 2. Find the best-value deals
 
-A sample file of 13 Arizona properties ships with the repo, so this works immediately:
+A sample catalog of 13 Arizona properties ships with the repo. Zero-config:
+
+```bash
+arizona-deal-agent find --top 5
+```
+
+Or point at your own CSV/JSON:
 
 ```bash
 arizona-deal-agent rank -i data/sample_listings.csv --top 5

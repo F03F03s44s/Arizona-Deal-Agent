@@ -20,7 +20,8 @@ pip install -e .
 
 | Step | Command |
 | ---- | ------- |
-| Rank the sample catalog | `arizona-deal-agent rank -i data/sample_listings.csv --top 5` |
+| Find best-value deals (sample catalog, no `-i`) | `arizona-deal-agent find --top 5` |
+| Rank a listings file | `arizona-deal-agent rank -i data/sample_listings.csv --top 5` |
 | Keep only what you can buy | `arizona-deal-agent rank -i data/sample_listings.csv --max-price 350000 --budget-cash 90000 --min-cash-flow 0` |
 | Open the winner | `arizona-deal-agent explain -i data/sample_listings.csv --id AZ-003` |
 | Score a deal not in a file | `arizona-deal-agent score --price 240000 --rent 2100 --rehab 15000 --arv 330000` |
@@ -57,6 +58,7 @@ over-limit rows visible and marked instead of dropped.
 | Command | Purpose |
 | ------- | ------- |
 | `howto` | Print this path, or `--run` a named scenario |
+| `find` | Rank the bundled sample catalog (or `-i` your file) by best value |
 | `rank` | Score a `.csv` / `.json` listings file |
 | `explain` | Full purchase / monthly / returns breakdown for one `--id` |
 | `score` | Same breakdown from flags (`--price` and `--rent` required) |

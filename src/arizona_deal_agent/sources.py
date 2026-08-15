@@ -153,9 +153,30 @@ def load_json(path: Path) -> list[Listing]:
     ]
 
 
-def load_listings(path: str | Path) -> list[Listing]:
-    """Load listings from a ``.csv`` or ``.json`` file."""
-    resolved = Path(path)
+def default_sample_path() -> Path:
+    """Bundled Arizona sample catalog used when no ``-i`` path is given."""
+    return Path(__file__).resolve().parents[2] / "data" / "sample_listings.csv"
+
+
+def resolve_listings_path(path: str | Path | None = None) -> Path:
+    """Return ``path`` when given, otherwise the bundled sample catalog."""
+    if path is None:
+        resolved = default_sample_path()
+        if not resolved.exists():
+            raise ListingParseError(
+                f"no listings file provided and sample catalog missing at {resolved}"
+            )
+        return resolved
+    return Path(path)
+
+
+def load_listings(path: str | Path | None = None) -> list[Listing]:
+    """Load listings from a ``.csv`` or ``.json`` file.
+
+    When ``path`` is omitted, the bundled Arizona sample catalog is used so
+    ``arizona-deal-agent find`` works with zero setup.
+    """
+    resolved = resolve_listings_path(path)
     if not resolved.exists():
         raise ListingParseError(f"{resolved}: file not found")
 
