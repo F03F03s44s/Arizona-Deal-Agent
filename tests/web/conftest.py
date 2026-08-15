@@ -52,6 +52,23 @@ def phoenix_listings(phoenix_payload: dict) -> list[Listing]:
 
 
 @pytest.fixture
+def real_estate_payload() -> dict:
+    """A trimmed real Craigslist real-estate response.
+
+    Housing rows append a bedrooms/square-feet group after the title, which is
+    the case the for-sale fixture does not cover.
+    """
+    path = FIXTURE_DIR / "craigslist_phoenix_real_estate.json"
+    return json.loads(path.read_text())
+
+
+@pytest.fixture
+def listing_page() -> str:
+    """A real Craigslist posting page."""
+    return (FIXTURE_DIR / "craigslist_listing_page.html").read_text()
+
+
+@pytest.fixture
 def sample_listings() -> list[Listing]:
     """A cohort with hand-picked prices so comparables are predictable.
 
@@ -90,3 +107,4 @@ def clean_store():
     store.clear()
     yield
     store.clear()
+

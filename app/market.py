@@ -143,7 +143,7 @@ def listings_to_deals(
             Deal(
                 id=f"cl-{listing.posting_id}",
                 title=listing.title,
-                category=category,
+                category=listing.category_label or category,
                 acquisition_cost=listing.price,
                 market_value=market_value,
                 url=listing.url,
@@ -151,6 +151,9 @@ def listings_to_deals(
                 posted_at=listing.posted_at,
                 source=source,
                 comparable_count=len(prices),
+                seller_type=listing.seller_type,
+                bedrooms=listing.bedrooms,
+                area_sqft=listing.area_sqft,
             )
         )
 

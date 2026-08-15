@@ -2,6 +2,7 @@
 
 from fastapi.testclient import TestClient
 
+from app import craigslist
 from app.main import app
 
 client = TestClient(app)
@@ -139,3 +140,109 @@ def test_index_served():
     res = client.get("/")
     assert res.status_code == 200
     assert "Arizona Deal Agent" in res.text
+
+
+# -- filters --------------------------------------------------------------
+
+
+def test_meta_lists_the_available_filters():
+    body = client.get("/api/meta").json()
+
+    assert body["areas"]["18"] == "Phoenix"
+    assert len(body["areas"]) == 8
+    assert body["categories"]["Real estate for sale"] == "rea"
+    assert "rea" in body["property_categories"]
+    assert body["seller_types"]["dealer"] == "Dealers & wholesalers"
+
+
+def test_filters_reach_the_scraper(offline_deal_service):
+    client.get(
+        "/api/deals",
+        params={"query": "casita", "category": "rea", "seller_type": "dealer", "area_id": 57},
+    )
+
+    (_, kwargs), = offline_deal_service
+    assert kwargs["category"] == "rea"
+    assert kwargs["seller_type"] == "dealer"
+    assert kwargs["area_id"] == 57
+
+
+def test_different_filters_are_cached_separately(offline_deal_service):
+    client.get("/api/deals", params={"query": "drill"})
+    client.get("/api/deals", params={"query": "drill", "seller_type": "dealer"})
+    client.get("/api/deals", params={"query": "drill", "seller_type": "dealer"})
+
+    assert len(offline_deal_service) == 2
+
+
+# -- listing detail and availability --------------------------------------
+
+
+LISTING_HTML = """
+<script type="application/ld+json" id="ld_posting_data" >
+{"name":"DeWalt cordless drill","description":"Barely used. Call 480-555-0134.",
+ "offers":{"price":"40","availableAtOrFrom":{"geo":{"latitude":"33.41","longitude":"-111.83"},
+ "address":{"streetAddress":"","addressLocality":"Mesa","addressRegion":"AZ","postalCode":"85201"}}},
+ "image":["https://images.craigslist.org/one.jpg"]}
+</script>
+<title>DeWalt cordless drill - tools - by owner - sale - craigslist</title>
+<div class="attrgroup"><div class="attr condition">
+  <span class="labl">condition:</span><span class="valu">good</span></div></div>
+"""
+
+
+def _seed_deal() -> str:
+    """Make the agent aware of a deal so its id can be resolved."""
+    body = client.get("/api/deals", params={"query": "cordless drill"}).json()
+    return body["deals"][0]["id"]
+
+
+def test_detail_reports_where_to_go_and_who_to_contact(monkeypatch):
+    deal_id = _seed_deal()
+
+    def fake_fetch(url, **kwargs):
+        return craigslist.parse_detail_page(LISTING_HTML, url)
+
+    monkeypatch.setattr(craigslist, "fetch_detail", fake_fetch)
+    body = client.get(f"/api/deals/{deal_id}/detail").json()
+
+    assert body["status"] == "active"
+    assert body["address"] == "Mesa, AZ, 85201"
+    assert "33.41,-111.83" in body["map_url"]
+    assert body["phones"] == ["(480) 555-0134"]
+    assert body["attributes"]["condition"] == "good"
+    assert body["images"] == ["https://images.craigslist.org/one.jpg"]
+    # The reply flow is linked, never scraped.
+    assert "robots.txt" in body["contact_note"]
+
+
+def test_availability_reports_a_live_listing(monkeypatch):
+    deal_id = _seed_deal()
+    monkeypatch.setattr(
+        craigslist, "check_status", lambda url, **kw: craigslist.ListingStatus.ACTIVE
+    )
+
+    body = client.get(f"/api/deals/{deal_id}/availability").json()
+
+    assert body["still_available"] is True
+    assert body["status"] == "active"
+
+
+def test_availability_reports_a_pulled_listing(monkeypatch):
+    deal_id = _seed_deal()
+    monkeypatch.setattr(
+        craigslist, "check_status", lambda url, **kw: craigslist.ListingStatus.REMOVED
+    )
+
+    body = client.get(f"/api/deals/{deal_id}/availability").json()
+
+    assert body["still_available"] is False
+    assert body["status"] == "removed"
+
+
+def test_detail_of_an_unknown_deal_is_a_404():
+    # Ids are resolved against deals the agent has served, so a caller cannot
+    # steer it at an arbitrary URL.
+    assert client.get("/api/deals/cl-does-not-exist/detail").status_code == 404
+    assert client.get("/api/deals/cl-does-not-exist/availability").status_code == 404
+

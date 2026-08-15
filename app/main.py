@@ -6,20 +6,27 @@ import asyncio
 import logging
 import os
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query, Response
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import __version__
+from . import __version__, craigslist
 from .agent import rank_deals
 from .alerts import AlertService, SavedSearchStore
+from .categories import DEALER, DEFAULT_SEARCH_PATH, OWNER, PROPERTY_SEARCH_PATHS, SEARCH_PATHS
+from .craigslist import ListingStatus
 from .data import DEFAULT_BUDGET, DEFAULT_QUERY
 from .deals import deal_service
+from .craigslist import AREAS, PHOENIX_AREA_ID as DEFAULT_AREA_ID
 from .models import (
     Alert,
+    AvailabilityResult,
     DealsResponse,
+    ListingDetailModel,
+    MetaResponse,
     RankRequest,
     RankResponse,
     SavedSearch,
@@ -34,6 +41,12 @@ STATIC_DIR = Path(__file__).parent / "static"
 # tracked, whereas saved searches are local runtime state.
 DATA_DIR = Path(os.getenv("DEAL_AGENT_DATA_DIR", ".agent-state"))
 
+CONTACT_NOTE = (
+    "Craigslist keeps seller contact details behind its reply flow, which its "
+    "robots.txt disallows scraping. Use the listing's reply button; any phone "
+    "or email below is one the seller published in the posting text itself."
+)
+
 store = SavedSearchStore(DATA_DIR / "saved_searches.json")
 alert_service = AlertService(store=store, deals=deal_service)
 
@@ -43,6 +56,7 @@ def _poll_interval() -> float:
         return float(os.getenv("ALERT_POLL_SECONDS", "900"))
     except ValueError:
         return 900.0
+
 
 
 async def _poll_saved_searches(interval: float) -> None:
@@ -60,16 +74,19 @@ async def _poll_saved_searches(interval: float) -> None:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    tasks: list[asyncio.Task] = []
+
     interval = _poll_interval()
-    task = None
     if interval > 0:
-        task = asyncio.create_task(_poll_saved_searches(interval))
+        tasks.append(asyncio.create_task(_poll_saved_searches(interval)))
         logger.info("Polling saved searches every %.0fs", interval)
+
     try:
         yield
     finally:
-        if task is not None:
+        for task in tasks:
             task.cancel()
+        for task in tasks:
             try:
                 await task
             except asyncio.CancelledError:
@@ -89,13 +106,33 @@ def health() -> dict[str, str]:
     return {"status": "ok", "version": __version__}
 
 
+@app.get("/api/meta", response_model=MetaResponse)
+def meta() -> MetaResponse:
+    """Filter options the UI builds its dropdowns from."""
+    return MetaResponse(
+        areas=AREAS,
+        categories=SEARCH_PATHS,
+        property_categories=sorted(PROPERTY_SEARCH_PATHS),
+        seller_types={OWNER: "Private sellers", DEALER: "Dealers & wholesalers"},
+    )
+
+
 @app.get("/api/deals", response_model=DealsResponse)
 def list_deals(
-    query: str = Query(default=DEFAULT_QUERY, description="Craigslist search terms."),
+    query: str = Query(default=DEFAULT_QUERY, description="Search terms."),
+    category: str = Query(default=DEFAULT_SEARCH_PATH, description="Craigslist search path."),
+    seller_type: str | None = Query(default=None, description="owner or dealer."),
+    area_id: int = Query(default=DEFAULT_AREA_ID, description="Craigslist area id."),
     refresh: bool = Query(default=False, description="Bypass the scrape cache."),
 ) -> DealsResponse:
-    """Scrape (or serve from cache) Phoenix listings for a search."""
-    sourced = deal_service.get_deals(query, refresh=refresh)
+    """Scrape (or serve from cache) listings for a search."""
+    sourced = deal_service.get_deals(
+        query,
+        category=category,
+        seller_type=seller_type,
+        area_id=area_id,
+        refresh=refresh,
+    )
     return DealsResponse(
         budget=DEFAULT_BUDGET,
         query=sourced.query,
@@ -109,14 +146,19 @@ def list_deals(
 def rank(request: RankRequest) -> RankResponse:
     """Rank deals against a budget.
 
-    Caller-supplied deals win; otherwise the cached scrape for ``query`` is
-    used, which keeps repeated slider-driven calls off the network.
+    Caller-supplied deals win; otherwise the cached scrape for the requested
+    search is used, which keeps repeated slider-driven calls off the network.
     """
     if request.deals:
         ranked = rank_deals(request.deals, request.budget, request.profit_weight)
         return ranked.model_copy(update={"source": "request", "query": request.query})
 
-    sourced = deal_service.get_deals(request.query)
+    sourced = deal_service.get_deals(
+        request.query,
+        category=request.category,
+        seller_type=request.seller_type,
+        area_id=request.area_id,
+    )
     ranked = rank_deals(sourced.deals, request.budget, request.profit_weight)
     return ranked.model_copy(
         update={
@@ -125,6 +167,62 @@ def rank(request: RankRequest) -> RankResponse:
             "warning": sourced.warning,
         }
     )
+
+
+def _require_deal(deal_id: str):
+    deal = deal_service.find(deal_id)
+    if deal is None or not deal.url:
+        raise HTTPException(status_code=404, detail="Unknown deal, or it has no listing page")
+    return deal
+
+
+@app.get("/api/deals/{deal_id}/detail", response_model=ListingDetailModel)
+def listing_detail(deal_id: str) -> ListingDetailModel:
+    """Full posting: description, photos, attributes, where it is, how to reply."""
+    deal = _require_deal(deal_id)
+    try:
+        detail = craigslist.fetch_detail(deal.url)
+    except craigslist.CraigslistError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+
+    return ListingDetailModel(
+        posting_id=detail.posting_id,
+        url=detail.url,
+        title=detail.title or deal.title,
+        status=detail.status.value,
+        price=detail.price,
+        description=detail.description,
+        images=detail.images,
+        attributes=detail.attributes,
+        address=detail.address or deal.location,
+        latitude=detail.latitude,
+        longitude=detail.longitude,
+        map_url=detail.map_url,
+        posted_at=detail.posted_at,
+        updated_at=detail.updated_at,
+        category_label=detail.category_label,
+        seller_type=detail.seller_type,
+        phones=detail.phones,
+        emails=detail.emails,
+        reply_url=detail.reply_url,
+        other_listings_url=detail.other_listings_url,
+        contact_note=CONTACT_NOTE,
+    )
+
+
+@app.get("/api/deals/{deal_id}/availability", response_model=AvailabilityResult)
+def listing_availability(deal_id: str) -> AvailabilityResult:
+    """Check whether the listing is still up."""
+    deal = _require_deal(deal_id)
+    status = craigslist.check_status(deal.url)
+    return AvailabilityResult(
+        deal_id=deal_id,
+        url=deal.url,
+        status=status.value,
+        still_available=status is ListingStatus.ACTIVE,
+        checked_at=datetime.now(UTC),
+    )
+
 
 
 @app.get("/api/saved-searches", response_model=list[SavedSearch])

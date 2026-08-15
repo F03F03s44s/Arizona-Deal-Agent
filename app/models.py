@@ -27,6 +27,11 @@ class Deal(BaseModel):
     comparable_count: int = Field(
         default=0, description="How many comparable listings set the market value."
     )
+    seller_type: str | None = Field(
+        default=None, description="'owner' or 'dealer', when the source says."
+    )
+    bedrooms: int | None = Field(default=None, description="Property listings only.")
+    area_sqft: int | None = Field(default=None, description="Property listings only.")
 
 
 class ScoredDeal(BaseModel):
@@ -59,6 +64,11 @@ class RankRequest(BaseModel):
     query: str | None = Field(
         default=None, description="Craigslist search to source deals from."
     )
+    category: str = Field(default="sss", description="Craigslist search path.")
+    seller_type: str | None = Field(
+        default=None, description="Narrow to 'owner' or 'dealer' listings."
+    )
+    area_id: int = Field(default=18, description="Craigslist area id.")
 
 
 class RankResponse(BaseModel):
@@ -134,3 +144,48 @@ class SavedSearchRunResult(BaseModel):
     new_matches: list[ScoredDeal] = Field(default_factory=list)
     alert: Alert | None = None
     warning: str | None = None
+
+
+class ListingDetailModel(BaseModel):
+    """Everything the posting page says about one listing."""
+
+    posting_id: str
+    url: str
+    title: str
+    status: str
+    price: float | None = None
+    description: str = ""
+    images: list[str] = Field(default_factory=list)
+    attributes: dict[str, str] = Field(default_factory=dict)
+    address: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
+    map_url: str | None = None
+    posted_at: datetime | None = None
+    updated_at: datetime | None = None
+    category_label: str | None = None
+    seller_type: str | None = None
+    phones: list[str] = Field(default_factory=list)
+    emails: list[str] = Field(default_factory=list)
+    reply_url: str | None = None
+    other_listings_url: str | None = None
+    contact_note: str = ""
+
+
+class AvailabilityResult(BaseModel):
+    """Whether a listing is still up on the source site."""
+
+    deal_id: str
+    url: str
+    status: str
+    still_available: bool
+    checked_at: datetime
+
+
+class MetaResponse(BaseModel):
+    """Options the UI needs to build its filters."""
+
+    areas: dict[int, str]
+    categories: dict[str, str]
+    property_categories: list[str]
+    seller_types: dict[str, str]
