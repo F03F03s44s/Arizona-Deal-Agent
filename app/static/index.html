@@ -115,6 +115,7 @@
       .alert-item .subject { font-weight: 700; }
       .alert-item pre { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.78rem; background: #faf6ee; border-radius: 8px; padding: 10px; margin: 8px 0 0; max-height: 220px; overflow: auto; }
       .empty { color: var(--muted); font-size: 0.88rem; margin-top: 12px; }
+      .status-line { color: var(--cactus); font-size: 0.88rem; font-weight: 600; margin-top: 12px; min-height: 20px; }
     </style>
   </head>
   <body>
@@ -125,7 +126,7 @@
     <main>
       <div class="controls">
         <div class="field">
-          <label for="query">Craigslist search</label>
+          <label for="query">Craigslist search (press Enter)</label>
           <input id="query" type="text" value="power tools" style="width: 220px;" />
         </div>
         <div class="field">
@@ -188,7 +189,8 @@
           </div>
           <button type="submit">Save search</button>
         </form>
-        <div id="savedStatus" class="empty"></div>
+        <div id="savedStatus" class="status-line"></div>
+        <div id="savedEmpty" class="empty">No saved searches yet.</div>
         <ul id="savedList" class="saved-list"></ul>
       </section>
 
@@ -221,6 +223,11 @@
           timer = setTimeout(() => fn(...args), ms);
         };
       }
+
+      // A Craigslist page is ~300 listings. All of them feed the comparables
+      // and the alerts, but re-rendering every row on each slider tick is what
+      // would make the drag feel heavy, so the table shows the best of them.
+      const MAX_ROWS = 25;
 
       // Slider drags fire faster than the round trip, so responses that arrive
       // out of order must be dropped rather than rendered.
@@ -258,11 +265,16 @@
         const live = data.source === "craigslist";
         sourcePill.className = "pill " + (live ? "live" : "sample");
         sourcePill.textContent = live ? "live Craigslist \u00b7 Phoenix" : "sample data";
-        resultCount.textContent = `${data.ranked.length} listings ranked for "${data.query ?? ""}"`;
+        const total = data.ranked.length;
+        resultCount.textContent =
+          total > MAX_ROWS
+            ? `top ${MAX_ROWS} of ${total} listings ranked for "${data.query ?? ""}"`
+            : `${total} listings ranked for "${data.query ?? ""}"`;
         warningEl.textContent = data.warning ?? "";
 
         const rows = document.getElementById("rows");
         rows.innerHTML = data.ranked
+          .slice(0, MAX_ROWS)
           .map((s, i) => {
             const d = s.deal;
             const title = d.url
@@ -302,9 +314,15 @@
         rankSoon();
       });
       budgetInput.addEventListener("input", rankSoon);
+
+      // Budget and weight re-rank cached data, but a new query means a new
+      // scrape, so it waits for the search to actually be committed.
       queryInput.addEventListener("input", () => {
         document.getElementById("ssQuery").value = queryInput.value;
-        rankSoon();
+      });
+      queryInput.addEventListener("change", () => rank());
+      queryInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") rank();
       });
       document.getElementById("refreshBtn").addEventListener("click", () => rank({ refresh: true }));
 
@@ -315,12 +333,7 @@
         const res = await fetch("/api/saved-searches");
         const searches = await res.json();
         const list = document.getElementById("savedList");
-        if (!searches.length) {
-          list.innerHTML = "";
-          savedStatus.textContent = "No saved searches yet.";
-          return;
-        }
-        savedStatus.textContent = "";
+        document.getElementById("savedEmpty").style.display = searches.length ? "none" : "block";
         list.innerHTML = searches
           .map(
             (s) => `
