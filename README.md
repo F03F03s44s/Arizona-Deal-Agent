@@ -310,7 +310,8 @@ print(best.listing.label, round(best.composite_score, 1), best.notes)
 ## Web app: topic pages from allowlisted sources
 
 A second front end in `app/` has a page per topic — **houses**, **household
-items**, **electronics**, **furniture**, **cars**, and **tools**. Live rows come
+items**, **electronics**, **furniture**, **cars**, **tools**, **gold**, **silver**,
+and **diamonds**. Live rows come
 only from allowlisted Craigslist sections. Gift-card / wire / crypto titles are
 dropped. Houses also include the curated Arizona catalog (`data/sample_listings.csv`)
 plus official Zillow / Redfin / Realtor.com lookup links. Those sites are **not**

@@ -76,7 +76,7 @@ class RankRequest(BaseModel):
     )
     topic: str | None = Field(
         default=None,
-        description="Topic page: houses, household, electronics, furniture, cars, or tools.",
+        description="Topic page: houses, household, electronics, furniture, cars, tools, gold, silver, or diamonds.",
     )
 
 

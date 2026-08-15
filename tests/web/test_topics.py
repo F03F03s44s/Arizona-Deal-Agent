@@ -6,7 +6,17 @@ from app.main import app
 
 client = TestClient(app)
 
-EXPECTED_TOPICS = {"property", "household", "electronics", "furniture", "autos", "tools"}
+EXPECTED_TOPICS = {
+    "property",
+    "household",
+    "electronics",
+    "furniture",
+    "autos",
+    "tools",
+    "gold",
+    "silver",
+    "diamonds",
+}
 
 
 def test_topics_list_covers_household_electronics_houses_cars_furniture():
@@ -14,11 +24,21 @@ def test_topics_list_covers_household_electronics_houses_cars_furniture():
     ids = {row["id"] for row in body}
     assert EXPECTED_TOPICS <= ids
     titles = {row["title"] for row in body}
-    assert {"Houses", "Household", "Electronics", "Furniture", "Cars", "Tools"} <= titles
+    assert {"Houses", "Household", "Electronics", "Furniture", "Cars", "Tools", "Gold", "Silver", "Diamonds"} <= titles
 
 
 def test_topic_pages_are_served():
-    for path in ("/houses", "/household", "/electronics", "/furniture", "/cars", "/tools"):
+    for path in (
+        "/houses",
+        "/household",
+        "/electronics",
+        "/furniture",
+        "/cars",
+        "/tools",
+        "/gold",
+        "/silver",
+        "/diamonds",
+    ):
         res = client.get(path)
         assert res.status_code == 200, path
         assert "Arizona Deal Agent" in res.text
@@ -67,12 +87,27 @@ def test_electronics_and_cars_use_their_craigslist_sections(offline_deal_service
     assert "cta" in paths
 
 
+def test_gold_silver_and_diamonds_use_the_jewelry_section(offline_deal_service):
+    for topic, query in (("gold", "gold"), ("silvers", "silver"), ("diamonds", "diamond")):
+        client.get("/api/deals", params={"topic": topic})
+    calls = {query: kwargs.get("search_path") for query, kwargs in offline_deal_service}
+    assert calls["gold"] == "jwa"
+    assert calls["silver"] == "jwa"
+    assert calls["diamond"] == "jwa"
+
+
 def test_sources_list_marks_zillow_as_lookup_only():
     body = client.get("/api/sources").json()
     zillow = next(row for row in body if row["name"] == "Zillow")
     assert zillow["kind"] == "lookup-only"
     craigslist = next(row for row in body if row["id"] == "craigslist")
     assert craigslist["kind"] == "live"
+    kitco = next(row for row in body if row["name"] == "Kitco")
+    assert kitco["kind"] == "lookup-only"
+    assert "gold" in kitco["topics"]
+    gia = next(row for row in body if row["name"] == "GIA")
+    assert gia["kind"] == "lookup-only"
+    assert "diamonds" in gia["topics"]
 
 
 def test_rank_on_the_houses_page_recommends_a_catalog_deal():

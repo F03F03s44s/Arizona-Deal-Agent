@@ -8,7 +8,7 @@ Two front ends live here, built in parallel and kept side by side:
 | Front end | Deals | Code |
 | --------- | ----- | ---- |
 | CLI (`arizona-deal-agent`) | Arizona property listings you supply | `src/arizona_deal_agent/` |
-| Web app (FastAPI) | Topic pages (houses, household, electronics, furniture, cars, tools) from allowlisted sources | `app/` |
+| Web app (FastAPI) | Topic pages (houses, household, electronics, furniture, cars, tools, gold, silver, diamonds) from allowlisted sources | `app/` |
 
 They share a name and a philosophy, not code. Consolidating them is an open
 decision — do not delete one to make room for the other without being asked.

@@ -130,7 +130,7 @@
   <body>
     <header>
       <h1>&#127796; Arizona Deal Agent</h1>
-      <p id="tagline">Allowlisted deals only — houses, household, electronics, furniture, cars, and tools.</p>
+      <p id="tagline">Allowlisted deals only — houses, household, electronics, furniture, cars, tools, gold, silver, and diamonds.</p>
     </header>
     <nav id="topics" class="topics" aria-label="Deal topics"></nav>
     <p id="sources" class="sources"></p>
@@ -256,6 +256,7 @@
           houses: "property", house: "property", homes: "property",
           cars: "autos", car: "autos", auto: "autos",
           electronic: "electronics", "household-items": "household",
+          silvers: "silver", diamond: "diamonds", jewelry: "gold",
         };
         return aliases[slug] || "tools";
       }
@@ -282,10 +283,10 @@
         const forTopic = sources.filter(
           (s) => s.kind !== "lookup-only" && s.topics.includes(currentTopic)
         );
-        const lookups = sources.filter((s) => s.kind === "lookup-only" && currentTopic === "property");
+        const lookups = sources.filter((s) => s.kind === "lookup-only" && s.topics.includes(currentTopic));
         const live = forTopic.map((s) => s.name).join(" · ");
         const extra = lookups.length
-          ? " Verify houses on " + lookups.map((s) => s.name).join(", ") + " (we do not scrape those sites)."
+          ? " Verify on " + lookups.map((s) => s.name).join(", ") + " (we do not scrape those sites)."
           : "";
         document.getElementById("sources").textContent =
           "Verified sources for this page: " + (live || "none") + "." + extra;

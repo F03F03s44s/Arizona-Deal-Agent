@@ -1,4 +1,4 @@
-"""Topic pages: houses, household, electronics, furniture, cars, tools.
+"""Topic pages: houses, household, electronics, furniture, cars, tools, gold, silver, diamonds.
 
 Each topic has its own default search, budget, and which allowlisted sources
 feed it. Property always includes the curated Arizona house catalog.
@@ -92,6 +92,39 @@ TOPICS: dict[str, Topic] = {
         uses_catalog=False,
         path="/tools",
     ),
+    "gold": Topic(
+        id="gold",
+        title="Gold",
+        blurb="Gold jewelry and bullion from allowlisted Phoenix Craigslist jewelry.",
+        default_query="gold",
+        default_budget=5_000.0,
+        craigslist_path="jwa",
+        min_live_price=50.0,
+        uses_catalog=False,
+        path="/gold",
+    ),
+    "silver": Topic(
+        id="silver",
+        title="Silver",
+        blurb="Silver jewelry, coins, and flatware from allowlisted Phoenix Craigslist jewelry.",
+        default_query="silver",
+        default_budget=2_000.0,
+        craigslist_path="jwa",
+        min_live_price=50.0,
+        uses_catalog=False,
+        path="/silver",
+    ),
+    "diamonds": Topic(
+        id="diamonds",
+        title="Diamonds",
+        blurb="Diamond rings and loose stones from allowlisted Phoenix Craigslist jewelry.",
+        default_query="diamond",
+        default_budget=10_000.0,
+        craigslist_path="jwa",
+        min_live_price=100.0,
+        uses_catalog=False,
+        path="/diamonds",
+    ),
 }
 
 TOPIC_ALIASES = {
@@ -106,6 +139,11 @@ TOPIC_ALIASES = {
     "car": "autos",
     "auto": "autos",
     "vehicles": "autos",
+    "silvers": "silver",
+    "sterling": "silver",
+    "diamond": "diamonds",
+    "jewelry": "gold",
+    "jewellery": "gold",
 }
 
 
@@ -178,4 +216,24 @@ def source_infos() -> list[SourceInfo]:
                 url=link.url,
             )
         )
+    sources.extend(
+        [
+            SourceInfo(
+                id="kitco",
+                name="Kitco",
+                kind="lookup-only",
+                topics=["gold", "silver"],
+                blurb="Spot prices — open in your browser to check melt value. We do not scrape it.",
+                url="https://www.kitco.com/",
+            ),
+            SourceInfo(
+                id="gia",
+                name="GIA",
+                kind="lookup-only",
+                topics=["diamonds"],
+                blurb="Diamond grading reports — open in your browser to verify a cert. We do not scrape it.",
+                url="https://www.gia.edu/report-check-landing",
+            ),
+        ]
+    )
     return sources
