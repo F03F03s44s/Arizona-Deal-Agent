@@ -1,0 +1,185 @@
+"""End-to-end exercises of the command line, run in-process via ``main()``."""
+
+import json
+
+import pytest
+
+from arizona_deal_agent.cli import fraction, main
+
+
+def run(capsys, *argv):
+    code = main(list(argv))
+    captured = capsys.readouterr()
+    return code, captured.out, captured.err
+
+
+class TestFractionArgument:
+    @pytest.mark.parametrize(
+        "text,expected",
+        [("0.2", 0.2), ("20", 0.2), ("20%", 0.2), ("6.5", 0.065), ("6.5%", 0.065), ("0", 0.0), ("1", 1.0)],
+    )
+    def test_percentages_and_fractions_both_work(self, text, expected):
+        assert fraction(text) == pytest.approx(expected)
+
+    def test_rejects_text(self):
+        with pytest.raises(Exception):
+            fraction("cheap")
+
+
+class TestRank:
+    def test_prints_a_ranked_table(self, capsys, sample_csv):
+        code, out, _ = run(capsys, "rank", "-i", str(sample_csv))
+        assert code == 0
+        assert "SCORE" in out and "CASH FLOW" in out
+        assert out.count("AZ-") >= 13
+        assert "Scored 13 listing(s)" in out
+
+    def test_top_limits_the_rows(self, capsys, sample_csv):
+        _, out, _ = run(capsys, "rank", "-i", str(sample_csv), "--top", "3")
+        assert "showing 3" in out
+
+    def test_top_must_be_positive(self, capsys, sample_csv):
+        code, _, err = run(capsys, "rank", "-i", str(sample_csv), "--top", "0")
+        assert code == 1
+        assert "--top must be a positive number" in err
+
+    def test_json_output_is_valid_and_ordered(self, capsys, sample_csv):
+        _, out, _ = run(capsys, "rank", "-i", str(sample_csv), "--format", "json")
+        payload = json.loads(out)
+        assert payload["count"] == 13
+        scores = [deal["scores"]["composite"] for deal in payload["deals"]]
+        assert scores == sorted(scores, reverse=True)
+        assert payload["deals"][0]["rank"] == 1
+        assert "cap_rate" in payload["deals"][0]["metrics"]
+
+    def test_csv_output_has_a_header_and_a_row_per_deal(self, capsys, sample_csv):
+        _, out, _ = run(capsys, "rank", "-i", str(sample_csv), "--format", "csv")
+        lines = out.strip().splitlines()
+        assert lines[0].startswith("rank,id,address")
+        assert len(lines) == 14
+
+    def test_city_filter(self, capsys, sample_csv):
+        _, out, _ = run(capsys, "rank", "-i", str(sample_csv), "--city", "Tucson", "--format", "json")
+        cities = {deal["city"] for deal in json.loads(out)["deals"]}
+        assert cities == {"Tucson"}
+
+    def test_city_filter_is_case_insensitive_and_repeatable(self, capsys, sample_csv):
+        _, out, _ = run(
+            capsys, "rank", "-i", str(sample_csv), "--city", "tucson", "--city", "MESA", "--format", "json"
+        )
+        cities = {deal["city"] for deal in json.loads(out)["deals"]}
+        assert cities == {"Tucson", "Mesa"}
+
+    def test_min_cash_flow_filter(self, capsys, sample_csv):
+        _, out, _ = run(capsys, "rank", "-i", str(sample_csv), "--min-cash-flow", "0", "--format", "json")
+        deals = json.loads(out)["deals"]
+        assert deals
+        assert all(deal["metrics"]["monthly_cash_flow"] >= 0 for deal in deals)
+
+    def test_min_cap_rate_filter_accepts_percentages(self, capsys, sample_csv):
+        _, out, _ = run(capsys, "rank", "-i", str(sample_csv), "--min-cap-rate", "6", "--format", "json")
+        deals = json.loads(out)["deals"]
+        assert deals
+        assert all(deal["metrics"]["cap_rate"] >= 0.06 for deal in deals)
+
+    def test_budget_drops_deals_that_do_not_fit(self, capsys, sample_csv):
+        _, out, _ = run(capsys, "rank", "-i", str(sample_csv), "--max-price", "300000", "--format", "json")
+        deals = json.loads(out)["deals"]
+        assert deals
+        assert all(deal["list_price"] <= 300_000 for deal in deals)
+
+    def test_over_budget_deals_can_be_kept_and_are_marked(self, capsys, sample_csv):
+        _, out, _ = run(
+            capsys,
+            "rank",
+            "-i",
+            str(sample_csv),
+            "--max-price",
+            "300000",
+            "--include-over-budget",
+            "--format",
+            "json",
+        )
+        deals = json.loads(out)["deals"]
+        assert len(deals) == 13
+        assert any(deal["fits_budget"] is False for deal in deals)
+
+    def test_impossible_filters_report_no_matches(self, capsys, sample_csv):
+        code, out, _ = run(capsys, "rank", "-i", str(sample_csv), "--min-cash-flow", "999999")
+        assert code == 0
+        assert "No listings matched your filters." in out
+
+    def test_financing_assumptions_change_the_numbers(self, capsys, sample_csv):
+        _, cheap, _ = run(capsys, "rank", "-i", str(sample_csv), "--rate", "3", "--format", "json")
+        _, dear, _ = run(capsys, "rank", "-i", str(sample_csv), "--rate", "9", "--format", "json")
+        cheap_flow = {d["id"]: d["metrics"]["monthly_cash_flow"] for d in json.loads(cheap)["deals"]}
+        dear_flow = {d["id"]: d["metrics"]["monthly_cash_flow"] for d in json.loads(dear)["deals"]}
+        assert all(cheap_flow[key] > dear_flow[key] for key in cheap_flow)
+
+    def test_missing_file_exits_with_an_error(self, capsys, tmp_path):
+        code, _, err = run(capsys, "rank", "-i", str(tmp_path / "nope.csv"))
+        assert code == 1
+        assert "not found" in err
+
+
+class TestExplain:
+    def test_prints_every_section(self, capsys, sample_csv):
+        code, out, _ = run(capsys, "explain", "-i", str(sample_csv), "--id", "AZ-011")
+        assert code == 0
+        for section in ("PURCHASE", "MONTHLY", "ANNUAL", "RETURNS", "SCORES", "NOTES"):
+            assert section in out
+        assert "70%-rule max offer" in out
+
+    def test_id_lookup_ignores_case(self, capsys, sample_csv):
+        code, out, _ = run(capsys, "explain", "-i", str(sample_csv), "--id", "az-003")
+        assert code == 0
+        assert "AZ-003" in out
+
+    def test_unknown_id_lists_what_is_available(self, capsys, sample_csv):
+        code, _, err = run(capsys, "explain", "-i", str(sample_csv), "--id", "NOPE")
+        assert code == 1
+        assert "no listing with id 'NOPE'" in err
+        assert "AZ-001" in err
+
+    def test_budget_section_appears_only_with_a_budget(self, capsys, sample_csv):
+        _, plain, _ = run(capsys, "explain", "-i", str(sample_csv), "--id", "AZ-003")
+        _, budgeted, _ = run(
+            capsys, "explain", "-i", str(sample_csv), "--id", "AZ-003", "--budget-cash", "50000"
+        )
+        assert "BUDGET" not in plain
+        assert "Fits budget              no" in budgeted
+
+
+class TestScore:
+    def test_scores_a_deal_typed_by_hand(self, capsys):
+        code, out, _ = run(capsys, "score", "--price", "240000", "--rent", "2100")
+        assert code == 0
+        assert "Cap rate" in out and "Composite" in out
+
+    def test_arv_enables_the_flip_line(self, capsys):
+        _, without, _ = run(capsys, "score", "--price", "240000", "--rent", "2100")
+        _, with_arv, _ = run(capsys, "score", "--price", "240000", "--rent", "2100", "--arv", "330000")
+        assert "70%-rule max offer" not in without
+        assert "70%-rule max offer" in with_arv
+
+    def test_dollar_signs_and_commas_are_accepted(self, capsys):
+        code, out, _ = run(capsys, "score", "--price", "$240,000", "--rent", "$2,100")
+        assert code == 0
+        assert "$240,000" in out
+
+    def test_beds_and_baths_line_is_omitted_when_unknown(self, capsys):
+        _, out, _ = run(capsys, "score", "--price", "240000", "--rent", "2100")
+        assert "0 bd / 0 ba" not in out
+
+
+class TestTopLevel:
+    def test_version(self, capsys):
+        with pytest.raises(SystemExit) as excinfo:
+            main(["--version"])
+        assert excinfo.value.code == 0
+        assert "arizona-deal-agent" in capsys.readouterr().out
+
+    def test_a_command_is_required(self, capsys):
+        with pytest.raises(SystemExit) as excinfo:
+            main([])
+        assert excinfo.value.code == 2
