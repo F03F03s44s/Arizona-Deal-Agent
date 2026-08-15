@@ -182,6 +182,65 @@ class AvailabilityResult(BaseModel):
     checked_at: datetime
 
 
+class WatchTargetModel(BaseModel):
+    """One search the watcher sweeps."""
+
+    area_id: int = 18
+    category: str = "sss"
+    query: str = ""
+    seller_type: str | None = None
+    source: str = "craigslist"
+    key: str = ""
+    label: str = ""
+    is_property: bool = False
+
+
+class WatchConfigModel(BaseModel):
+    """What the watcher scans and what it reports."""
+
+    enabled: bool = True
+    interval: float = Field(default=60.0, ge=15, le=3600)
+    min_score: float = Field(default=0.9, ge=0, le=1)
+    budget: float = Field(default=1_000_000.0, gt=0)
+    profit_weight: float = Field(default=0.6, ge=0, le=1)
+    email: EmailStr | None = None
+    targets: list[WatchTargetModel] = Field(default_factory=list)
+
+
+class WatchStatus(BaseModel):
+    """Current state of the background scan."""
+
+    enabled: bool
+    interval: float
+    min_score: float
+    email: str | None = None
+    targets: list[WatchTargetModel] = Field(default_factory=list)
+    last_swept_at: datetime | None = None
+    last_error: str | None = None
+    findings_held: int = 0
+
+
+class Finding(BaseModel):
+    """A newly-posted listing the watcher reported."""
+
+    deal: ScoredDeal
+    target_key: str
+    target_label: str
+    is_property: bool
+    found_at: datetime
+    age_seconds: float | None = None
+    is_fresh: bool = False
+
+
+class SourceInfo(BaseModel):
+    """A source the watcher can scan, and why others are not enabled."""
+
+    name: str
+    label: str
+    enabled: bool
+    note: str = ""
+
+
 class MetaResponse(BaseModel):
     """Options the UI needs to build its filters."""
 
@@ -189,3 +248,4 @@ class MetaResponse(BaseModel):
     categories: dict[str, str]
     property_categories: list[str]
     seller_types: dict[str, str]
+    sources: list[SourceInfo]

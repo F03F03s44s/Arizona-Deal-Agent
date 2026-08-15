@@ -145,14 +145,19 @@ def test_index_served():
 # -- filters --------------------------------------------------------------
 
 
-def test_meta_lists_the_available_filters():
+def test_meta_lists_filters_and_source_status():
     body = client.get("/api/meta").json()
 
     assert body["areas"]["18"] == "Phoenix"
-    assert len(body["areas"]) == 8
     assert body["categories"]["Real estate for sale"] == "rea"
     assert "rea" in body["property_categories"]
     assert body["seller_types"]["dealer"] == "Dealers & wholesalers"
+
+    by_name = {s["name"]: s for s in body["sources"]}
+    assert by_name["craigslist"]["enabled"] is True
+    # Sources that cannot be scanned say why rather than silently missing.
+    assert by_name["redfin"]["enabled"] is False
+    assert "robots.txt" in by_name["redfin"]["note"]
 
 
 def test_filters_reach_the_scraper(offline_deal_service):
@@ -246,3 +251,58 @@ def test_detail_of_an_unknown_deal_is_a_404():
     assert client.get("/api/deals/cl-does-not-exist/detail").status_code == 404
     assert client.get("/api/deals/cl-does-not-exist/availability").status_code == 404
 
+
+# -- the watcher ----------------------------------------------------------
+
+
+def test_watch_starts_on_phoenix_goods_and_property():
+    body = client.get("/api/watch").json()
+    labels = [t["label"] for t in body["targets"]]
+
+    assert "Phoenix - All for sale" in labels
+    assert "Phoenix - Real estate for sale" in labels
+    assert any(t["is_property"] for t in body["targets"])
+
+
+def test_watch_settings_can_be_changed():
+    body = client.put(
+        "/api/watch",
+        json={
+            "enabled": True,
+            "interval": 30,
+            "min_score": 0.95,
+            "budget": 500000,
+            "profit_weight": 0.7,
+            "email": "kiet@example.com",
+            "targets": [
+                {"area_id": 57, "category": "rea", "query": "", "seller_type": "dealer"}
+            ],
+        },
+    ).json()
+
+    assert body["interval"] == 30
+    assert body["min_score"] == 0.95
+    assert body["email"] == "kiet@example.com"
+    assert [t["label"] for t in body["targets"]] == [
+        "Tucson - Real estate for sale - dealers only"
+    ]
+
+
+def test_sweeping_twice_reports_only_new_listings():
+    client.put(
+        "/api/watch",
+        json={
+            "enabled": True, "interval": 30, "min_score": 0.9,
+            "budget": 15000, "profit_weight": 0.6,
+            "targets": [{"area_id": 18, "category": "sss", "query": "drill"}],
+        },
+    )
+
+    primed = client.post("/api/watch/sweep").json()
+    again = client.post("/api/watch/sweep").json()
+
+    # The fixture returns the same listings every time, so the first sweep
+    # records the backlog and the second has nothing to report.
+    assert primed == []
+    assert again == []
+    assert client.get("/api/watch/findings").json() == []

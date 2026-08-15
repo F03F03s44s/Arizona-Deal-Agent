@@ -108,3 +108,12 @@ def clean_store():
     yield
     store.clear()
 
+
+@pytest.fixture(autouse=True)
+def clean_watcher():
+    """The watcher is a singleton, so its seen-set must not leak between tests."""
+    from app.main import watcher
+
+    watcher.reset()
+    yield
+    watcher.reset()

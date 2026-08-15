@@ -178,6 +178,62 @@ def build_alert_email(search: SavedSearch, matches: list[ScoredDeal]) -> Outgoin
     return OutgoingEmail(to=search.email, subject=subject, body="\n".join(lines))
 
 
+def build_watch_email(findings: list, min_score: float) -> OutgoingEmail:
+    """Compose the email for deals the background watcher just found."""
+    count = len(findings)
+    fresh = [f for f in findings if f.is_fresh]
+    headline = findings[0].scored.deal.title
+
+    subject = (
+        f"Just posted: {headline}"
+        if count == 1
+        else f"Just posted: {count} new deals scoring {min_score:.2f}+"
+    )
+
+    lines = [
+        f"The watcher found {count} newly-posted "
+        f"deal{'s' if count != 1 else ''} scoring {min_score:.2f} or better."
+    ]
+    if fresh:
+        lines.append(f"{len(fresh)} of them went up in the last 15 minutes.")
+    lines.append("")
+
+    for finding in findings[:MAX_DEALS_PER_EMAIL]:
+        deal = finding.scored.deal
+        lines.append(deal.title)
+        lines.append(f"  Found in:   {finding.target_label}")
+        if finding.age_seconds is not None:
+            lines.append(f"  Posted:     {_describe_age(finding.age_seconds)}")
+        lines.append(f"  Score:      {finding.scored.score:.3f}")
+        lines.append(f"  Asking:     {_money(deal.acquisition_cost)}")
+        lines.append(
+            f"  Comparable: {_money(deal.market_value)} "
+            f"(median of {deal.comparable_count} similar listings)"
+        )
+        if deal.location:
+            lines.append(f"  Location:   {deal.location}")
+        if deal.url:
+            lines.append(f"  Listing:    {deal.url}")
+        lines.append("")
+
+    if count > MAX_DEALS_PER_EMAIL:
+        lines.append(f"...and {count - MAX_DEALS_PER_EMAIL} more, ranked lower.")
+        lines.append("")
+
+    lines.append("Sent by Arizona Deal Agent.")
+    return OutgoingEmail(to="", subject=subject, body="\n".join(lines))
+
+
+def _describe_age(seconds: float) -> str:
+    if seconds < 90:
+        return "seconds ago"
+    if seconds < 3600:
+        return f"{int(seconds // 60)} minutes ago"
+    if seconds < 86400:
+        return f"{int(seconds // 3600)} hours ago"
+    return f"{int(seconds // 86400)} days ago"
+
+
 class SavedSearchStore:
     """JSON-file store for saved searches and sent alerts."""
 
@@ -339,3 +395,31 @@ class AlertService:
 
     def run_all(self) -> list[SavedSearchRunResult]:
         return [self.run(search) for search in self.store.list()]
+
+    def notify_findings(self, findings: list, *, email: str, min_score: float) -> Alert:
+        """Email what the background watcher just found and record it."""
+        message = build_watch_email(findings, min_score)
+        message = OutgoingEmail(to=email, subject=message.subject, body=message.body)
+
+        delivered, error = True, None
+        try:
+            self.sender.send(message)
+        except Exception as exc:  # noqa: BLE001 - any transport failure is reportable
+            delivered, error = False, str(exc)
+            logger.warning("Watch email to %s failed: %s", email, exc)
+
+        alert = Alert(
+            id=uuid.uuid4().hex[:12],
+            saved_search_id="watcher",
+            query=", ".join(sorted({f.target_label for f in findings}))[:200],
+            email=email,
+            subject=message.subject,
+            body=message.body,
+            sent_at=datetime.now(UTC),
+            delivered=delivered,
+            transport=self.sender.name,
+            error=error,
+            deal_ids=[f.scored.deal.id for f in findings],
+        )
+        self.store.add_alert(alert)
+        return alert

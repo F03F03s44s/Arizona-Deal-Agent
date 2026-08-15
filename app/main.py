@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import os
 from contextlib import asynccontextmanager
@@ -10,21 +11,21 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query, Response
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import __version__, craigslist
+from . import __version__, craigslist, sources
 from .agent import rank_deals
 from .alerts import AlertService, SavedSearchStore
 from .categories import DEALER, DEFAULT_SEARCH_PATH, OWNER, PROPERTY_SEARCH_PATHS, SEARCH_PATHS
 from .craigslist import ListingStatus
 from .data import DEFAULT_BUDGET, DEFAULT_QUERY
 from .deals import deal_service
-from .craigslist import AREAS, PHOENIX_AREA_ID as DEFAULT_AREA_ID
 from .models import (
     Alert,
     AvailabilityResult,
     DealsResponse,
+    Finding,
     ListingDetailModel,
     MetaResponse,
     RankRequest,
@@ -32,7 +33,13 @@ from .models import (
     SavedSearch,
     SavedSearchCreate,
     SavedSearchRunResult,
+    SourceInfo,
+    WatchConfigModel,
+    WatchStatus,
+    WatchTargetModel,
 )
+from .sources import AREAS, DEFAULT_AREA_ID, WatchTarget
+from .watcher import DealWatcher, WatchConfig, run_watch_loop
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +56,7 @@ CONTACT_NOTE = (
 
 store = SavedSearchStore(DATA_DIR / "saved_searches.json")
 alert_service = AlertService(store=store, deals=deal_service)
+watcher = DealWatcher()
 
 
 def _poll_interval() -> float:
@@ -57,6 +65,19 @@ def _poll_interval() -> float:
     except ValueError:
         return 900.0
 
+
+def _watch_enabled() -> bool:
+    return os.getenv("WATCH_ENABLED", "1").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _notify_findings(findings: list) -> None:
+    """Email newly-found deals, if the watcher has somewhere to send them."""
+    email = getattr(watcher.config, "email", None)
+    if not email or not findings:
+        return
+    alert_service.notify_findings(
+        findings, email=email, min_score=watcher.config.min_score
+    )
 
 
 async def _poll_saved_searches(interval: float) -> None:
@@ -80,6 +101,17 @@ async def lifespan(app: FastAPI):
     if interval > 0:
         tasks.append(asyncio.create_task(_poll_saved_searches(interval)))
         logger.info("Polling saved searches every %.0fs", interval)
+
+    if _watch_enabled():
+        watcher.config.enabled = True
+        tasks.append(asyncio.create_task(run_watch_loop(watcher, _notify_findings)))
+        logger.info(
+            "Watching %d target(s) every %.0fs",
+            len(watcher.config.targets),
+            watcher.config.interval,
+        )
+    else:
+        watcher.config.enabled = False
 
     try:
         yield
@@ -108,12 +140,33 @@ def health() -> dict[str, str]:
 
 @app.get("/api/meta", response_model=MetaResponse)
 def meta() -> MetaResponse:
-    """Filter options the UI builds its dropdowns from."""
+    """Filter options and the state of every scan source."""
     return MetaResponse(
         areas=AREAS,
         categories=SEARCH_PATHS,
         property_categories=sorted(PROPERTY_SEARCH_PATHS),
         seller_types={OWNER: "Private sellers", DEALER: "Dealers & wholesalers"},
+        sources=[
+            SourceInfo(name="craigslist", label="Craigslist", enabled=True),
+            SourceInfo(
+                name="zillow",
+                label="Zillow",
+                enabled=False,
+                note="Answers 403 to automated requests; needs a licensed feed.",
+            ),
+            SourceInfo(
+                name="redfin",
+                label="Redfin",
+                enabled=False,
+                note="robots.txt disallows /stingray/, which is where its search API lives.",
+            ),
+            SourceInfo(
+                name="realtor",
+                label="Realtor.com",
+                enabled=False,
+                note="Rate-limits automated requests (HTTP 429).",
+            ),
+        ],
     )
 
 
@@ -223,6 +276,102 @@ def listing_availability(deal_id: str) -> AvailabilityResult:
         checked_at=datetime.now(UTC),
     )
 
+
+def _target_model(target: WatchTarget) -> WatchTargetModel:
+    return WatchTargetModel(
+        area_id=target.area_id,
+        category=target.category,
+        query=target.query,
+        seller_type=target.seller_type,
+        source=target.source,
+        key=target.key,
+        label=target.label,
+        is_property=target.is_property,
+    )
+
+
+def _watch_status() -> WatchStatus:
+    return WatchStatus(
+        enabled=watcher.config.enabled,
+        interval=watcher.config.interval,
+        min_score=watcher.config.min_score,
+        email=getattr(watcher.config, "email", None),
+        targets=[_target_model(t) for t in watcher.config.targets],
+        last_swept_at=watcher.last_swept_at,
+        last_error=watcher.last_error,
+        findings_held=len(watcher.recent(limit=1000)),
+    )
+
+
+@app.get("/api/watch", response_model=WatchStatus)
+def watch_status() -> WatchStatus:
+    return _watch_status()
+
+
+@app.put("/api/watch", response_model=WatchStatus)
+def update_watch(config: WatchConfigModel) -> WatchStatus:
+    """Change what is scanned, how often, and where alerts go."""
+    targets = [
+        WatchTarget(
+            area_id=t.area_id,
+            category=t.category,
+            query=t.query,
+            seller_type=t.seller_type,
+            source=t.source,
+        )
+        for t in config.targets
+    ] or list(sources.DEFAULT_TARGETS)
+
+    watcher.config = WatchConfig(
+        targets=targets,
+        interval=config.interval,
+        min_score=config.min_score,
+        budget=config.budget,
+        profit_weight=config.profit_weight,
+        enabled=config.enabled,
+        email=config.email,
+    )
+    return _watch_status()
+
+
+@app.post("/api/watch/sweep", response_model=list[Finding])
+def sweep_now() -> list[Finding]:
+    """Run one sweep immediately instead of waiting for the interval."""
+    findings = watcher.sweep()
+    _notify_findings(findings)
+    return [finding.to_model() for finding in findings]
+
+
+@app.get("/api/watch/findings", response_model=list[Finding])
+def watch_findings(limit: int = Query(default=50, ge=1, le=200)) -> list[Finding]:
+    """Newly-posted deals the watcher has reported, newest first."""
+    return [finding.to_model() for finding in watcher.recent(limit)]
+
+
+@app.get("/api/watch/stream")
+async def watch_stream() -> StreamingResponse:
+    """Server-sent events, so the browser hears about a find as it happens."""
+    queue = watcher.subscribe()
+
+    async def events():
+        try:
+            yield "retry: 3000\n\n"
+            while True:
+                try:
+                    finding = await asyncio.wait_for(queue.get(), timeout=20)
+                except TimeoutError:
+                    # Keeps proxies from closing an idle stream.
+                    yield ": keep-alive\n\n"
+                    continue
+                yield f"data: {json.dumps(finding.as_dict())}\n\n"
+        finally:
+            watcher.unsubscribe(queue)
+
+    return StreamingResponse(
+        events(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 @app.get("/api/saved-searches", response_model=list[SavedSearch])
