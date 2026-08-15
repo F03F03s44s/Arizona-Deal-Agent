@@ -8,7 +8,7 @@ Two front ends live here, built in parallel and kept side by side:
 | Front end | Deals | Code |
 | --------- | ----- | ---- |
 | CLI (`arizona-deal-agent`) | Arizona property listings you supply | `src/arizona_deal_agent/` |
-| Web app (FastAPI) | Topic pages (houses, household, electronics, furniture, cars, tools, gold, silver, diamonds) from allowlisted sources | `app/` |
+| Web app (FastAPI) | Live-updating topic pages from allowlisted Craigslist + official eBay | `app/` |
 
 They share a name and a philosophy, not code. Consolidating them is an open
 decision — do not delete one to make room for the other without being asked.
@@ -66,6 +66,7 @@ Operator guide: `HOW_TO_USE.md`.
 | `app/topics.py` | Topic pages and aliases (houses, household, electronics, …) |
 | `app/trust.py` | Allowlisted hosts and scam-signal title filter |
 | `app/catalog.py` | Curated Arizona house catalog as web deals |
+| `app/ebay.py` | Official eBay Browse API client (token optional) |
 | `app/craigslist.py` | Craigslist JSON search scraper (per-topic section) |
 | `app/market.py` | Market value estimated from comparable listings |
 | `app/deals.py` | Per-topic scrape cache that keeps ranking off the network |

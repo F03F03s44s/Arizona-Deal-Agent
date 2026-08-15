@@ -29,6 +29,8 @@ def test_gift_card_and_wire_titles_look_like_scams():
     assert looks_like_scam("TV for sale — pay with gift card")
     assert looks_like_scam("House rent, wire transfer only")
     assert not looks_like_scam("DeWalt cordless drill")
+    assert looks_like_scam("Louis Vuitton replica bag 1:1")
+    assert looks_like_scam("Charizard proxy card fake PSA")
 
 
 def test_filter_keeps_allowlisted_listings_and_marks_them_verified():

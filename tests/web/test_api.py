@@ -28,6 +28,7 @@ def test_deals_come_from_craigslist():
     assert body["source"] == "craigslist"
     assert body["query"] == "cordless drill"
     assert body["warning"] is None
+    assert body["fetched_at"] is not None
     deal = body["deals"][0]
     assert deal["url"].startswith("https://www.craigslist.org/view/d/")
     assert deal["comparable_count"] >= 1
@@ -140,3 +141,5 @@ def test_index_served():
     assert res.status_code == 200
     assert "Arizona Deal Agent" in res.text
     assert "topics" in res.text
+    assert "LIVE_POLL_MS" in res.text
+    assert "refresh=true" in res.text

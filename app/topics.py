@@ -1,4 +1,4 @@
-"""Topic pages: houses, household, electronics, furniture, cars, tools, gold, silver, diamonds.
+"""Topic pages for houses, goods, designer, cards, coins, and jewelry."""
 
 Each topic has its own default search, budget, and which allowlisted sources
 feed it. Property always includes the curated Arizona house catalog.
@@ -22,6 +22,7 @@ class Topic:
     craigslist_path: str
     min_live_price: float
     uses_catalog: bool
+    uses_ebay: bool
     path: str
 
 
@@ -35,6 +36,7 @@ TOPICS: dict[str, Topic] = {
         craigslist_path="rea",
         min_live_price=20_000.0,
         uses_catalog=True,
+        uses_ebay=False,
         path="/houses",
     ),
     "household": Topic(
@@ -46,6 +48,7 @@ TOPICS: dict[str, Topic] = {
         craigslist_path="hsh",
         min_live_price=20.0,
         uses_catalog=False,
+        uses_ebay=True,
         path="/household",
     ),
     "electronics": Topic(
@@ -57,6 +60,7 @@ TOPICS: dict[str, Topic] = {
         craigslist_path="ele",
         min_live_price=20.0,
         uses_catalog=False,
+        uses_ebay=True,
         path="/electronics",
     ),
     "furniture": Topic(
@@ -68,6 +72,7 @@ TOPICS: dict[str, Topic] = {
         craigslist_path="fuo",
         min_live_price=20.0,
         uses_catalog=False,
+        uses_ebay=True,
         path="/furniture",
     ),
     "autos": Topic(
@@ -79,6 +84,7 @@ TOPICS: dict[str, Topic] = {
         craigslist_path="cta",
         min_live_price=500.0,
         uses_catalog=False,
+        uses_ebay=True,
         path="/cars",
     ),
     "tools": Topic(
@@ -90,6 +96,7 @@ TOPICS: dict[str, Topic] = {
         craigslist_path="tls",
         min_live_price=20.0,
         uses_catalog=False,
+        uses_ebay=True,
         path="/tools",
     ),
     "gold": Topic(
@@ -101,6 +108,7 @@ TOPICS: dict[str, Topic] = {
         craigslist_path="jwa",
         min_live_price=50.0,
         uses_catalog=False,
+        uses_ebay=True,
         path="/gold",
     ),
     "silver": Topic(
@@ -112,6 +120,7 @@ TOPICS: dict[str, Topic] = {
         craigslist_path="jwa",
         min_live_price=50.0,
         uses_catalog=False,
+        uses_ebay=True,
         path="/silver",
     ),
     "diamonds": Topic(
@@ -123,7 +132,80 @@ TOPICS: dict[str, Topic] = {
         craigslist_path="jwa",
         min_live_price=100.0,
         uses_catalog=False,
+        uses_ebay=True,
         path="/diamonds",
+    ),
+    "designer": Topic(
+        id="designer",
+        title="Designer",
+        blurb="Designer clothing and bags from allowlisted Craigslist and official eBay.",
+        default_query="designer",
+        default_budget=3_000.0,
+        craigslist_path="cla",
+        min_live_price=40.0,
+        uses_catalog=False,
+        uses_ebay=True,
+        path="/designer",
+    ),
+    "luxury": Topic(
+        id="luxury",
+        title="Luxury & rare",
+        blurb="High-end and rare items from allowlisted Craigslist and official eBay.",
+        default_query="luxury rare",
+        default_budget=10_000.0,
+        craigslist_path="sss",
+        min_live_price=100.0,
+        uses_catalog=False,
+        uses_ebay=True,
+        path="/luxury",
+    ),
+    "coins": Topic(
+        id="coins",
+        title="Coins",
+        blurb="Collectible coins from allowlisted Craigslist and official eBay.",
+        default_query="collectible coins",
+        default_budget=2_000.0,
+        craigslist_path="cba",
+        min_live_price=20.0,
+        uses_catalog=False,
+        uses_ebay=True,
+        path="/coins",
+    ),
+    "pokemon": Topic(
+        id="pokemon",
+        title="Pokémon cards",
+        blurb="Pokémon cards from allowlisted Craigslist and official eBay.",
+        default_query="pokemon cards",
+        default_budget=500.0,
+        craigslist_path="taa",
+        min_live_price=20.0,
+        uses_catalog=False,
+        uses_ebay=True,
+        path="/pokemon",
+    ),
+    "sports-cards": Topic(
+        id="sports-cards",
+        title="Sports cards",
+        blurb="Sports cards from allowlisted Craigslist and official eBay.",
+        default_query="sports cards",
+        default_budget=500.0,
+        craigslist_path="cba",
+        min_live_price=20.0,
+        uses_catalog=False,
+        uses_ebay=True,
+        path="/sports-cards",
+    ),
+    "jerseys": Topic(
+        id="jerseys",
+        title="Jerseys",
+        blurb="Team jerseys from allowlisted Craigslist and official eBay.",
+        default_query="jersey",
+        default_budget=400.0,
+        craigslist_path="cla",
+        min_live_price=20.0,
+        uses_catalog=False,
+        uses_ebay=True,
+        path="/jerseys",
     ),
 }
 
@@ -144,6 +226,19 @@ TOPIC_ALIASES = {
     "diamond": "diamonds",
     "jewelry": "gold",
     "jewellery": "gold",
+    "high-class": "luxury",
+    "highclass": "luxury",
+    "expensive": "luxury",
+    "rare": "luxury",
+    "collectible": "coins",
+    "collectibles": "coins",
+    "coin": "coins",
+    "pokemon-cards": "pokemon",
+    "pokemon-card": "pokemon",
+    "sport-cards": "sports-cards",
+    "sportscards": "sports-cards",
+    "trading-cards": "sports-cards",
+    "jersey": "jerseys",
 }
 
 
@@ -201,8 +296,16 @@ def source_infos() -> list[SourceInfo]:
             name="Craigslist Phoenix",
             kind="live",
             topics=live_topics,
-            blurb="Allowlisted live classifieds. Gift-card / wire / crypto scam titles are dropped.",
+            blurb="Allowlisted live classifieds. The open page re-pulls this feed on a timer.",
             url="https://phoenix.craigslist.org/",
+        ),
+        SourceInfo(
+            id="ebay",
+            name="eBay",
+            kind="live",
+            topics=[topic.id for topic in TOPICS.values() if topic.uses_ebay],
+            blurb="Official Browse API when EBAY_OAUTH_TOKEN is set; otherwise an official search link. We do not scrape eBay HTML.",
+            url="https://www.ebay.com/",
         ),
     ]
     for link in LOOKUP_ONLY_HOSTS:
@@ -233,6 +336,30 @@ def source_infos() -> list[SourceInfo]:
                 topics=["diamonds"],
                 blurb="Diamond grading reports — open in your browser to verify a cert. We do not scrape it.",
                 url="https://www.gia.edu/report-check-landing",
+            ),
+            SourceInfo(
+                id="stockx",
+                name="StockX",
+                kind="lookup-only",
+                topics=["designer", "jerseys", "luxury"],
+                blurb="Official marketplace — open to check comps. We do not scrape it.",
+                url="https://stockx.com/",
+            ),
+            SourceInfo(
+                id="tcgplayer",
+                name="TCGplayer",
+                kind="lookup-only",
+                topics=["pokemon"],
+                blurb="Official card marketplace — open to check comps. We do not scrape it.",
+                url="https://www.tcgplayer.com/",
+            ),
+            SourceInfo(
+                id="pcgs",
+                name="PCGS",
+                kind="lookup-only",
+                topics=["coins"],
+                blurb="Coin certification lookup. We do not scrape it.",
+                url="https://www.pcgs.com/",
             ),
         ]
     )

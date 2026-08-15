@@ -94,6 +94,7 @@
       tbody tr:nth-child(even) { background: #faf6ee; }
       tbody tr.over-budget { opacity: 0.45; }
       tbody tr.hot td { box-shadow: inset 3px 0 0 var(--cactus); }
+      tbody tr.just-in td { background: #e7f5ea; }
       td a { color: var(--dusk); text-decoration: none; border-bottom: 1px dotted #b7ab97; }
       td a:hover { color: var(--sunset); }
       .num { text-align: right; font-variant-numeric: tabular-nums; }
@@ -130,7 +131,7 @@
   <body>
     <header>
       <h1>&#127796; Arizona Deal Agent</h1>
-      <p id="tagline">Allowlisted deals only — houses, household, electronics, furniture, cars, tools, gold, silver, and diamonds.</p>
+      <p id="tagline">Live allowlisted deals — the list refreshes itself when source sites post something new.</p>
     </header>
     <nav id="topics" class="topics" aria-label="Deal topics"></nav>
     <p id="sources" class="sources"></p>
@@ -148,7 +149,7 @@
           <label for="weight">Profit vs. affordability: <span id="weightValue" class="weight-value">0.60</span></label>
           <input id="weight" type="range" min="0" max="1" step="0.01" value="0.6" />
         </div>
-        <button id="refreshBtn" class="ghost">Re-scrape listings</button>
+        <button id="refreshBtn" class="ghost">Refresh now</button>
       </div>
 
       <div class="status">
@@ -246,6 +247,10 @@
       let requestSeq = 0;
       let topics = [];
       let currentTopic = "tools";
+      let seenIds = new Set();
+      let firstPaint = true;
+      let liveTimer = null;
+      const LIVE_POLL_MS = 45000;
 
       function topicFromPath() {
         const slug = location.pathname.replace(/\/$/, "").replace(/^\//, "");
@@ -257,6 +262,9 @@
           cars: "autos", car: "autos", auto: "autos",
           electronic: "electronics", "household-items": "household",
           silvers: "silver", diamond: "diamonds", jewelry: "gold",
+          "sports-cards": "sports-cards", sportscards: "sports-cards",
+          "pokemon-cards": "pokemon", jersey: "jerseys",
+          rare: "luxury", expensive: "luxury",
         };
         return aliases[slug] || "tools";
       }
@@ -300,14 +308,16 @@
         document.getElementById("ssQuery").value = spec.default_query;
       }
 
-      async function rank({ refresh = false } = {}) {
+      async function rank({ refresh = false, quiet = false } = {}) {
         const seq = ++requestSeq;
         const spec = topicSpec();
         const query = queryInput.value.trim() || (spec ? spec.default_query : "power tools");
 
         if (refresh) {
-          sourcePill.className = "pill busy";
-          sourcePill.textContent = "re-scraping\u2026";
+          if (!quiet) {
+            sourcePill.className = "pill busy";
+            sourcePill.textContent = "updating live listings\u2026";
+          }
           await fetch(
             `/api/deals?query=${encodeURIComponent(query)}&topic=${encodeURIComponent(currentTopic)}&refresh=true`
           );
@@ -335,19 +345,31 @@
       function render(data) {
         const live = String(data.source || "").includes("craigslist");
         const catalog = String(data.source || "").includes("verified-catalog");
-        sourcePill.className = "pill " + (live || catalog ? "live" : "sample");
-        sourcePill.textContent = catalog && live
-          ? "verified catalog + Craigslist"
+        const ebay = String(data.source || "").includes("ebay");
+        sourcePill.className = "pill " + (live || catalog || ebay ? "live" : "sample");
+        const when = data.fetched_at ? new Date(data.fetched_at).toLocaleTimeString() : "";
+        const liveLabel = catalog && live
+          ? "LIVE catalog + Craigslist"
           : catalog
             ? "verified Arizona catalog"
-            : live
-              ? "allowlisted Craigslist \u00b7 Phoenix"
-              : "sample data";
+            : live && ebay
+              ? "LIVE Craigslist + eBay"
+              : live
+                ? "LIVE Craigslist \u00b7 Phoenix"
+                : ebay
+                  ? "LIVE eBay"
+                  : "sample data";
+        sourcePill.textContent = when ? liveLabel + " \u00b7 updated " + when : liveLabel;
+        const ids = data.ranked.map((s) => s.deal.id);
+        const newcomers = firstPaint ? new Set() : new Set(ids.filter((id) => !seenIds.has(id)));
+        firstPaint = false;
+        seenIds = new Set(ids);
         const total = data.ranked.length;
+        const fresh = newcomers.size ? ` \u00b7 ${newcomers.size} new` : "";
         resultCount.textContent =
           total > MAX_ROWS
-            ? `top ${MAX_ROWS} of ${total} listings ranked for "${data.query ?? ""}"`
-            : `${total} listings ranked for "${data.query ?? ""}"`;
+            ? `top ${MAX_ROWS} of ${total} listings ranked for "${data.query ?? ""}"${fresh}`
+            : `${total} listings ranked for "${data.query ?? ""}"${fresh}`;
         warningEl.textContent = data.warning ?? "";
 
         const rows = document.getElementById("rows");
@@ -366,7 +388,7 @@
               ? '<span class="badge ok">verified</span>'
               : '<span class="badge no">unverified</span>';
             return `
-              <tr class="${s.within_budget ? "" : "over-budget"} ${s.score >= 0.9 ? "hot" : ""}">
+              <tr class="${s.within_budget ? "" : "over-budget"} ${s.score >= 0.9 ? "hot" : ""} ${newcomers.has(d.id) ? "just-in" : ""}">
                 <td class="rank-num">${i + 1}</td>
                 <td>${title}${lookups ? `<div class="lookup">${lookups}</div>` : ""}</td>
                 <td class="subtle">${esc(d.location ?? "\u2014")}</td>
@@ -411,6 +433,25 @@
         if (event.key === "Enter") rank();
       });
       document.getElementById("refreshBtn").addEventListener("click", () => rank({ refresh: true }));
+
+      function resetLiveSeen() {
+        seenIds = new Set();
+        firstPaint = true;
+      }
+
+      function startLiveUpdates() {
+        if (liveTimer) clearInterval(liveTimer);
+        liveTimer = setInterval(() => {
+          if (document.hidden) return;
+          rank({ refresh: true, quiet: true });
+          loadSaved();
+          loadAlerts();
+        }, LIVE_POLL_MS);
+      }
+
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) rank({ refresh: true, quiet: true });
+      });
 
       // Saved searches
       const savedStatus = document.getElementById("savedStatus");
@@ -517,14 +558,16 @@
         renderTopicNav();
         loadSources();
         applyTopicDefaults();
-        rank();
+        resetLiveSeen();
+        rank({ refresh: true });
       });
       window.addEventListener("popstate", () => {
         currentTopic = topicFromPath();
         renderTopicNav();
         loadSources();
         applyTopicDefaults();
-        rank();
+        resetLiveSeen();
+        rank({ refresh: true });
       });
 
       async function boot() {
@@ -535,7 +578,8 @@
         applyTopicDefaults();
         document.getElementById("ssQuery").value = queryInput.value;
         await loadSources();
-        rank();
+        rank({ refresh: true });
+        startLiveUpdates();
         loadSaved();
         loadAlerts();
       }

@@ -17,6 +17,7 @@ ALLOWED_HOSTS = frozenset(
     {
         "craigslist.org",
         "phoenix.craigslist.org",
+        "ebay.com",
     }
 )
 
@@ -69,6 +70,14 @@ SCAM_PHRASES = (
     "too good to be true",
     "act now send",
     "processing fee first",
+    "replica",
+    "1:1",
+    "mirror quality",
+    "aaa quality",
+    "not authentic",
+    "counterfeit",
+    "proxy card",
+    "fake psa",
 )
 
 

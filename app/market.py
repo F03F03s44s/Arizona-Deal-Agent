@@ -121,6 +121,8 @@ def listings_to_deals(
     *,
     category: str = "general",
     source: str = "craigslist",
+    source_label: str | None = None,
+    id_prefix: str | None = None,
     min_price: float = MIN_CREDIBLE_PRICE,
 ) -> list[Deal]:
     """Convert listings into deals priced against their comparables."""
@@ -139,9 +141,13 @@ def listings_to_deals(
         if market_value <= 0:
             continue
 
+        prefix = id_prefix or ("cl" if source == "craigslist" else source[:8])
+        label = source_label or (
+            "Craigslist Phoenix (allowlisted)" if source == "craigslist" else source
+        )
         deals.append(
             Deal(
-                id=f"cl-{listing.posting_id}",
+                id=f"{prefix}-{listing.posting_id}",
                 title=listing.title,
                 category=category,
                 acquisition_cost=listing.price,
@@ -150,7 +156,7 @@ def listings_to_deals(
                 location=listing.location,
                 posted_at=listing.posted_at,
                 source=source,
-                source_label="Craigslist Phoenix (allowlisted)",
+                source_label=label,
                 comparable_count=len(prices),
             )
         )

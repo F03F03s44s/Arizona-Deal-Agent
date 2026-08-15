@@ -93,6 +93,9 @@ class RankResponse(BaseModel):
         default=None, description="Set when the agent fell back to sample data."
     )
     topic: str | None = None
+    fetched_at: datetime | None = Field(
+        default=None, description="When the live sources were last pulled."
+    )
 
 
 class DealsResponse(BaseModel):
@@ -104,6 +107,7 @@ class DealsResponse(BaseModel):
     deals: list[Deal] = Field(default_factory=list)
     warning: str | None = None
     topic: str | None = None
+    fetched_at: datetime | None = None
 
 
 class SavedSearchCreate(BaseModel):

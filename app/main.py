@@ -82,8 +82,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Arizona Deal Agent",
     description=(
-        "Topic pages for houses, household items, electronics, furniture, cars, tools, gold, silver, and diamonds. "
-        "Live rows come only from allowlisted sources; scam-signal titles are dropped."
+        "Topic pages that live-update from allowlisted sources. "
+        "Scam-signal titles are dropped."
     ),
     version=__version__,
     lifespan=lifespan,
@@ -113,8 +113,8 @@ def list_sources() -> list[SourceInfo]:
 @app.get("/api/deals", response_model=DealsResponse)
 def list_deals(
     query: str | None = Query(default=None, description="Search terms."),
-    topic: str | None = Query(default=None, description="houses, household, electronics, furniture, cars, tools, gold, silver, or diamonds."),
-    refresh: bool = Query(default=False, description="Bypass the scrape cache."),
+    topic: str | None = Query(default=None, description="Topic page id or alias."),
+    refresh: bool = Query(default=False, description="Bypass the scrape cache and pull live listings."),
 ) -> DealsResponse:
     """Source (or serve from cache) allowlisted listings for a topic."""
     if get_topic(topic) is None and topic:
@@ -128,6 +128,7 @@ def list_deals(
         deals=sourced.deals,
         warning=sourced.warning,
         topic=sourced.topic,
+        fetched_at=sourced.fetched_at,
     )
 
 
@@ -155,6 +156,7 @@ def rank(request: RankRequest) -> RankResponse:
             "query": sourced.query,
             "warning": sourced.warning,
             "topic": sourced.topic,
+            "fetched_at": sourced.fetched_at,
         }
     )
 

@@ -16,6 +16,12 @@ EXPECTED_TOPICS = {
     "gold",
     "silver",
     "diamonds",
+    "designer",
+    "luxury",
+    "coins",
+    "pokemon",
+    "sports-cards",
+    "jerseys",
 }
 
 
@@ -24,7 +30,23 @@ def test_topics_list_covers_household_electronics_houses_cars_furniture():
     ids = {row["id"] for row in body}
     assert EXPECTED_TOPICS <= ids
     titles = {row["title"] for row in body}
-    assert {"Houses", "Household", "Electronics", "Furniture", "Cars", "Tools", "Gold", "Silver", "Diamonds"} <= titles
+    assert {
+        "Houses",
+        "Household",
+        "Electronics",
+        "Furniture",
+        "Cars",
+        "Tools",
+        "Gold",
+        "Silver",
+        "Diamonds",
+        "Designer",
+        "Luxury & rare",
+        "Coins",
+        "Pokémon cards",
+        "Sports cards",
+        "Jerseys",
+    } <= titles
 
 
 def test_topic_pages_are_served():
@@ -38,6 +60,12 @@ def test_topic_pages_are_served():
         "/gold",
         "/silver",
         "/diamonds",
+        "/designer",
+        "/luxury",
+        "/coins",
+        "/pokemon",
+        "/sports-cards",
+        "/jerseys",
     ):
         res = client.get(path)
         assert res.status_code == 200, path
@@ -87,6 +115,18 @@ def test_electronics_and_cars_use_their_craigslist_sections(offline_deal_service
     assert "cta" in paths
 
 
+def test_designer_cards_and_jerseys_use_their_craigslist_sections(offline_deal_service):
+    client.get("/api/deals", params={"topic": "designer"})
+    client.get("/api/deals", params={"topic": "pokemon"})
+    client.get("/api/deals", params={"topic": "sports-cards"})
+    client.get("/api/deals", params={"topic": "jerseys"})
+    paths = {query: kwargs.get("search_path") for query, kwargs in offline_deal_service}
+    assert paths["designer"] == "cla"
+    assert paths["pokemon cards"] == "taa"
+    assert paths["sports cards"] == "cba"
+    assert paths["jersey"] == "cla"
+
+
 def test_gold_silver_and_diamonds_use_the_jewelry_section(offline_deal_service):
     for topic, query in (("gold", "gold"), ("silvers", "silver"), ("diamonds", "diamond")):
         client.get("/api/deals", params={"topic": topic})
@@ -102,6 +142,9 @@ def test_sources_list_marks_zillow_as_lookup_only():
     assert zillow["kind"] == "lookup-only"
     craigslist = next(row for row in body if row["id"] == "craigslist")
     assert craigslist["kind"] == "live"
+    ebay = next(row for row in body if row["id"] == "ebay")
+    assert ebay["kind"] == "live"
+    assert "pokemon" in ebay["topics"]
     kitco = next(row for row in body if row["name"] == "Kitco")
     assert kitco["kind"] == "lookup-only"
     assert "gold" in kitco["topics"]

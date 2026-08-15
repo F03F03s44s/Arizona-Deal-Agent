@@ -40,7 +40,9 @@ DEFAULT_TIMEOUT = 20.0
 PAGE_SIZE = 360
 
 # Craigslist search paths we will call. Anything else is rejected.
-ALLOWED_SEARCH_PATHS = frozenset({"sss", "rea", "hhh", "cta", "hsh", "ele", "fuo", "tls", "jwa"})
+ALLOWED_SEARCH_PATHS = frozenset(
+    {"sss", "rea", "hhh", "cta", "hsh", "ele", "fuo", "tls", "jwa", "cla", "cba", "taa", "sga"}
+)
 
 # Positions within each encoded row.
 _IDX_POSTING_DELTA = 0

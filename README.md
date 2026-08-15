@@ -309,13 +309,15 @@ print(best.listing.label, round(best.composite_score, 1), best.notes)
 
 ## Web app: topic pages from allowlisted sources
 
-A second front end in `app/` has a page per topic — **houses**, **household
-items**, **electronics**, **furniture**, **cars**, **tools**, **gold**, **silver**,
-and **diamonds**. Live rows come
-only from allowlisted Craigslist sections. Gift-card / wire / crypto titles are
-dropped. Houses also include the curated Arizona catalog (`data/sample_listings.csv`)
-plus official Zillow / Redfin / Realtor.com lookup links. Those sites are **not**
-scraped.
+A second front end in `app/` has a page per topic — houses, household items,
+electronics, furniture, cars, tools, gold, silver, diamonds, designer, luxury
+and rare items, coins, Pokémon cards, sports cards, and jerseys. An open page
+**re-pulls live listings about every 45 seconds** so new posts show up without
+a reload. Live rows come from allowlisted Craigslist sections and, when
+`EBAY_OAUTH_TOKEN` is set, the official eBay Browse API. Gift-card / wire /
+crypto / replica titles are dropped. Houses also include the curated Arizona
+catalog plus official Zillow / Redfin / Realtor.com lookup links. Those sites
+and eBay HTML pages are **not** scraped.
 
 The UI re-ranks as you drag a profit-vs-affordability slider.
 
