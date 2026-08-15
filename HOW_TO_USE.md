@@ -12,7 +12,33 @@ arizona-deal-agent howto
 
 ## 60 seconds
 
+Clone the repo first, then install **inside that folder** (not your home directory).
+
+**Windows Command Prompt**
+
+```bat
+git clone https://github.com/F03F03s44s/Arizona-Deal-Agent.git
+cd Arizona-Deal-Agent
+python -m venv .venv
+.venv\Scripts\activate.bat
+pip install -e .
+```
+
+**Windows PowerShell**
+
+```powershell
+git clone https://github.com/F03F03s44s/Arizona-Deal-Agent.git
+cd Arizona-Deal-Agent
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -e .
+```
+
+**macOS / Linux**
+
 ```bash
+git clone https://github.com/F03F03s44s/Arizona-Deal-Agent.git
+cd Arizona-Deal-Agent
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
@@ -27,8 +53,10 @@ pip install -e .
 | Score a deal not in a file | `arizona-deal-agent score --price 240000 --rent 2100 --rehab 15000 --arv 330000` |
 | Transmit the top pick | `arizona-deal-agent transmit -i data/sample_listings.csv --to "Investment team"` |
 
-Without installing: prefix the same commands with
-`PYTHONPATH=src python3 -m arizona_deal_agent`.
+Without installing, from the repo folder:
+
+- Windows CMD: `set PYTHONPATH=src` then `python -m arizona_deal_agent find --top 5`
+- macOS / Linux: `PYTHONPATH=src python3 -m arizona_deal_agent find --top 5`
 
 ## Named scenarios
 
