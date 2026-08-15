@@ -34,3 +34,13 @@ def test_index_served():
     res = client.get("/")
     assert res.status_code == 200
     assert "Arizona Deal Agent" in res.text
+
+
+def test_index_includes_how_to_use():
+    res = client.get("/")
+    assert res.status_code == 200
+    body = res.text
+    assert "How to use" in body
+    assert "Rank deals" in body
+    assert "Max affordability" in body
+    assert "Tight $2,000" in body
