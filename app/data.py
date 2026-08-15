@@ -1,8 +1,14 @@
-"""Sample Arizona deals used to seed the demo."""
+"""Fallback data for when Craigslist cannot be reached.
+
+Live Phoenix listings are the real source of deals (see :mod:`app.deals`);
+these fixed deals only stand in when a scrape fails or returns nothing usable.
+"""
 
 from __future__ import annotations
 
 from .models import Deal
+
+DEFAULT_QUERY = "power tools"
 
 SAMPLE_DEALS: list[Deal] = [
     Deal(

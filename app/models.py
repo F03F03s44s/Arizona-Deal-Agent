@@ -2,14 +2,16 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from pydantic import BaseModel, Field
 
 
 class Deal(BaseModel):
     """A candidate deal the agent can evaluate.
 
-    ``acquisition_cost`` is what it takes to secure the item and ``market_value``
-    is what it can realistically be resold for. ``budget`` is the buyer's cash
+    ``acquisition_cost`` is the seller's asking price and ``market_value`` is
+    what comparable listings are going for. ``budget`` is the buyer's cash
     ceiling and is used to gauge how affordable the deal is.
     """
 
@@ -18,6 +20,13 @@ class Deal(BaseModel):
     category: str = Field(default="general", description="Deal category.")
     acquisition_cost: float = Field(..., gt=0, description="Cost to acquire.")
     market_value: float = Field(..., gt=0, description="Expected resale value.")
+    url: str | None = Field(default=None, description="Link to the source listing.")
+    location: str | None = Field(default=None, description="Where the item is.")
+    posted_at: datetime | None = Field(default=None, description="Listing timestamp.")
+    source: str = Field(default="sample", description="Where the deal came from.")
+    comparable_count: int = Field(
+        default=0, description="How many comparable listings set the market value."
+    )
 
 
 class ScoredDeal(BaseModel):
@@ -32,7 +41,12 @@ class ScoredDeal(BaseModel):
 
 
 class RankRequest(BaseModel):
-    """Request payload for ranking a set of deals against a budget."""
+    """Request payload for ranking a set of deals against a budget.
+
+    When ``deals`` is empty the agent sources them itself, scraping ``query``
+    from Craigslist. Ranking a cached scrape is pure arithmetic, which is what
+    lets the UI re-rank on every slider tick.
+    """
 
     budget: float = Field(..., gt=0, description="Buyer cash ceiling.")
     deals: list[Deal] = Field(default_factory=list)
@@ -41,6 +55,9 @@ class RankRequest(BaseModel):
         ge=0,
         le=1,
         description="How much to favor profit over affordability (0-1).",
+    )
+    query: str | None = Field(
+        default=None, description="Craigslist search to source deals from."
     )
 
 
@@ -51,3 +68,18 @@ class RankResponse(BaseModel):
     profit_weight: float
     ranked: list[ScoredDeal]
     recommendation: ScoredDeal | None = None
+    source: str = Field(default="sample", description="Where the deals came from.")
+    query: str | None = None
+    warning: str | None = Field(
+        default=None, description="Set when the agent fell back to sample data."
+    )
+
+
+class DealsResponse(BaseModel):
+    """Deals the agent sourced for a query, before any ranking."""
+
+    budget: float
+    query: str | None = None
+    source: str = "sample"
+    deals: list[Deal] = Field(default_factory=list)
+    warning: str | None = None
