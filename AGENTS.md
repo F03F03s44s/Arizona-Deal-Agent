@@ -1,21 +1,16 @@
 # Arizona Deal Agent
 
-Ranks Arizona sample deals by blending profit margin with affordability.
-Over-budget deals are never recommended.
+CLI tool that ranks Arizona property deals by price, profitability, and affordability.
 
 ## How to run
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-.venv/bin/uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+.venv/bin/pip install -e ".[dev]"
+arizona-deal-agent rank -i data/sample_listings.csv --top 5
 ```
 
-- UI: `http://localhost:8000`
-- OpenAPI: `http://localhost:8000/docs`
-- CLI: `.venv/bin/python -m app --help`
-
-Full operator guide: `HOW_TO_USE.md`.
+Without installing, `PYTHONPATH=src python3 -m arizona_deal_agent` works the same way.
 
 ## How to test
 
@@ -23,18 +18,27 @@ Full operator guide: `HOW_TO_USE.md`.
 .venv/bin/python -m pytest
 ```
 
+## Key commands
+
+| Command | Purpose |
+| ------- | ------- |
+| `rank` | Score a listings file and show the best deals |
+| `explain` | Full breakdown for one listing by id |
+| `score` | Score a single deal from command-line flags |
+| `transmit` | Format the top deal as a shareable recommendation |
+
 ## Key files
 
 | Path | Role |
 | ---- | ---- |
-| `app/agent.py` | Scoring and ranking |
-| `app/data.py` | Sample catalog and default budget |
-| `app/main.py` | FastAPI routes |
-| `app/cli.py` | `python -m app` |
-| `app/static/index.html` | Operator UI, including How to use + scenarios |
-| `tests/` | Engine, API, and CLI tests |
+| `src/arizona_deal_agent/scoring.py` | Composite scoring and ranking |
+| `src/arizona_deal_agent/finance.py` | Mortgage, NOI, cap rate, DSCR |
+| `src/arizona_deal_agent/sources.py` | CSV/JSON listing loader |
+| `src/arizona_deal_agent/report.py` | Table, JSON, CSV, explain, transmit output |
+| `src/arizona_deal_agent/cli.py` | Command-line entry point |
+| `data/sample_listings.csv` | Sample Arizona listings |
+| `tests/` | Finance, scoring, sources, and CLI tests |
 
 ## Cloud Agent environment
 
-`install` creates `.venv` and installs `requirements.txt`. The `api` terminal
-runs Uvicorn on port 8000.
+`install` creates `.venv` and installs the package with dev dependencies.
