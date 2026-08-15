@@ -137,6 +137,23 @@ def test_threshold_controls_what_alerts(service):
     assert len(relaxed.new_matches) == 5
 
 
+def test_long_match_lists_are_truncated_in_the_email(service):
+    # The going rate stays at 500 because most of the cohort is priced there,
+    # so all 25 of the cheap ones clear the threshold at once.
+    cohort = [make_listing(f"regular-{n}", "DeWalt cordless drill", 500) for n in range(40)]
+    cohort += [make_listing(f"steal-{n}", "DeWalt cordless drill", 100) for n in range(25)]
+    service.deals = DealService(searcher=lambda query, **kwargs: cohort)
+
+    result = service.run(_save(service, min_score=0.9))
+    body = service.sender.sent[0].body
+
+    # Every match is still recorded; the email just does not print them all.
+    assert len(result.new_matches) == 25
+    assert body.count("Score:") == 20
+    assert "...and 5 more, ranked lower." in body
+    assert len(service.store.get(result.saved_search_id).notified_deal_ids) == 25
+
+
 def test_over_budget_deals_never_alert(service):
     result = service.run(_save(service, budget=30, min_score=0.0))
 

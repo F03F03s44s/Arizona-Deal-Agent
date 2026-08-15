@@ -35,6 +35,11 @@ logger = logging.getLogger(__name__)
 MAX_ALERTS = 200
 MAX_NOTIFIED_IDS = 500
 
+# The first run of a saved search matches everything already listed, which can
+# be dozens of items. Every match is still recorded as alerted; the email just
+# does not print all of them.
+MAX_DEALS_PER_EMAIL = 20
+
 
 @dataclass(frozen=True)
 class OutgoingEmail:
@@ -137,12 +142,13 @@ def build_alert_email(search: SavedSearch, matches: list[ScoredDeal]) -> Outgoin
         else f"Deal alert: {count} new deals for '{search.query}'"
     )
 
+    listed = matches[:MAX_DEALS_PER_EMAIL]
     lines = [
         f"Your saved search '{search.query}' found {count} "
         f"deal{'s' if count != 1 else ''} scoring {search.min_score:.2f} or better.",
         "",
     ]
-    for scored in matches:
+    for scored in listed:
         deal = scored.deal
         lines.extend(
             [
@@ -158,6 +164,10 @@ def build_alert_email(search: SavedSearch, matches: list[ScoredDeal]) -> Outgoin
             lines.append(f"  Location:   {deal.location}")
         if deal.url:
             lines.append(f"  Listing:    {deal.url}")
+        lines.append("")
+
+    if count > len(listed):
+        lines.append(f"...and {count - len(listed)} more, ranked lower.")
         lines.append("")
 
     lines.append(
