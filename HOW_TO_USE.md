@@ -14,7 +14,26 @@ arizona-deal-agent howto
 
 Clone the repo first, then install **inside that folder** (not your home directory).
 
-**Windows Command Prompt**
+**Windows Command Prompt (no Git needed)**
+
+Open a **new** Command Prompt. Paste only these lines — not old `C:\>` prompts or `ERROR:` text.
+
+```bat
+cd C:\Users\%USERNAME%
+curl -L -o Arizona-Deal-Agent.zip https://github.com/F03F03s44s/Arizona-Deal-Agent/archive/refs/heads/main.zip
+tar -xf Arizona-Deal-Agent.zip
+cd Arizona-Deal-Agent-main
+dir pyproject.toml
+python -m venv .venv
+.venv\Scripts\activate.bat
+pip install -e .
+arizona-deal-agent howto
+arizona-deal-agent find --top 5
+```
+
+`dir pyproject.toml` must show that file. If it says file not found, you are in the wrong folder.
+
+**Windows Command Prompt (if Git is installed)**
 
 ```bat
 git clone https://github.com/F03F03s44s/Arizona-Deal-Agent.git

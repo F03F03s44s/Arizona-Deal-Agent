@@ -16,7 +16,19 @@ Python 3.10 or newer is the only requirement. The tool itself has no dependencie
 
 Clone the repo, then run these **inside `Arizona-Deal-Agent`** (not your user home folder).
 
-Windows Command Prompt:
+Windows Command Prompt, no Git (download the zip):
+
+```bat
+cd C:\Users\%USERNAME%
+curl -L -o Arizona-Deal-Agent.zip https://github.com/F03F03s44s/Arizona-Deal-Agent/archive/refs/heads/main.zip
+tar -xf Arizona-Deal-Agent.zip
+cd Arizona-Deal-Agent-main
+python -m venv .venv
+.venv\Scripts\activate.bat
+pip install -e .
+```
+
+Windows Command Prompt, with Git:
 
 ```bat
 git clone https://github.com/F03F03s44s/Arizona-Deal-Agent.git
