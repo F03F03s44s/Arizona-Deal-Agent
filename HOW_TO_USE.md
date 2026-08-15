@@ -172,7 +172,7 @@ arizona-deal-agent transmit -i data/sample_listings.csv --format json
 ## Tests
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[dev,web]"
 pytest
 ```
 
