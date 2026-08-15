@@ -7,7 +7,7 @@ That page is **not on Google**. It is a local page on your PC: `http://127.0.0.1
 1. In PowerShell, from the repo folder, start the server (leave the window open):
 
 ```powershell
-cd C:\Users\kietl\Arizona-Deal-Agent-main
+# from the unzipped or cloned Arizona-Deal-Agent folder
 .\.venv\Scripts\Activate.ps1
 pip install -e ".[web]"
 python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
@@ -18,7 +18,7 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 4. Type exactly: `http://127.0.0.1:8000`
 5. Press Enter.
 
-You should see “Arizona Deal Agent”, the How to use steps, and the green recommendation.
+You should see “Arizona Deal Agent” and the live Phoenix Craigslist deal list (search box, profit slider, and optional email alerts).
 
 Or run `powershell -ExecutionPolicy Bypass -File scripts\open-ui.ps1` from the repo folder; it starts the server and opens the browser.
 
@@ -34,7 +34,60 @@ arizona-deal-agent howto
 
 ## 60 seconds
 
+Clone the repo first, then install **inside that folder** (not your home directory).
+
+**Windows Command Prompt (no Git needed)**
+
+Open a **new** Command Prompt. Paste only these lines — not old `C:\>` prompts or `ERROR:` text.
+
+```bat
+cd C:\Users\%USERNAME%
+curl -L -o Arizona-Deal-Agent.zip https://github.com/F03F03s44s/Arizona-Deal-Agent/archive/refs/heads/main.zip
+tar -xf Arizona-Deal-Agent.zip
+cd Arizona-Deal-Agent-main
+dir pyproject.toml
+python -m venv .venv
+.venv\Scripts\activate.bat
+pip install -e .
+arizona-deal-agent howto
+arizona-deal-agent find --top 100
+```
+
+`dir pyproject.toml` must show that file. If it says file not found, you are in the wrong folder.
+
+**Windows Command Prompt (if Git is installed)**
+
+```bat
+git clone https://github.com/F03F03s44s/Arizona-Deal-Agent.git
+cd Arizona-Deal-Agent
+python -m venv .venv
+.venv\Scripts\activate.bat
+pip install -e .
+```
+
+**Windows PowerShell (no Git needed)**
+
+In PowerShell, `curl` is not the real curl. Use `curl.exe` or `Invoke-WebRequest`.
+
+```powershell
+cd C:\Users\$env:USERNAME
+curl.exe -L -o Arizona-Deal-Agent.zip https://github.com/F03F03s44s/Arizona-Deal-Agent/archive/refs/heads/main.zip
+tar -xf Arizona-Deal-Agent.zip
+cd Arizona-Deal-Agent-main
+dir pyproject.toml
+python -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+pip install -e .
+arizona-deal-agent howto
+arizona-deal-agent find --top 100
+```
+
+**macOS / Linux**
+
 ```bash
+git clone https://github.com/F03F03s44s/Arizona-Deal-Agent.git
+cd Arizona-Deal-Agent
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
@@ -49,8 +102,10 @@ pip install -e .
 | Score a deal not in a file | `arizona-deal-agent score --price 240000 --rent 2100 --rehab 15000 --arv 330000` |
 | Transmit the top pick | `arizona-deal-agent transmit -i data/sample_listings.csv --to "Investment team"` |
 
-Without installing: prefix the same commands with
-`PYTHONPATH=src python3 -m arizona_deal_agent`.
+Without installing, from the repo folder:
+
+- Windows CMD: `set PYTHONPATH=src` then `python -m arizona_deal_agent find --top 100`
+- macOS / Linux: `PYTHONPATH=src python3 -m arizona_deal_agent find --top 100`
 
 ## Named scenarios
 

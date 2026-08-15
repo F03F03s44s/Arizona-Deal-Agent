@@ -10,8 +10,6 @@ from __future__ import annotations
 
 from .models import Deal, RankResponse, ScoredDeal
 
-MAX_RANKED = 100
-
 
 def _profit_margin(deal: Deal) -> float:
     """Profit as a fraction of acquisition cost (can be negative)."""
@@ -60,13 +58,15 @@ def rank_deals(
 ) -> RankResponse:
     """Rank deals best-first and surface the top in-budget recommendation."""
     scored = [score_deal(deal, budget, profit_weight) for deal in deals]
-    scored.sort(key=lambda s: (s.within_budget, s.score), reverse=True)
+    # Margins above 100% all clamp to the same normalized value, so absolute
+    # profit breaks the ties that real listings produce in bulk.
+    scored.sort(key=lambda s: (s.within_budget, s.score, s.profit), reverse=True)
 
     recommendation = next((s for s in scored if s.within_budget), None)
 
     return RankResponse(
         budget=budget,
         profit_weight=profit_weight,
-        ranked=scored[:MAX_RANKED],
+        ranked=scored,
         recommendation=recommendation,
     )

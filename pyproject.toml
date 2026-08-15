@@ -12,8 +12,16 @@ license = { text = "MIT" }
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=7.0", "fastapi>=0.115", "httpx>=0.28"]
-web = ["fastapi>=0.115", "uvicorn[standard]>=0.34", "httpx>=0.28"]
+# The CLI is deliberately stdlib-only; the web app is what needs third-party
+# packages, so installing it stays opt-in.
+web = [
+  "fastapi==0.115.6",
+  "uvicorn[standard]==0.34.0",
+  "pydantic==2.10.4",
+  "email-validator==2.2.0",
+  "httpx==0.28.1",
+]
+dev = ["pytest>=7.0"]
 
 [project.scripts]
 arizona-deal-agent = "arizona_deal_agent.cli:main"
@@ -23,4 +31,4 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src", "."]
+pythonpath = ["src"]

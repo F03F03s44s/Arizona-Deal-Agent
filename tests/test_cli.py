@@ -239,6 +239,7 @@ class TestHowto:
         assert "How to use Arizona Deal Agent" in out
         assert "arizona-deal-agent rank" in out
         assert "arizona-deal-agent transmit" in out
+        assert ".venv\\Scripts\\activate.bat" in out
         for name in ("balanced", "profit", "affordability", "tight", "houses"):
             assert name in out
 
@@ -271,6 +272,13 @@ class TestHowto:
         assert "AZ-003" in out
         assert "showing 1" in out
         assert "AZ-012" not in out
+
+    def test_run_houses_recommends_fort_lowell(self, capsys, sample_csv):
+        code, out, _ = run(capsys, "howto", "--run", "houses", "-i", str(sample_csv))
+        assert code == 0
+        assert "How to use — houses" in out
+        assert "AZ-003" in out
+        assert "3110 E Fort Lowell Rd" in out
 
     def test_unknown_scenario_is_an_error(self, capsys, sample_csv):
         code, _, err = run(capsys, "howto", "--run", "flip", "-i", str(sample_csv))
