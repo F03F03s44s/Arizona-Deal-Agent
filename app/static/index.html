@@ -315,10 +315,23 @@
         rankTimer = setTimeout(() => rank({ refresh: lastRefresh }), delay);
       }
 
+      function formatApiError(detail) {
+        if (!detail) return "Rank failed";
+        if (typeof detail === "string") return detail;
+        if (Array.isArray(detail)) {
+          return detail.map((item) => item.msg || JSON.stringify(item)).join("; ");
+        }
+        return JSON.stringify(detail);
+      }
+
       async function rank({ refresh = false } = {}) {
         const budget = Number(budgetInput.value);
         const profit_weight = Number(weight.value);
         const query = queryInput.value.trim() || null;
+        if (!Number.isFinite(budget) || budget <= 0) {
+          statusEl.textContent = "Enter a valid budget greater than 0.";
+          return;
+        }
         statusEl.textContent = refresh
           ? "Refreshing Phoenix Craigslist…"
           : "Re-ranking live…";
@@ -329,7 +342,7 @@
             body: JSON.stringify({ budget, profit_weight, deals: [], refresh, query }),
           });
           const data = await res.json();
-          if (!res.ok) throw new Error(data.detail || "Rank failed");
+          if (!res.ok) throw new Error(formatApiError(data.detail));
           render(data);
           statusEl.textContent =
             `Showing ${data.scraped_count} deals from ${data.source}` +
