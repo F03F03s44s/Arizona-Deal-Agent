@@ -1,4 +1,4 @@
-"""Topic pages for houses, goods, designer, cards, coins, and jewelry."""
+"""Topic pages for houses, goods, designer, cards, coins, and jewelry.
 
 Each topic has its own default search, budget, and which allowlisted sources
 feed it. Property always includes the curated Arizona house catalog.
