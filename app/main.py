@@ -43,6 +43,23 @@ from .watcher import DealWatcher, WatchConfig, run_watch_loop
 
 logger = logging.getLogger(__name__)
 
+
+def _configure_logging() -> None:
+    """Make this package's logs visible.
+
+    Uvicorn only configures its own loggers, so without this a background scan
+    runs completely silently and there is no way to tell it is alive.
+    """
+    package_logger = logging.getLogger("app")
+    package_logger.setLevel(os.getenv("LOG_LEVEL", "INFO").upper())
+    if not package_logger.handlers:
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter("%(levelname)s:     %(name)s - %(message)s"))
+        package_logger.addHandler(handler)
+
+
+_configure_logging()
+
 STATIC_DIR = Path(__file__).parent / "static"
 # Not "data/": that directory holds the CLI's sample listings, which are
 # tracked, whereas saved searches are local runtime state.
