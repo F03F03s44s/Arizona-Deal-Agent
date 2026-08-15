@@ -291,11 +291,13 @@ class TestTopLevel:
         """Python 3.14 rejects a lone % in argparse help (e.g. 0.62% of price)."""
         from arizona_deal_agent.cli import build_parser
 
-        build_parser().format_help()
+        parser = build_parser()
+        parser.format_help()
         with pytest.raises(SystemExit) as excinfo:
             main(["score", "--help"])
         assert excinfo.value.code == 0
-        assert "of price" in capsys.readouterr().out
+        help_text = capsys.readouterr().out
+        assert "of price" in help_text
 
     def test_version(self, capsys):
         with pytest.raises(SystemExit) as excinfo:
