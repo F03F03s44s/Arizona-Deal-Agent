@@ -94,6 +94,7 @@ def test_deal_service_merges_ebay_results_on_a_goods_topic():
             make_listing("1", "Nike jersey", 80),
             make_listing("2", "Nike jersey", 90),
             make_listing("3", "Nike jersey", 100),
+            make_listing("4", "Nike jersey", 110),
         ]
 
     def eb_search(query, **kwargs):
@@ -115,6 +116,12 @@ def test_deal_service_merges_ebay_results_on_a_goods_topic():
                 title="Nike jersey stitched",
                 price=95,
                 url="https://www.ebay.com/itm/eb3",
+            ),
+            Listing(
+                posting_id="eb4",
+                title="Nike jersey stitched",
+                price=105,
+                url="https://www.ebay.com/itm/eb4",
             ),
         ]
 
