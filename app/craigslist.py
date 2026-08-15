@@ -34,7 +34,10 @@ USER_AGENT = (
 )
 
 DEFAULT_TIMEOUT = 20.0
-MAX_BATCH = 360
+
+# The service only accepts this exact page size; anything else is a 400. Any
+# smaller result set has to be taken by trimming the response.
+PAGE_SIZE = 360
 
 # Positions within each encoded row.
 _IDX_POSTING_DELTA = 0
@@ -184,14 +187,13 @@ def search(
     query: str,
     *,
     area_id: int = PHOENIX_AREA_ID,
-    limit: int = 120,
+    limit: int = PAGE_SIZE,
     timeout: float = DEFAULT_TIMEOUT,
     client: httpx.Client | None = None,
 ) -> list[Listing]:
     """Fetch "for sale" listings for ``query`` in one Craigslist area."""
-    batch_size = max(1, min(limit, MAX_BATCH))
     params = {
-        "batch": f"{area_id}-0-{batch_size}-0-0",
+        "batch": f"{area_id}-0-{PAGE_SIZE}-0-0",
         "cc": "US",
         "lang": "en",
         "searchPath": "sss",

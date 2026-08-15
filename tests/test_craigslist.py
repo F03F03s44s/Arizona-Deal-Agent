@@ -70,8 +70,10 @@ def test_search_targets_the_phoenix_area(phoenix_payload):
     assert len(listings) == 5
     assert seen["query"] == "power tools"
     assert seen["searchPath"] == "sss"
-    assert seen["batch"].startswith(f"{craigslist.PHOENIX_AREA_ID}-0-5-")
     assert "Mozilla" in seen["user-agent"]
+    # The service 400s on any page size other than its own, so a smaller limit
+    # must be taken by trimming the response rather than asking for less.
+    assert seen["batch"] == f"{craigslist.PHOENIX_AREA_ID}-0-{craigslist.PAGE_SIZE}-0-0"
 
 
 def test_search_wraps_transport_failures():

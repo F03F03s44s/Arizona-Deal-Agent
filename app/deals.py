@@ -21,7 +21,10 @@ from .models import Deal
 logger = logging.getLogger(__name__)
 
 CACHE_TTL_SECONDS = 600.0
-DEFAULT_LIMIT = 120
+
+# Keep the whole page: every extra listing is another comparable, which is what
+# the market-value estimate is built from.
+DEFAULT_LIMIT = craigslist.PAGE_SIZE
 
 Searcher = Callable[..., list[Listing]]
 
