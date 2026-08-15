@@ -60,7 +60,7 @@ class Finding:
 
     @property
     def is_fresh(self) -> bool:
-        return self.age_seconds is not None and self.age_seconds <= FRESH_SECONDS
+        return self.age_seconds is not None and 0 <= self.age_seconds <= FRESH_SECONDS
 
     def to_model(self) -> FindingModel:
         return FindingModel(
@@ -226,6 +226,14 @@ class DealWatcher:
         self.last_error = "; ".join(errors) or None
 
         if found:
+            fresh = sum(1 for finding in found if finding.is_fresh)
+            logger.info(
+                "Swept %d target(s): %d new deal(s), %d posted in the last %d minutes",
+                len(self.config.targets),
+                len(found),
+                fresh,
+                FRESH_SECONDS // 60,
+            )
             self._publish(found)
         return found
 

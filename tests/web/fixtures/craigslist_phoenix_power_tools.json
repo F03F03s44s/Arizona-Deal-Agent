@@ -3,8 +3,7 @@
  "data": {
   "canonicalUrl": "//www.craigslist.org/search/area/phoenix?cat=sss&query=power%20tools",
   "categoryAbbr": "sss",
-  "pageTitle": "phoenix  for sale \"power tools\"  - craigslist",
-  "totalResultCount": 791,
+  "totalResultCount": 793,
   "decode": {
    "locations": [
     0,
@@ -30,7 +29,9 @@
     ]
    ],
    "minPostingId": 7915878554,
-   "minDate": 1784332800
+   "minDate": 1784332800,
+   "minPostedDate": 1784240602,
+   "maxPostedDate": 1786832114
   },
   "items": [
    [

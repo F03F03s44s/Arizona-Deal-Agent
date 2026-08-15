@@ -226,9 +226,12 @@ def parse_search_payload(payload: dict[str, Any]) -> list[Listing]:
         raise CraigslistError("Craigslist response had no items")
 
     decode = data.get("decode") or {}
-    # Posting ids and timestamps are sent as deltas from a shared base.
+    # Posting ids and timestamps are sent as deltas from a shared base. The
+    # base for timestamps is minPostedDate: "minDate" is a different field
+    # about a year in the future, and using it dates every listing to next
+    # year. The invariant is minPostedDate + largest delta == maxPostedDate.
     min_posting_id = int(decode.get("minPostingId") or 0)
-    min_date = int(decode.get("minDate") or 0)
+    min_date = int(decode.get("minPostedDate") or decode.get("minDate") or 0)
     locations = decode.get("locations") or []
 
     listings: list[Listing] = []

@@ -43,11 +43,25 @@ def test_falls_back_to_the_subarea_when_the_slug_does_not_match(phoenix_listings
     assert by_title["Hand&Power Tools for the homeowner"].location == "North Phoenix"
 
 
-def test_decodes_posting_timestamps(phoenix_listings):
+def test_decodes_posting_timestamps(phoenix_payload, phoenix_listings):
     posted = phoenix_listings[0].posted_at
     assert posted is not None
     assert posted.tzinfo is not None
-    assert posted > datetime(2026, 7, 16, tzinfo=UTC)
+
+    # Timestamps are deltas from minPostedDate, so every one has to land in
+    # the window the response declares. "minDate" is a different field about a
+    # year ahead, and using it as the base dates every listing to next year.
+    decode = phoenix_payload["data"]["decode"]
+    oldest = datetime.fromtimestamp(decode["minPostedDate"], tz=UTC)
+    newest = datetime.fromtimestamp(decode["maxPostedDate"], tz=UTC)
+    assert all(oldest <= listing.posted_at <= newest for listing in phoenix_listings)
+    assert decode["minDate"] != decode["minPostedDate"]
+
+
+def test_listings_are_never_dated_in_the_future(phoenix_listings, real_estate_payload):
+    now = datetime.now(UTC)
+    for listing in phoenix_listings + parse_search_payload(real_estate_payload):
+        assert listing.posted_at <= now
 
 
 @pytest.mark.parametrize("payload", [{}, {"data": {}}, {"data": []}])

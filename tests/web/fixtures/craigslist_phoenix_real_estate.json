@@ -29,7 +29,9 @@
     ]
    ],
    "minPostingId": 7944514606,
-   "minDate": 1786233600
+   "minDate": 1786233600,
+   "minPostedDate": 1786126792,
+   "maxPostedDate": 1786833660
   },
   "items": [
    [
