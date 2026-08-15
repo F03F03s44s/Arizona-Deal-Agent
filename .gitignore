@@ -19,3 +19,6 @@ htmlcov/
 .vscode/
 .idea/
 .DS_Store
+
+# Web app runtime state (saved searches, alert history)
+.agent-state/
