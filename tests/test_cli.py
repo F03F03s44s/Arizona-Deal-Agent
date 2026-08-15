@@ -239,6 +239,7 @@ class TestHowto:
         assert "How to use Arizona Deal Agent" in out
         assert "arizona-deal-agent rank" in out
         assert "arizona-deal-agent transmit" in out
+        assert ".venv\\Scripts\\activate.bat" in out
         for name in ("balanced", "profit", "affordability", "tight"):
             assert name in out
 

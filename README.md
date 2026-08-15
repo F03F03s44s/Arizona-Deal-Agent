@@ -14,6 +14,45 @@ floats to the top, with a plain-language explanation of why it won.
 
 Python 3.10 or newer is the only requirement. The tool itself has no dependencies.
 
+Clone the repo, then run these **inside `Arizona-Deal-Agent`** (not your user home folder).
+
+Windows Command Prompt, no Git (download the zip):
+
+```bat
+cd C:\Users\%USERNAME%
+curl -L -o Arizona-Deal-Agent.zip https://github.com/F03F03s44s/Arizona-Deal-Agent/archive/refs/heads/main.zip
+tar -xf Arizona-Deal-Agent.zip
+cd Arizona-Deal-Agent-main
+python -m venv .venv
+.venv\Scripts\activate.bat
+pip install -e .
+```
+
+Windows Command Prompt, with Git:
+
+```bat
+git clone https://github.com/F03F03s44s/Arizona-Deal-Agent.git
+cd Arizona-Deal-Agent
+python -m venv .venv
+.venv\Scripts\activate.bat
+pip install -e .
+```
+
+Windows PowerShell (`curl` is an alias here — use `curl.exe`):
+
+```powershell
+cd C:\Users\$env:USERNAME
+curl.exe -L -o Arizona-Deal-Agent.zip https://github.com/F03F03s44s/Arizona-Deal-Agent/archive/refs/heads/main.zip
+tar -xf Arizona-Deal-Agent.zip
+cd Arizona-Deal-Agent-main
+python -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+pip install -e .
+```
+
+macOS / Linux:
+
 ```bash
 git clone https://github.com/F03F03s44s/Arizona-Deal-Agent.git
 cd Arizona-Deal-Agent
@@ -23,7 +62,8 @@ pip install -e .
 ```
 
 That installs the `arizona-deal-agent` command. If you would rather not install anything,
-`PYTHONPATH=src python3 -m arizona_deal_agent` works the same way everywhere below.
+from the repo folder use `python -m arizona_deal_agent` after `set PYTHONPATH=src` (Windows)
+or `PYTHONPATH=src python3 -m arizona_deal_agent` (macOS / Linux).
 
 Print the in-tool How to use card (steps plus named scenarios):
 
