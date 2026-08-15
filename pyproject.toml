@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arizona-deal-agent"
+version = "0.1.0"
+description = "Find Arizona property deals from public data and rank them by best value."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = []
+
+[project.optional-dependencies]
+web = ["fastapi>=0.115", "uvicorn[standard]>=0.34"]
+dev = ["pytest>=8.0", "fastapi>=0.115", "uvicorn[standard]>=0.34", "httpx>=0.28"]
+
+[project.scripts]
+arizona-deal-agent = "arizona_deal_agent.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+arizona_deal_agent = ["data/*.json", "data/*.csv", "web/static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

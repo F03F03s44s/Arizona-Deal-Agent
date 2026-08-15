@@ -1,0 +1,3001 @@
+{
+ "generated_at": "2026-08-15",
+ "state": "AZ",
+ "value_as_of": "2026-06-30",
+ "rent_as_of": "2026-06-30",
+ "sources": [
+  {
+   "name": "Zillow Home Value Index (ZHVI), ZIP level",
+   "url": "https://files.zillowstatic.com/research/public_csvs/zhvi/Zip_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv"
+  },
+  {
+   "name": "Zillow Observed Rent Index (ZORI), ZIP level",
+   "url": "https://files.zillowstatic.com/research/public_csvs/zori/Zip_zori_uc_sfrcondomfr_sm_month.csv"
+  }
+ ],
+ "zips": {
+  "85003": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 593886.9,
+   "rent": 1724.52
+  },
+  "85004": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 422823.71,
+   "rent": 1615.98
+  },
+  "85006": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 414404.93,
+   "rent": 1501.34
+  },
+  "85007": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 409860.19,
+   "rent": 1375.38
+  },
+  "85008": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 378779.69,
+   "rent": 1418.35
+  },
+  "85009": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 280225.3,
+   "rent": 1182.29
+  },
+  "85012": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 649675.24,
+   "rent": 1553.33
+  },
+  "85013": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 493518.25,
+   "rent": 1515.76
+  },
+  "85014": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 450891.07,
+   "rent": 1439.04
+  },
+  "85015": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 339372.78,
+   "rent": 1247.14
+  },
+  "85016": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 525013.89,
+   "rent": 1697.59
+  },
+  "85017": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 302450.97,
+   "rent": 1215.36
+  },
+  "85018": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 993496.94,
+   "rent": 1615.86
+  },
+  "85019": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 327503.54,
+   "rent": 1440.75
+  },
+  "85020": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 405118.22,
+   "rent": 1429.65
+  },
+  "85021": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 438204.63,
+   "rent": 1220.11
+  },
+  "85022": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 466661.38,
+   "rent": 1384.15
+  },
+  "85023": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 420288.8,
+   "rent": 1308.43
+  },
+  "85024": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 487671.57,
+   "rent": 1846.93
+  },
+  "85027": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 381691.05,
+   "rent": 1448.7
+  },
+  "85028": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 711517.81,
+   "rent": 2566.29
+  },
+  "85029": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 359789.57,
+   "rent": 1233.56
+  },
+  "85031": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 324907.71,
+   "rent": 1025.48
+  },
+  "85032": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 456611.25,
+   "rent": 1639.08
+  },
+  "85033": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 326502.3,
+   "rent": 1402.77
+  },
+  "85034": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 281955.71,
+   "rent": 1392.19
+  },
+  "85035": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 321235.6,
+   "rent": 1354.08
+  },
+  "85037": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 353707.54,
+   "rent": 1735.7
+  },
+  "85040": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 320934.82,
+   "rent": 1802.0
+  },
+  "85041": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 368640.9,
+   "rent": 2207.18
+  },
+  "85042": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 386431.88,
+   "rent": 1691.07
+  },
+  "85043": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 369470.79,
+   "rent": 1969.89
+  },
+  "85044": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 481558.79,
+   "rent": 1540.04
+  },
+  "85045": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 668255.53,
+   "rent": 2901.25
+  },
+  "85048": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 586990.33,
+   "rent": 1822.33
+  },
+  "85050": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 627597.67,
+   "rent": 2573.53
+  },
+  "85051": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 346493.55,
+   "rent": 1274.55
+  },
+  "85053": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 381752.94,
+   "rent": 1252.08
+  },
+  "85054": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 725108.93,
+   "rent": 1957.12
+  },
+  "85083": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 627304.1,
+   "rent": 2693.36
+  },
+  "85085": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 640872.01,
+   "rent": 1731.9
+  },
+  "85086": {
+   "city": "Anthem",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 625091.22,
+   "rent": 2153.05
+  },
+  "85087": {
+   "city": "New River",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 630520.49
+  },
+  "85118": {
+   "city": "Gold Canyon",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 480633.18,
+   "rent": 2005.0
+  },
+  "85119": {
+   "city": "Apache Junction",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 393590.1,
+   "rent": 1706.4
+  },
+  "85120": {
+   "city": "Apache Junction",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 355589.28,
+   "rent": 1777.39
+  },
+  "85122": {
+   "city": "Casa Grande",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 309148.18,
+   "rent": 1705.92
+  },
+  "85123": {
+   "city": "Arizona City",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 250212.62,
+   "rent": 1492.67
+  },
+  "85128": {
+   "city": "Coolidge",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 268908.52,
+   "rent": 1634.89
+  },
+  "85131": {
+   "city": "Eloy",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 291478.87,
+   "rent": 1720.56
+  },
+  "85132": {
+   "city": "Florence",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 332910.38,
+   "rent": 1742.9
+  },
+  "85137": {
+   "city": "Miami",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 164597.66
+  },
+  "85138": {
+   "city": "Maricopa",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 346961.38,
+   "rent": 1872.57
+  },
+  "85139": {
+   "city": "Maricopa",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 338649.79,
+   "rent": 1687.09
+  },
+  "85140": {
+   "city": "San Tan Valley",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 430836.31,
+   "rent": 2176.59
+  },
+  "85142": {
+   "city": "Queen Creek",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 587949.82,
+   "rent": 2148.26
+  },
+  "85143": {
+   "city": "San Tan Valley",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 376569.2,
+   "rent": 1999.25
+  },
+  "85144": {
+   "city": "San Tan Valley",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "rent": 2014.33
+  },
+  "85145": {
+   "city": "Red Rock",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 290057.49
+  },
+  "85173": {
+   "city": "Superior",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 190058.38
+  },
+  "85192": {
+   "city": "Bylas",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 157615.66
+  },
+  "85193": {
+   "city": "Casa Grande",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 351855.21
+  },
+  "85194": {
+   "city": "Casa Grande",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 361853.92,
+   "rent": 2021.67
+  },
+  "85201": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 360457.64,
+   "rent": 1325.87
+  },
+  "85202": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 398026.85,
+   "rent": 1393.36
+  },
+  "85203": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 451606.55,
+   "rent": 1352.94
+  },
+  "85204": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 392815.58,
+   "rent": 1430.09
+  },
+  "85205": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 405669.25,
+   "rent": 1752.9
+  },
+  "85206": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 384280.94,
+   "rent": 1625.64
+  },
+  "85207": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 553228.1,
+   "rent": 2266.69
+  },
+  "85208": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 377973.45,
+   "rent": 1943.13
+  },
+  "85209": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 444543.09,
+   "rent": 1775.29
+  },
+  "85210": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 363419.47,
+   "rent": 1452.66
+  },
+  "85212": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 557937.95,
+   "rent": 2204.09
+  },
+  "85213": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 557695.39,
+   "rent": 1668.74
+  },
+  "85215": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 505234.35,
+   "rent": 2345.12
+  },
+  "85224": {
+   "city": "Chandler",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 456604.83,
+   "rent": 1754.1
+  },
+  "85225": {
+   "city": "Chandler",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 446605.86,
+   "rent": 1779.04
+  },
+  "85226": {
+   "city": "Chandler",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 501510.18,
+   "rent": 1906.23
+  },
+  "85233": {
+   "city": "Gilbert",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 524025.34,
+   "rent": 2131.04
+  },
+  "85234": {
+   "city": "Gilbert",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 556865.84,
+   "rent": 1823.21
+  },
+  "85248": {
+   "city": "Chandler",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 557067.2,
+   "rent": 2168.65
+  },
+  "85249": {
+   "city": "Chandler",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 678345.64,
+   "rent": 2653.95
+  },
+  "85250": {
+   "city": "Scottsdale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 622068.08,
+   "rent": 2612.94
+  },
+  "85251": {
+   "city": "Scottsdale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 526724.05,
+   "rent": 2019.7
+  },
+  "85253": {
+   "city": "Paradise Valley",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 3327715.38,
+   "rent": 2306.86
+  },
+  "85254": {
+   "city": "Scottsdale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 914685.78,
+   "rent": 2608.06
+  },
+  "85255": {
+   "city": "Scottsdale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 1314911.06,
+   "rent": 2326.9
+  },
+  "85257": {
+   "city": "Scottsdale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 556406.33,
+   "rent": 1958.33
+  },
+  "85258": {
+   "city": "Scottsdale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 865047.28,
+   "rent": 2119.81
+  },
+  "85259": {
+   "city": "Scottsdale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 1149292.4,
+   "rent": 1778.45
+  },
+  "85260": {
+   "city": "Scottsdale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 721131.71,
+   "rent": 2084.13
+  },
+  "85262": {
+   "city": "Scottsdale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 1545089.68,
+   "rent": 6211.17
+  },
+  "85263": {
+   "city": "Rio Verde",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 829065.99
+  },
+  "85264": {
+   "city": "Fort McDowell",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 1206679.09
+  },
+  "85266": {
+   "city": "Scottsdale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 1297775.26
+  },
+  "85268": {
+   "city": "Fountain Hills",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 673292.76,
+   "rent": 2434.69
+  },
+  "85281": {
+   "city": "Tempe",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 398613.92,
+   "rent": 1687.02
+  },
+  "85282": {
+   "city": "Tempe",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 468506.17,
+   "rent": 1584.07
+  },
+  "85283": {
+   "city": "Tempe",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 452948.66,
+   "rent": 1569.12
+  },
+  "85284": {
+   "city": "Tempe",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 719732.45,
+   "rent": 2768.89
+  },
+  "85286": {
+   "city": "Chandler",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 612847.56,
+   "rent": 2118.61
+  },
+  "85288": {
+   "city": "Tempe",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "rent": 1871.83
+  },
+  "85295": {
+   "city": "Gilbert",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 545348.04,
+   "rent": 1856.46
+  },
+  "85296": {
+   "city": "Gilbert",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 548368.13,
+   "rent": 2047.3
+  },
+  "85297": {
+   "city": "Gilbert",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 590859.36,
+   "rent": 2197.01
+  },
+  "85298": {
+   "city": "Gilbert",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 684786.93,
+   "rent": 2617.32
+  },
+  "85301": {
+   "city": "Glendale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 313460.28,
+   "rent": 1139.74
+  },
+  "85302": {
+   "city": "Glendale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 381272.29,
+   "rent": 1363.12
+  },
+  "85303": {
+   "city": "Glendale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 377345.58,
+   "rent": 1819.16
+  },
+  "85304": {
+   "city": "Glendale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 406033.42,
+   "rent": 1726.43
+  },
+  "85305": {
+   "city": "Glendale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 461554.79,
+   "rent": 1619.96
+  },
+  "85306": {
+   "city": "Glendale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 405929.56,
+   "rent": 1534.78
+  },
+  "85307": {
+   "city": "Glendale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 408569.03,
+   "rent": 1410.8
+  },
+  "85308": {
+   "city": "Glendale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 474649.48,
+   "rent": 1662.16
+  },
+  "85310": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 542846.72,
+   "rent": 2273.6
+  },
+  "85320": {
+   "city": "Congress",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 485366.74
+  },
+  "85321": {
+   "city": "Ajo",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 135959.39
+  },
+  "85322": {
+   "city": "Arlington",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 372203.56
+  },
+  "85323": {
+   "city": "Avondale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 388635.5,
+   "rent": 1777.46
+  },
+  "85324": {
+   "city": "Black Canyon City",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 374560.6
+  },
+  "85325": {
+   "city": "Bouse",
+   "county": "La Paz County",
+   "metro": "",
+   "value": 162087.21
+  },
+  "85326": {
+   "city": "Buckeye",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 372157.06,
+   "rent": 1932.12
+  },
+  "85331": {
+   "city": "Cave Creek",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 835235.97,
+   "rent": 3239.93
+  },
+  "85332": {
+   "city": "Congress",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 348128.77
+  },
+  "85335": {
+   "city": "El Mirage",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 341797.42,
+   "rent": 1908.12
+  },
+  "85336": {
+   "city": "Somerton",
+   "county": "Yuma County",
+   "metro": "Yuma, AZ",
+   "value": 250645.65
+  },
+  "85337": {
+   "city": "Gila Bend",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 219746.27
+  },
+  "85338": {
+   "city": "Goodyear",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 437058.22,
+   "rent": 1695.67
+  },
+  "85339": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 442133.16,
+   "rent": 2133.44
+  },
+  "85340": {
+   "city": "Litchfield Park",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 520702.75,
+   "rent": 2180.12
+  },
+  "85342": {
+   "city": "Morristown",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 410237.52
+  },
+  "85344": {
+   "city": "Parker",
+   "county": "La Paz County",
+   "metro": "",
+   "value": 359968.1
+  },
+  "85345": {
+   "city": "Peoria",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 365438.06,
+   "rent": 1857.19
+  },
+  "85346": {
+   "city": "Quartzsite",
+   "county": "La Paz County",
+   "metro": "",
+   "value": 201812.06
+  },
+  "85348": {
+   "city": "Salome",
+   "county": "La Paz County",
+   "metro": "",
+   "value": 196214.57
+  },
+  "85349": {
+   "city": "San Luis",
+   "county": "Yuma County",
+   "metro": "Yuma, AZ",
+   "value": 258076.93
+  },
+  "85350": {
+   "city": "Somerton",
+   "county": "Yuma County",
+   "metro": "Yuma, AZ",
+   "value": 273120.21
+  },
+  "85351": {
+   "city": "Sun City",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 274380.71,
+   "rent": 1716.81
+  },
+  "85353": {
+   "city": "Tolleson",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 394871.9,
+   "rent": 1984.04
+  },
+  "85354": {
+   "city": "Tonopah",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 414825.76
+  },
+  "85355": {
+   "city": "Waddell",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 496092.54,
+   "rent": 2252.01
+  },
+  "85356": {
+   "city": "Wellton",
+   "county": "Yuma County",
+   "metro": "Yuma, AZ",
+   "value": 252750.66
+  },
+  "85361": {
+   "city": "Wittmann",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 515830.92
+  },
+  "85362": {
+   "city": "Yarnell",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 273201.1
+  },
+  "85363": {
+   "city": "Youngtown",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 309956.93,
+   "rent": 1511.25
+  },
+  "85364": {
+   "city": "Yuma",
+   "county": "Yuma County",
+   "metro": "Yuma, AZ",
+   "value": 266597.52,
+   "rent": 1260.9
+  },
+  "85365": {
+   "city": "Yuma",
+   "county": "Yuma County",
+   "metro": "Yuma, AZ",
+   "value": 329470.38,
+   "rent": 1731.23
+  },
+  "85367": {
+   "city": "Yuma",
+   "county": "Yuma County",
+   "metro": "Yuma, AZ",
+   "value": 305909.39,
+   "rent": 1704.67
+  },
+  "85373": {
+   "city": "Sun City",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 363366.82,
+   "rent": 1918.08
+  },
+  "85374": {
+   "city": "Surprise",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 386342.76,
+   "rent": 1665.35
+  },
+  "85375": {
+   "city": "Sun City West",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 378564.52,
+   "rent": 1970.0
+  },
+  "85377": {
+   "city": "Carefree",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 1230322.18
+  },
+  "85378": {
+   "city": "Surprise",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 331625.26,
+   "rent": 1607.5
+  },
+  "85379": {
+   "city": "Surprise",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 424378.05,
+   "rent": 1984.11
+  },
+  "85381": {
+   "city": "Peoria",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 456127.59,
+   "rent": 1480.37
+  },
+  "85382": {
+   "city": "Peoria",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 453487.63,
+   "rent": 1799.79
+  },
+  "85383": {
+   "city": "Peoria",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 640536.79,
+   "rent": 2317.21
+  },
+  "85387": {
+   "city": "Surprise",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 453716.79,
+   "rent": 2161.61
+  },
+  "85388": {
+   "city": "Surprise",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 447420.18,
+   "rent": 2256.08
+  },
+  "85390": {
+   "city": "Wickenburg",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 514631.92,
+   "rent": 1800.0
+  },
+  "85392": {
+   "city": "Avondale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 410810.49,
+   "rent": 1825.34
+  },
+  "85395": {
+   "city": "Goodyear",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 548548.51,
+   "rent": 1707.64
+  },
+  "85396": {
+   "city": "Buckeye",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 459677.25,
+   "rent": 2187.97
+  },
+  "85501": {
+   "city": "Globe",
+   "county": "Gila County",
+   "metro": "Payson, AZ",
+   "value": 240364.57
+  },
+  "85534": {
+   "city": "Duncan",
+   "county": "Greenlee County",
+   "metro": "Safford, AZ",
+   "value": 179496.51
+  },
+  "85539": {
+   "city": "Miami",
+   "county": "Gila County",
+   "metro": "Payson, AZ",
+   "value": 141571.48
+  },
+  "85541": {
+   "city": "Payson",
+   "county": "Gila County",
+   "metro": "Payson, AZ",
+   "value": 452509.68,
+   "rent": 1732.5
+  },
+  "85543": {
+   "city": "Pima",
+   "county": "Graham County",
+   "metro": "Safford, AZ",
+   "value": 345778.57
+  },
+  "85544": {
+   "city": "Pine",
+   "county": "Gila County",
+   "metro": "Payson, AZ",
+   "value": 488489.59
+  },
+  "85545": {
+   "city": "Roosevelt",
+   "county": "Gila County",
+   "metro": "Payson, AZ",
+   "value": 260173.51
+  },
+  "85546": {
+   "city": "Safford",
+   "county": "Graham County",
+   "metro": "Safford, AZ",
+   "value": 289765.61
+  },
+  "85552": {
+   "city": "Thatcher",
+   "county": "Graham County",
+   "metro": "Safford, AZ",
+   "value": 353411.52,
+   "rent": 1200.0
+  },
+  "85553": {
+   "city": "Tonto Basin",
+   "county": "Gila County",
+   "metro": "Payson, AZ",
+   "value": 341486.86
+  },
+  "85554": {
+   "city": "Globe",
+   "county": "Gila County",
+   "metro": "Payson, AZ",
+   "value": 385137.76
+  },
+  "85602": {
+   "city": "Benson",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 254360.65,
+   "rent": 989.5
+  },
+  "85603": {
+   "city": "Bisbee",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 233956.38
+  },
+  "85606": {
+   "city": "Cochise",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 240795.32
+  },
+  "85607": {
+   "city": "Douglas",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 173589.16
+  },
+  "85610": {
+   "city": "Elfrida",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 206428.17
+  },
+  "85611": {
+   "city": "Elgin",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 524342.69
+  },
+  "85614": {
+   "city": "Green Valley",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 293605.65,
+   "rent": 1620.69
+  },
+  "85615": {
+   "city": "Hereford",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 397249.37
+  },
+  "85616": {
+   "city": "Huachuca City",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 219479.82
+  },
+  "85617": {
+   "city": "Mc Neal",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 199544.48
+  },
+  "85619": {
+   "city": "Mount Lemmon",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 547829.62
+  },
+  "85621": {
+   "city": "Nogales",
+   "county": "Santa Cruz County",
+   "metro": "Nogales, AZ",
+   "value": 226821.07
+  },
+  "85622": {
+   "city": "Green Valley",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 345921.76
+  },
+  "85623": {
+   "city": "Oracle",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 526507.53
+  },
+  "85624": {
+   "city": "Patagonia",
+   "county": "Santa Cruz County",
+   "metro": "Nogales, AZ",
+   "value": 412325.71
+  },
+  "85625": {
+   "city": "Pearce",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 201465.87
+  },
+  "85629": {
+   "city": "Sahuarita",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 338895.89,
+   "rent": 1929.15
+  },
+  "85630": {
+   "city": "Saint David",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 325945.13
+  },
+  "85631": {
+   "city": "San Manuel",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 156925.65
+  },
+  "85632": {
+   "city": "San Simon",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 248169.72
+  },
+  "85635": {
+   "city": "Sierra Vista",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 270843.23,
+   "rent": 1253.91
+  },
+  "85637": {
+   "city": "Sonoita",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 577372.93
+  },
+  "85638": {
+   "city": "Tombstone",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 240972.98
+  },
+  "85640": {
+   "city": "Tumacacori",
+   "county": "Santa Cruz County",
+   "metro": "Nogales, AZ",
+   "value": 420185.77
+  },
+  "85641": {
+   "city": "Vail",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 407715.77,
+   "rent": 2096.45
+  },
+  "85643": {
+   "city": "Willcox",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 198893.67
+  },
+  "85645": {
+   "city": "Amado",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 266601.65
+  },
+  "85646": {
+   "city": "Tubac",
+   "county": "Santa Cruz County",
+   "metro": "Nogales, AZ",
+   "value": 513714.19
+  },
+  "85648": {
+   "city": "Rio Rico",
+   "county": "Santa Cruz County",
+   "metro": "Nogales, AZ",
+   "value": 273574.73
+  },
+  "85650": {
+   "city": "Sierra Vista",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 365486.25,
+   "rent": 1957.5
+  },
+  "85653": {
+   "city": "Marana",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 386583.35,
+   "rent": 2203.55
+  },
+  "85658": {
+   "city": "Marana",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 537710.45,
+   "rent": 2248.89
+  },
+  "85701": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 408439.56,
+   "rent": 1359.01
+  },
+  "85704": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 454062.27,
+   "rent": 1430.57
+  },
+  "85705": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 256935.61,
+   "rent": 1095.75
+  },
+  "85706": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 262138.57,
+   "rent": 1145.9
+  },
+  "85710": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 301206.53,
+   "rent": 1104.37
+  },
+  "85711": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 285608.58,
+   "rent": 1183.2
+  },
+  "85712": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 284743.79,
+   "rent": 1121.54
+  },
+  "85713": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 240801.95,
+   "rent": 1424.0
+  },
+  "85714": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 237234.02,
+   "rent": 1150.83
+  },
+  "85715": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 380025.24,
+   "rent": 1641.93
+  },
+  "85716": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 316561.48,
+   "rent": 1298.54
+  },
+  "85718": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 744713.94,
+   "rent": 1469.05
+  },
+  "85719": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 342453.16,
+   "rent": 1299.14
+  },
+  "85730": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 289436.09,
+   "rent": 1540.42
+  },
+  "85735": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 343915.77
+  },
+  "85736": {
+   "city": "Topawa",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 299757.98
+  },
+  "85737": {
+   "city": "Oro Valley",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 496554.58,
+   "rent": 1760.17
+  },
+  "85739": {
+   "city": "Saddlebrooke",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 470192.33
+  },
+  "85741": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 327591.61,
+   "rent": 1589.07
+  },
+  "85742": {
+   "city": "Marana",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 386955.59,
+   "rent": 1776.95
+  },
+  "85743": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 396677.04,
+   "rent": 1705.44
+  },
+  "85745": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 363407.91,
+   "rent": 1504.22
+  },
+  "85746": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 285524.46,
+   "rent": 1442.91
+  },
+  "85747": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 366513.02,
+   "rent": 2020.68
+  },
+  "85748": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 375972.41,
+   "rent": 1935.78
+  },
+  "85749": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 659392.68,
+   "rent": 1798.69
+  },
+  "85750": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 606769.14,
+   "rent": 1468.33
+  },
+  "85755": {
+   "city": "Oro Valley",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 512259.3,
+   "rent": 2430.69
+  },
+  "85756": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 306719.56,
+   "rent": 1964.58
+  },
+  "85757": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 324283.47,
+   "rent": 1865.0
+  },
+  "85901": {
+   "city": "Show Low",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 433250.41
+  },
+  "85920": {
+   "city": "Alpine",
+   "county": "Apache County",
+   "metro": "",
+   "value": 426359.23
+  },
+  "85924": {
+   "city": "Concho",
+   "county": "Apache County",
+   "metro": "",
+   "value": 301304.6
+  },
+  "85925": {
+   "city": "Eagar",
+   "county": "Apache County",
+   "metro": "",
+   "value": 319690.15
+  },
+  "85927": {
+   "city": "Greer",
+   "county": "Apache County",
+   "metro": "",
+   "value": 551101.86
+  },
+  "85928": {
+   "city": "Heber",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 447921.96
+  },
+  "85929": {
+   "city": "Lakeside",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 422944.23
+  },
+  "85931": {
+   "city": "Forest Lakes",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 559274.36
+  },
+  "85932": {
+   "city": "Nutrioso",
+   "county": "Apache County",
+   "metro": "",
+   "value": 447841.44
+  },
+  "85933": {
+   "city": "Overgaard",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 382075.09
+  },
+  "85935": {
+   "city": "Pinetop",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 551001.98
+  },
+  "85936": {
+   "city": "Saint Johns",
+   "county": "Apache County",
+   "metro": "",
+   "value": 244086.9
+  },
+  "85937": {
+   "city": "Snowflake",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 350874.2
+  },
+  "85938": {
+   "city": "Eagar",
+   "county": "Apache County",
+   "metro": "",
+   "value": 260976.04
+  },
+  "85939": {
+   "city": "Taylor",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 385099.14
+  },
+  "85940": {
+   "city": "Vernon",
+   "county": "Apache County",
+   "metro": "",
+   "value": 393803.75
+  },
+  "86001": {
+   "city": "Flagstaff",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 674681.77,
+   "rent": 1983.32
+  },
+  "86004": {
+   "city": "Flagstaff",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 629959.0,
+   "rent": 2268.21
+  },
+  "86005": {
+   "city": "Flagstaff",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 738843.81,
+   "rent": 2281.16
+  },
+  "86015": {
+   "city": "Parks",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 555972.31
+  },
+  "86017": {
+   "city": "Munds Park",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 597429.85
+  },
+  "86018": {
+   "city": "Parks",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 618357.33
+  },
+  "86021": {
+   "city": "Colorado City",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 390528.86
+  },
+  "86022": {
+   "city": "Fredonia",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 312950.37
+  },
+  "86024": {
+   "city": "Happy Jack",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 520545.89
+  },
+  "86025": {
+   "city": "Holbrook",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 212776.15
+  },
+  "86038": {
+   "city": "Mormon Lake",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 401480.39
+  },
+  "86040": {
+   "city": "Page",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 381832.02,
+   "rent": 1500.0
+  },
+  "86046": {
+   "city": "Williams",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 450509.08
+  },
+  "86047": {
+   "city": "Winslow",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 213522.59
+  },
+  "86301": {
+   "city": "Prescott",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 541036.16,
+   "rent": 1948.14
+  },
+  "86303": {
+   "city": "Prescott",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 589920.45,
+   "rent": 1744.06
+  },
+  "86305": {
+   "city": "Prescott",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 714231.0,
+   "rent": 1632.22
+  },
+  "86314": {
+   "city": "Prescott Valley",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 436576.96,
+   "rent": 1753.16
+  },
+  "86315": {
+   "city": "Prescott Valley",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 592798.62
+  },
+  "86320": {
+   "city": "Ash Fork",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 219246.76
+  },
+  "86322": {
+   "city": "Camp Verde",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 435417.91,
+   "rent": 1700.0
+  },
+  "86323": {
+   "city": "Chino Valley",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 503192.45,
+   "rent": 2522.5
+  },
+  "86324": {
+   "city": "Clarkdale",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 468297.41
+  },
+  "86325": {
+   "city": "Cornville",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 526140.78
+  },
+  "86326": {
+   "city": "Cottonwood",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 398016.45,
+   "rent": 1939.72
+  },
+  "86327": {
+   "city": "Dewey-Humboldt",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 453273.08,
+   "rent": 2050.0
+  },
+  "86332": {
+   "city": "Kirkland",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 370632.25
+  },
+  "86333": {
+   "city": "Mayer",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 311036.86
+  },
+  "86334": {
+   "city": "Paulden",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 444808.63
+  },
+  "86335": {
+   "city": "Rimrock",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 358147.02
+  },
+  "86336": {
+   "city": "Sedona",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 997959.81,
+   "rent": 2642.81
+  },
+  "86337": {
+   "city": "Seligman",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 160772.46
+  },
+  "86343": {
+   "city": "Crown King",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 266914.15
+  },
+  "86351": {
+   "city": "Sedona",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 798451.17,
+   "rent": 2766.67
+  },
+  "86401": {
+   "city": "Kingman",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 291629.94,
+   "rent": 1344.83
+  },
+  "86403": {
+   "city": "Lake Havasu City",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 393029.41,
+   "rent": 1502.61
+  },
+  "86404": {
+   "city": "Lake Havasu City",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 513657.86,
+   "rent": 2038.82
+  },
+  "86406": {
+   "city": "Lake Havasu City",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 496213.96,
+   "rent": 1962.85
+  },
+  "86409": {
+   "city": "Kingman",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 267693.86,
+   "rent": 1463.42
+  },
+  "86413": {
+   "city": "Golden Valley",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 245800.23
+  },
+  "86426": {
+   "city": "Fort Mohave",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 339179.33,
+   "rent": 1725.0
+  },
+  "86429": {
+   "city": "Bullhead City",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 406025.27,
+   "rent": 1254.8
+  },
+  "86432": {
+   "city": "Fredonia",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 379059.43
+  },
+  "86436": {
+   "city": "Topock",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 267979.7
+  },
+  "86438": {
+   "city": "Yucca",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 234862.26
+  },
+  "86440": {
+   "city": "Mohave Valley",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 309316.63
+  },
+  "86441": {
+   "city": "Dolan Springs",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 126300.42
+  },
+  "86442": {
+   "city": "Bullhead City",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 274110.11,
+   "rent": 1409.95
+  },
+  "86444": {
+   "city": "Meadview",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 211939.5
+  }
+ },
+ "cities": {
+  "ajo": {
+   "city": "Ajo",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 135959.39
+  },
+  "alpine": {
+   "city": "Alpine",
+   "county": "Apache County",
+   "metro": "",
+   "value": 426359.23
+  },
+  "amado": {
+   "city": "Amado",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 266601.65
+  },
+  "anthem": {
+   "city": "Anthem",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 625091.22,
+   "rent": 2153.05
+  },
+  "apache junction": {
+   "city": "Apache Junction",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 374589.69,
+   "rent": 1741.89
+  },
+  "arizona city": {
+   "city": "Arizona City",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 250212.62,
+   "rent": 1492.67
+  },
+  "arlington": {
+   "city": "Arlington",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 372203.56
+  },
+  "ash fork": {
+   "city": "Ash Fork",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 219246.76
+  },
+  "avondale": {
+   "city": "Avondale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 399722.99,
+   "rent": 1801.4
+  },
+  "benson": {
+   "city": "Benson",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 254360.65,
+   "rent": 989.5
+  },
+  "bisbee": {
+   "city": "Bisbee",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 233956.38
+  },
+  "black canyon city": {
+   "city": "Black Canyon City",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 374560.6
+  },
+  "bouse": {
+   "city": "Bouse",
+   "county": "La Paz County",
+   "metro": "",
+   "value": 162087.21
+  },
+  "buckeye": {
+   "city": "Buckeye",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 415917.16,
+   "rent": 2060.05
+  },
+  "bullhead city": {
+   "city": "Bullhead City",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 340067.69,
+   "rent": 1332.38
+  },
+  "bylas": {
+   "city": "Bylas",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 157615.66
+  },
+  "camp verde": {
+   "city": "Camp Verde",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 435417.91,
+   "rent": 1700.0
+  },
+  "carefree": {
+   "city": "Carefree",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 1230322.18
+  },
+  "casa grande": {
+   "city": "Casa Grande",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 351855.21,
+   "rent": 1863.8
+  },
+  "cave creek": {
+   "city": "Cave Creek",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 835235.97,
+   "rent": 3239.93
+  },
+  "chandler": {
+   "city": "Chandler",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 529288.69,
+   "rent": 2012.42
+  },
+  "chino valley": {
+   "city": "Chino Valley",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 503192.45,
+   "rent": 2522.5
+  },
+  "clarkdale": {
+   "city": "Clarkdale",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 468297.41
+  },
+  "cochise": {
+   "city": "Cochise",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 240795.32
+  },
+  "colorado city": {
+   "city": "Colorado City",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 390528.86
+  },
+  "concho": {
+   "city": "Concho",
+   "county": "Apache County",
+   "metro": "",
+   "value": 301304.6
+  },
+  "congress": {
+   "city": "Congress",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 416747.76
+  },
+  "coolidge": {
+   "city": "Coolidge",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 268908.52,
+   "rent": 1634.89
+  },
+  "cornville": {
+   "city": "Cornville",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 526140.78
+  },
+  "cottonwood": {
+   "city": "Cottonwood",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 398016.45,
+   "rent": 1939.72
+  },
+  "crown king": {
+   "city": "Crown King",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 266914.15
+  },
+  "dewey-humboldt": {
+   "city": "Dewey-Humboldt",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 453273.08,
+   "rent": 2050.0
+  },
+  "dolan springs": {
+   "city": "Dolan Springs",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 126300.42
+  },
+  "douglas": {
+   "city": "Douglas",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 173589.16
+  },
+  "duncan": {
+   "city": "Duncan",
+   "county": "Greenlee County",
+   "metro": "Safford, AZ",
+   "value": 179496.51
+  },
+  "eagar": {
+   "city": "Eagar",
+   "county": "Apache County",
+   "metro": "",
+   "value": 290333.1
+  },
+  "el mirage": {
+   "city": "El Mirage",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 341797.42,
+   "rent": 1908.12
+  },
+  "elfrida": {
+   "city": "Elfrida",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 206428.17
+  },
+  "elgin": {
+   "city": "Elgin",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 524342.69
+  },
+  "eloy": {
+   "city": "Eloy",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 291478.87,
+   "rent": 1720.56
+  },
+  "flagstaff": {
+   "city": "Flagstaff",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 674681.77,
+   "rent": 2268.21
+  },
+  "florence": {
+   "city": "Florence",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 332910.38,
+   "rent": 1742.9
+  },
+  "forest lakes": {
+   "city": "Forest Lakes",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 559274.36
+  },
+  "fort mcdowell": {
+   "city": "Fort McDowell",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 1206679.09
+  },
+  "fort mohave": {
+   "city": "Fort Mohave",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 339179.33,
+   "rent": 1725.0
+  },
+  "fountain hills": {
+   "city": "Fountain Hills",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 673292.76,
+   "rent": 2434.69
+  },
+  "fredonia": {
+   "city": "Fredonia",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 346004.9
+  },
+  "gila bend": {
+   "city": "Gila Bend",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 219746.27
+  },
+  "gilbert": {
+   "city": "Gilbert",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 552616.98,
+   "rent": 2089.17
+  },
+  "glendale": {
+   "city": "Glendale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 405981.49,
+   "rent": 1577.37
+  },
+  "globe": {
+   "city": "Globe",
+   "county": "Gila County",
+   "metro": "Payson, AZ",
+   "value": 312751.17
+  },
+  "gold canyon": {
+   "city": "Gold Canyon",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 480633.18,
+   "rent": 2005.0
+  },
+  "golden valley": {
+   "city": "Golden Valley",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 245800.23
+  },
+  "goodyear": {
+   "city": "Goodyear",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 492803.36,
+   "rent": 1701.66
+  },
+  "green valley": {
+   "city": "Green Valley",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 319763.71,
+   "rent": 1620.69
+  },
+  "greer": {
+   "city": "Greer",
+   "county": "Apache County",
+   "metro": "",
+   "value": 551101.86
+  },
+  "happy jack": {
+   "city": "Happy Jack",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 520545.89
+  },
+  "heber": {
+   "city": "Heber",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 447921.96
+  },
+  "hereford": {
+   "city": "Hereford",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 397249.37
+  },
+  "holbrook": {
+   "city": "Holbrook",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 212776.15
+  },
+  "huachuca city": {
+   "city": "Huachuca City",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 219479.82
+  },
+  "kingman": {
+   "city": "Kingman",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 279661.9,
+   "rent": 1404.12
+  },
+  "kirkland": {
+   "city": "Kirkland",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 370632.25
+  },
+  "lake havasu city": {
+   "city": "Lake Havasu City",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 496213.96,
+   "rent": 1962.85
+  },
+  "lakeside": {
+   "city": "Lakeside",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 422944.23
+  },
+  "litchfield park": {
+   "city": "Litchfield Park",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 520702.75,
+   "rent": 2180.12
+  },
+  "marana": {
+   "city": "Marana",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 386955.59,
+   "rent": 2203.55
+  },
+  "maricopa": {
+   "city": "Maricopa",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 342805.58,
+   "rent": 1779.83
+  },
+  "mayer": {
+   "city": "Mayer",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 311036.86
+  },
+  "mc neal": {
+   "city": "Mc Neal",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 199544.48
+  },
+  "meadview": {
+   "city": "Meadview",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 211939.5
+  },
+  "mesa": {
+   "city": "Mesa",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 405669.25,
+   "rent": 1668.74
+  },
+  "miami": {
+   "city": "Miami",
+   "county": "Gila County",
+   "metro": "Payson, AZ",
+   "value": 153084.57
+  },
+  "mohave valley": {
+   "city": "Mohave Valley",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 309316.63
+  },
+  "mormon lake": {
+   "city": "Mormon Lake",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 401480.39
+  },
+  "morristown": {
+   "city": "Morristown",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 410237.52
+  },
+  "mount lemmon": {
+   "city": "Mount Lemmon",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 547829.62
+  },
+  "munds park": {
+   "city": "Munds Park",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 597429.85
+  },
+  "new river": {
+   "city": "New River",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 630520.49
+  },
+  "nogales": {
+   "city": "Nogales",
+   "county": "Santa Cruz County",
+   "metro": "Nogales, AZ",
+   "value": 226821.07
+  },
+  "nutrioso": {
+   "city": "Nutrioso",
+   "county": "Apache County",
+   "metro": "",
+   "value": 447841.44
+  },
+  "oracle": {
+   "city": "Oracle",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 526507.53
+  },
+  "oro valley": {
+   "city": "Oro Valley",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 504406.94,
+   "rent": 2095.43
+  },
+  "overgaard": {
+   "city": "Overgaard",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 382075.09
+  },
+  "page": {
+   "city": "Page",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 381832.02,
+   "rent": 1500.0
+  },
+  "paradise valley": {
+   "city": "Paradise Valley",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 3327715.38,
+   "rent": 2306.86
+  },
+  "parker": {
+   "city": "Parker",
+   "county": "La Paz County",
+   "metro": "",
+   "value": 359968.1
+  },
+  "parks": {
+   "city": "Parks",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 587164.82
+  },
+  "patagonia": {
+   "city": "Patagonia",
+   "county": "Santa Cruz County",
+   "metro": "Nogales, AZ",
+   "value": 412325.71
+  },
+  "paulden": {
+   "city": "Paulden",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 444808.63
+  },
+  "payson": {
+   "city": "Payson",
+   "county": "Gila County",
+   "metro": "Payson, AZ",
+   "value": 452509.68,
+   "rent": 1732.5
+  },
+  "pearce": {
+   "city": "Pearce",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 201465.87
+  },
+  "peoria": {
+   "city": "Peoria",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 454807.61,
+   "rent": 1828.49
+  },
+  "phoenix": {
+   "city": "Phoenix",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 420288.8,
+   "rent": 1540.04
+  },
+  "pima": {
+   "city": "Pima",
+   "county": "Graham County",
+   "metro": "Safford, AZ",
+   "value": 345778.57
+  },
+  "pine": {
+   "city": "Pine",
+   "county": "Gila County",
+   "metro": "Payson, AZ",
+   "value": 488489.59
+  },
+  "pinetop": {
+   "city": "Pinetop",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 551001.98
+  },
+  "prescott": {
+   "city": "Prescott",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 589920.45,
+   "rent": 1744.06
+  },
+  "prescott valley": {
+   "city": "Prescott Valley",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 514687.79,
+   "rent": 1753.16
+  },
+  "quartzsite": {
+   "city": "Quartzsite",
+   "county": "La Paz County",
+   "metro": "",
+   "value": 201812.06
+  },
+  "queen creek": {
+   "city": "Queen Creek",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 587949.82,
+   "rent": 2148.26
+  },
+  "red rock": {
+   "city": "Red Rock",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 290057.49
+  },
+  "rimrock": {
+   "city": "Rimrock",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 358147.02
+  },
+  "rio rico": {
+   "city": "Rio Rico",
+   "county": "Santa Cruz County",
+   "metro": "Nogales, AZ",
+   "value": 273574.73
+  },
+  "rio verde": {
+   "city": "Rio Verde",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 829065.99
+  },
+  "roosevelt": {
+   "city": "Roosevelt",
+   "county": "Gila County",
+   "metro": "Payson, AZ",
+   "value": 260173.51
+  },
+  "saddlebrooke": {
+   "city": "Saddlebrooke",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 470192.33
+  },
+  "safford": {
+   "city": "Safford",
+   "county": "Graham County",
+   "metro": "Safford, AZ",
+   "value": 289765.61
+  },
+  "sahuarita": {
+   "city": "Sahuarita",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 338895.89,
+   "rent": 1929.15
+  },
+  "saint david": {
+   "city": "Saint David",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 325945.13
+  },
+  "saint johns": {
+   "city": "Saint Johns",
+   "county": "Apache County",
+   "metro": "",
+   "value": 244086.9
+  },
+  "salome": {
+   "city": "Salome",
+   "county": "La Paz County",
+   "metro": "",
+   "value": 196214.57
+  },
+  "san luis": {
+   "city": "San Luis",
+   "county": "Yuma County",
+   "metro": "Yuma, AZ",
+   "value": 258076.93
+  },
+  "san manuel": {
+   "city": "San Manuel",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 156925.65
+  },
+  "san simon": {
+   "city": "San Simon",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 248169.72
+  },
+  "san tan valley": {
+   "city": "San Tan Valley",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 403702.76,
+   "rent": 2014.33
+  },
+  "scottsdale": {
+   "city": "Scottsdale",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 889866.53,
+   "rent": 2119.81
+  },
+  "sedona": {
+   "city": "Sedona",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 898205.49,
+   "rent": 2704.74
+  },
+  "seligman": {
+   "city": "Seligman",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 160772.46
+  },
+  "show low": {
+   "city": "Show Low",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 433250.41
+  },
+  "sierra vista": {
+   "city": "Sierra Vista",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 318164.74,
+   "rent": 1605.7
+  },
+  "snowflake": {
+   "city": "Snowflake",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 350874.2
+  },
+  "somerton": {
+   "city": "Somerton",
+   "county": "Yuma County",
+   "metro": "Yuma, AZ",
+   "value": 261882.93
+  },
+  "sonoita": {
+   "city": "Sonoita",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 577372.93
+  },
+  "sun city": {
+   "city": "Sun City",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 318873.77,
+   "rent": 1817.44
+  },
+  "sun city west": {
+   "city": "Sun City West",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 378564.52,
+   "rent": 1970.0
+  },
+  "superior": {
+   "city": "Superior",
+   "county": "Pinal County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 190058.38
+  },
+  "surprise": {
+   "city": "Surprise",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 424378.05,
+   "rent": 1984.11
+  },
+  "taylor": {
+   "city": "Taylor",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 385099.14
+  },
+  "tempe": {
+   "city": "Tempe",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 460727.41,
+   "rent": 1687.02
+  },
+  "thatcher": {
+   "city": "Thatcher",
+   "county": "Graham County",
+   "metro": "Safford, AZ",
+   "value": 353411.52,
+   "rent": 1200.0
+  },
+  "tolleson": {
+   "city": "Tolleson",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 394871.9,
+   "rent": 1984.04
+  },
+  "tombstone": {
+   "city": "Tombstone",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 240972.98
+  },
+  "tonopah": {
+   "city": "Tonopah",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 414825.76
+  },
+  "tonto basin": {
+   "city": "Tonto Basin",
+   "county": "Gila County",
+   "metro": "Payson, AZ",
+   "value": 341486.86
+  },
+  "topawa": {
+   "city": "Topawa",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 299757.98
+  },
+  "topock": {
+   "city": "Topock",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 267979.7
+  },
+  "tubac": {
+   "city": "Tubac",
+   "county": "Santa Cruz County",
+   "metro": "Nogales, AZ",
+   "value": 513714.19
+  },
+  "tucson": {
+   "city": "Tucson",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 327591.61,
+   "rent": 1455.62
+  },
+  "tumacacori": {
+   "city": "Tumacacori",
+   "county": "Santa Cruz County",
+   "metro": "Nogales, AZ",
+   "value": 420185.77
+  },
+  "vail": {
+   "city": "Vail",
+   "county": "Pima County",
+   "metro": "Tucson, AZ",
+   "value": 407715.77,
+   "rent": 2096.45
+  },
+  "vernon": {
+   "city": "Vernon",
+   "county": "Apache County",
+   "metro": "",
+   "value": 393803.75
+  },
+  "waddell": {
+   "city": "Waddell",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 496092.54,
+   "rent": 2252.01
+  },
+  "wellton": {
+   "city": "Wellton",
+   "county": "Yuma County",
+   "metro": "Yuma, AZ",
+   "value": 252750.66
+  },
+  "wickenburg": {
+   "city": "Wickenburg",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 514631.92,
+   "rent": 1800.0
+  },
+  "willcox": {
+   "city": "Willcox",
+   "county": "Cochise County",
+   "metro": "Sierra Vista-Douglas, AZ",
+   "value": 198893.67
+  },
+  "williams": {
+   "city": "Williams",
+   "county": "Coconino County",
+   "metro": "Flagstaff, AZ",
+   "value": 450509.08
+  },
+  "winslow": {
+   "city": "Winslow",
+   "county": "Navajo County",
+   "metro": "Show Low, AZ",
+   "value": 213522.59
+  },
+  "wittmann": {
+   "city": "Wittmann",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 515830.92
+  },
+  "yarnell": {
+   "city": "Yarnell",
+   "county": "Yavapai County",
+   "metro": "Prescott Valley-Prescott, AZ",
+   "value": 273201.1
+  },
+  "youngtown": {
+   "city": "Youngtown",
+   "county": "Maricopa County",
+   "metro": "Phoenix-Mesa-Chandler, AZ",
+   "value": 309956.93,
+   "rent": 1511.25
+  },
+  "yucca": {
+   "city": "Yucca",
+   "county": "Mohave County",
+   "metro": "Lake Havasu City-Kingman, AZ",
+   "value": 234862.26
+  },
+  "yuma": {
+   "city": "Yuma",
+   "county": "Yuma County",
+   "metro": "Yuma, AZ",
+   "value": 305909.39,
+   "rent": 1704.67
+  }
+ }
+}
