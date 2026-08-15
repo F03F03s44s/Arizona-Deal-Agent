@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
 
 class Deal(BaseModel):
@@ -82,4 +82,55 @@ class DealsResponse(BaseModel):
     query: str | None = None
     source: str = "sample"
     deals: list[Deal] = Field(default_factory=list)
+    warning: str | None = None
+
+
+class SavedSearchCreate(BaseModel):
+    """A standing search the agent re-runs and emails alerts for."""
+
+    query: str = Field(..., min_length=1, description="Craigslist search terms.")
+    email: EmailStr = Field(..., description="Where alerts are sent.")
+    budget: float = Field(default=15000.0, gt=0)
+    profit_weight: float = Field(default=0.6, ge=0, le=1)
+    min_score: float = Field(
+        default=0.9, ge=0, le=1, description="Alert when a deal scores above this."
+    )
+
+
+class SavedSearch(SavedSearchCreate):
+    """A persisted saved search."""
+
+    id: str
+    created_at: datetime
+    last_run_at: datetime | None = None
+    # Deal ids already emailed, so a standing search does not re-alert on the
+    # same listing every poll.
+    notified_deal_ids: list[str] = Field(default_factory=list)
+
+
+class Alert(BaseModel):
+    """A record of one alert email the agent sent (or attempted)."""
+
+    id: str
+    saved_search_id: str
+    query: str
+    email: str
+    subject: str
+    body: str
+    sent_at: datetime
+    delivered: bool
+    transport: str
+    error: str | None = None
+    deal_ids: list[str] = Field(default_factory=list)
+
+
+class SavedSearchRunResult(BaseModel):
+    """Outcome of running one saved search."""
+
+    saved_search_id: str
+    query: str
+    deals_considered: int
+    matches: list[ScoredDeal] = Field(default_factory=list)
+    new_matches: list[ScoredDeal] = Field(default_factory=list)
+    alert: Alert | None = None
     warning: str | None = None

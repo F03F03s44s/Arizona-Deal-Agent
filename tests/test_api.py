@@ -93,6 +93,48 @@ def test_refresh_forces_a_rescrape(offline_deal_service):
     assert len(offline_deal_service) == 2
 
 
+def test_saved_search_lifecycle():
+    created = client.post(
+        "/api/saved-searches",
+        json={"query": "cordless drill", "email": "kiet@example.com", "min_score": 0.9},
+    )
+    assert created.status_code == 201
+    result = created.json()
+
+    # Saving runs the search immediately, so an existing bargain alerts at once.
+    assert len(result["new_matches"]) == 1
+    assert result["alert"]["delivered"] is True
+    assert result["alert"]["email"] == "kiet@example.com"
+
+    listed = client.get("/api/saved-searches").json()
+    assert len(listed) == 1
+    search_id = listed[0]["id"]
+    assert listed[0]["notified_deal_ids"] == ["cl-bargain"]
+
+    rerun = client.post(f"/api/saved-searches/{search_id}/run").json()
+    assert rerun["new_matches"] == []
+    assert rerun["alert"] is None
+
+    alerts = client.get("/api/alerts").json()
+    assert len(alerts) == 1
+    assert "DeWalt cordless drill" in alerts[0]["subject"]
+
+    assert client.delete(f"/api/saved-searches/{search_id}").status_code == 204
+    assert client.get("/api/saved-searches").json() == []
+
+
+def test_saved_search_rejects_a_bad_email():
+    res = client.post(
+        "/api/saved-searches", json={"query": "drill", "email": "not-an-email"}
+    )
+    assert res.status_code == 422
+
+
+def test_missing_saved_search_is_reported():
+    assert client.post("/api/saved-searches/nope/run").status_code == 404
+    assert client.delete("/api/saved-searches/nope").status_code == 404
+
+
 def test_index_served():
     res = client.get("/")
     assert res.status_code == 200

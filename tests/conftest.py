@@ -1,18 +1,26 @@
 """Shared test setup.
 
-Tests never touch the network: the deal service is pointed at fixed listings
-instead of Craigslist.
+Tests never touch the network or the developer's saved-search file: the deal
+service is pointed at fixed listings and the store at a temporary directory.
 """
 
 from __future__ import annotations
 
 import json
+import os
+import tempfile
 from pathlib import Path
 
-import pytest
+# app.main reads both of these when it is imported, so they have to be set
+# before any test module pulls it in.
+os.environ["DEAL_AGENT_DATA_DIR"] = tempfile.mkdtemp(prefix="deal-agent-tests-")
+os.environ["ALERT_POLL_SECONDS"] = "0"
+os.environ.pop("SMTP_HOST", None)
 
-from app.craigslist import Listing, parse_search_payload
-from app.deals import deal_service
+import pytest  # noqa: E402
+
+from app.craigslist import Listing, parse_search_payload  # noqa: E402
+from app.deals import deal_service  # noqa: E402
 
 FIXTURE_DIR = Path(__file__).parent / "fixtures"
 
@@ -70,3 +78,12 @@ def offline_deal_service(sample_listings: list[Listing], monkeypatch) -> list[tu
     deal_service.invalidate()
     yield calls
     deal_service.invalidate()
+
+
+@pytest.fixture(autouse=True)
+def clean_store():
+    from app.main import store
+
+    store.clear()
+    yield
+    store.clear()

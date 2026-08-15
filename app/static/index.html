@@ -40,7 +40,8 @@
       .field { display: flex; flex-direction: column; gap: 6px; }
       .field label { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
       .field input[type="text"],
-      .field input[type="number"] {
+      .field input[type="number"],
+      .field input[type="email"] {
         padding: 8px 10px;
         border: 1px solid #d8cdbb;
         border-radius: 8px;
@@ -65,6 +66,7 @@
       button:active { transform: translateY(1px); }
       button.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); }
       button.ghost:hover { background: #f2ebdf; color: var(--dusk); }
+      button.small { padding: 6px 12px; font-size: 0.82rem; }
 
       .status { display: flex; align-items: center; gap: 10px; margin: 14px 2px 0; flex-wrap: wrap; min-height: 24px; }
       .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.3px; }
@@ -100,6 +102,19 @@
       .badge.no { background: #f6dcd1; color: #b04a1f; }
       .rank-num { font-weight: 700; color: var(--sunset); }
       .subtle { color: var(--muted); font-size: 0.78rem; }
+
+      .panel { margin-top: 28px; background: var(--card); border-radius: 14px; padding: 20px; box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08); }
+      .panel h2 { margin: 0 0 4px; font-size: 1.1rem; }
+      .panel .hint { margin: 0 0 16px; color: var(--muted); font-size: 0.85rem; }
+      .saved-form { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
+      .saved-list { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+      .saved-item { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+      .saved-item .who { font-weight: 600; }
+      .saved-actions { display: flex; gap: 8px; }
+      .alert-item { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-top: 10px; }
+      .alert-item .subject { font-weight: 700; }
+      .alert-item pre { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.78rem; background: #faf6ee; border-radius: 8px; padding: 10px; margin: 8px 0 0; max-height: 220px; overflow: auto; }
+      .empty { color: var(--muted); font-size: 0.88rem; margin-top: 12px; }
     </style>
   </head>
   <body>
@@ -151,6 +166,37 @@
         </thead>
         <tbody id="rows"></tbody>
       </table>
+
+      <section class="panel">
+        <h2>Saved searches</h2>
+        <p class="hint">
+          The agent re-runs these on a schedule and emails you the moment a listing scores at or
+          above your threshold. Each listing is only ever emailed once.
+        </p>
+        <form id="savedForm" class="saved-form">
+          <div class="field">
+            <label for="ssQuery">Search</label>
+            <input id="ssQuery" type="text" required style="width: 200px;" />
+          </div>
+          <div class="field">
+            <label for="ssEmail">Email me at</label>
+            <input id="ssEmail" type="email" required placeholder="you@example.com" style="width: 220px;" />
+          </div>
+          <div class="field">
+            <label for="ssScore">Alert above score</label>
+            <input id="ssScore" type="number" min="0" max="1" step="0.01" value="0.9" style="width: 120px;" />
+          </div>
+          <button type="submit">Save search</button>
+        </form>
+        <div id="savedStatus" class="empty"></div>
+        <ul id="savedList" class="saved-list"></ul>
+      </section>
+
+      <section class="panel">
+        <h2>Alert emails</h2>
+        <p class="hint">Everything the agent has sent, newest first.</p>
+        <div id="alertList"></div>
+      </section>
     </main>
 
     <script>
@@ -256,10 +302,116 @@
         rankSoon();
       });
       budgetInput.addEventListener("input", rankSoon);
-      queryInput.addEventListener("input", rankSoon);
+      queryInput.addEventListener("input", () => {
+        document.getElementById("ssQuery").value = queryInput.value;
+        rankSoon();
+      });
       document.getElementById("refreshBtn").addEventListener("click", () => rank({ refresh: true }));
 
+      // Saved searches
+      const savedStatus = document.getElementById("savedStatus");
+
+      async function loadSaved() {
+        const res = await fetch("/api/saved-searches");
+        const searches = await res.json();
+        const list = document.getElementById("savedList");
+        if (!searches.length) {
+          list.innerHTML = "";
+          savedStatus.textContent = "No saved searches yet.";
+          return;
+        }
+        savedStatus.textContent = "";
+        list.innerHTML = searches
+          .map(
+            (s) => `
+            <li class="saved-item">
+              <div>
+                <div class="who">"${esc(s.query)}" &rarr; ${esc(s.email)}</div>
+                <div class="subtle">
+                  alerts above ${s.min_score.toFixed(2)} \u00b7 budget ${fmt(s.budget)} \u00b7
+                  ${s.notified_deal_ids.length} listing(s) already alerted \u00b7
+                  last run ${s.last_run_at ? new Date(s.last_run_at).toLocaleString() : "never"}
+                </div>
+              </div>
+              <div class="saved-actions">
+                <button class="small" data-run="${esc(s.id)}">Run now</button>
+                <button class="small ghost" data-delete="${esc(s.id)}">Delete</button>
+              </div>
+            </li>`
+          )
+          .join("");
+      }
+
+      async function loadAlerts() {
+        const res = await fetch("/api/alerts");
+        const alerts = await res.json();
+        const container = document.getElementById("alertList");
+        if (!alerts.length) {
+          container.innerHTML = '<div class="empty">No alerts sent yet.</div>';
+          return;
+        }
+        container.innerHTML = alerts
+          .map(
+            (a) => `
+            <div class="alert-item">
+              <div class="subject">${esc(a.subject)}</div>
+              <div class="subtle">
+                to ${esc(a.email)} \u00b7 ${new Date(a.sent_at).toLocaleString()} \u00b7
+                via ${esc(a.transport)} \u00b7 ${a.delivered ? "delivered" : "FAILED: " + esc(a.error ?? "")}
+              </div>
+              <pre>${esc(a.body)}</pre>
+            </div>`
+          )
+          .join("");
+      }
+
+      document.getElementById("savedForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        savedStatus.textContent = "Saving and checking for matches\u2026";
+        const res = await fetch("/api/saved-searches", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            query: document.getElementById("ssQuery").value.trim(),
+            email: document.getElementById("ssEmail").value.trim(),
+            min_score: Number(document.getElementById("ssScore").value),
+            budget: Number(budgetInput.value) || 15000,
+            profit_weight: Number(weight.value),
+          }),
+        });
+        if (!res.ok) {
+          savedStatus.textContent = "Could not save that search.";
+          return;
+        }
+        const result = await res.json();
+        savedStatus.textContent = result.alert
+          ? `Emailed ${result.new_matches.length} new match(es) straight away.`
+          : `Saved. ${result.matches.length} current match(es); you'll be emailed when a new one appears.`;
+        await Promise.all([loadSaved(), loadAlerts()]);
+      });
+
+      document.getElementById("savedList").addEventListener("click", async (event) => {
+        const runId = event.target.getAttribute("data-run");
+        const deleteId = event.target.getAttribute("data-delete");
+        if (runId) {
+          event.target.disabled = true;
+          event.target.textContent = "Running\u2026";
+          const res = await fetch(`/api/saved-searches/${runId}/run`, { method: "POST" });
+          const result = await res.json();
+          savedStatus.textContent = result.alert
+            ? `Emailed ${result.new_matches.length} new match(es).`
+            : `No new matches (${result.matches.length} already alerted).`;
+          await Promise.all([loadSaved(), loadAlerts()]);
+        } else if (deleteId) {
+          await fetch(`/api/saved-searches/${deleteId}`, { method: "DELETE" });
+          await loadSaved();
+        }
+      });
+
+      document.getElementById("ssQuery").value = queryInput.value;
       rank();
+      loadSaved();
+      loadAlerts();
     </script>
   </body>
 </html>
