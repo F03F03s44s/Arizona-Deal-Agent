@@ -98,6 +98,25 @@ class RankResponse(BaseModel):
     )
 
 
+class TransmitRequest(BaseModel):
+    """Build a shareable recommendation from the current topic ranking."""
+
+    to: str | None = Field(default=None, description="Optional recipient name.")
+    budget: float = Field(default=15000.0, gt=0)
+    profit_weight: float = Field(default=0.6, ge=0, le=1)
+    query: str | None = None
+    topic: str | None = None
+
+
+class TransmitResponse(BaseModel):
+    """Copy-paste recommendation text."""
+
+    text: str
+    recipient: str | None = None
+    topic: str | None = None
+    query: str | None = None
+
+
 class DealsResponse(BaseModel):
     """Deals the agent sourced for a query, before any ranking."""
 

@@ -358,6 +358,7 @@ def page_slugs() -> frozenset[str]:
     slugs = {topic.path.strip("/") for topic in TOPICS.values()}
     slugs.update(TOPICS)
     slugs.update(TOPIC_ALIASES)
+    slugs.add("howto")
     return frozenset(slugs)
 
 

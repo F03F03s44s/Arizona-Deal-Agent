@@ -1,4 +1,4 @@
-"""FastAPI application exposing the Arizona Deal Agent."""
+"""FastAPI application exposing DEALS DEALS DEALS."""
 
 from __future__ import annotations
 
@@ -17,6 +17,9 @@ from .agent import rank_deals
 from .alerts import AlertService, SavedSearchStore
 from .data import DEFAULT_BUDGET, DEFAULT_QUERY
 from .deals import deal_service
+from arizona_deal_agent.brand import PRODUCT
+from arizona_deal_agent.howto import render_howto
+
 from .models import (
     Alert,
     DealsResponse,
@@ -27,8 +30,11 @@ from .models import (
     SavedSearchRunResult,
     SourceInfo,
     TopicInfo,
+    TransmitRequest,
+    TransmitResponse,
 )
 from .topics import get_topic, page_slugs, source_infos, topic_infos
+from .transmit import render_transmit
 from .trust import sanitize_request_deals
 
 logger = logging.getLogger(__name__)
@@ -81,10 +87,11 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Arizona Deal Agent",
+    title=PRODUCT,
     description=(
-        "Topic pages that live-update from verified Craigslist.org and official "
-        "eBay.com sources. Unknown hosts and scam-signal titles are dropped."
+        f"{PRODUCT}: live ranking, Arizona property profit ranking, How to use, "
+        "and transmit in one product. Listing links are HTTPS Craigslist.org or "
+        "eBay.com only. Unknown hosts and scam-signal titles are dropped."
     ),
     version=__version__,
     lifespan=lifespan,
@@ -98,7 +105,43 @@ def _budget_for(topic: str | None) -> float:
 
 @app.get("/api/health")
 def health() -> dict[str, str]:
-    return {"status": "ok", "version": __version__}
+    return {"status": "ok", "version": __version__, "product": PRODUCT}
+
+
+@app.get("/api/product")
+def product() -> dict[str, str]:
+    return {
+        "name": PRODUCT,
+        "command": "deals",
+        "page": "http://127.0.0.1:8000",
+    }
+
+
+@app.get("/api/howto")
+def howto() -> dict[str, str]:
+    return {"product": PRODUCT, "text": render_howto()}
+
+
+@app.post("/api/transmit", response_model=TransmitResponse)
+def transmit(request: TransmitRequest) -> TransmitResponse:
+    """Rank the current topic and format the winner as a shareable note."""
+    ranked = rank(
+        RankRequest(
+            budget=request.budget,
+            profit_weight=request.profit_weight,
+            query=request.query,
+            topic=request.topic,
+            deals=[],
+        )
+    )
+    if ranked.recommendation is None:
+        raise HTTPException(status_code=404, detail="No in-budget deal to transmit")
+    return TransmitResponse(
+        text=render_transmit(ranked.recommendation, recipient=request.to),
+        recipient=request.to,
+        topic=ranked.topic,
+        query=ranked.query,
+    )
 
 
 @app.get("/api/topics", response_model=list[TopicInfo])

@@ -139,12 +139,38 @@ def test_missing_saved_search_is_reported():
 def test_index_served():
     res = client.get("/")
     assert res.status_code == 200
-    assert "Arizona Deal Agent" in res.text
+    assert "DEALS DEALS DEALS" in res.text
     assert "topics" in res.text
     assert "LIVE_POLL_MS" in res.text
     assert "refresh=true" in res.text
     assert "Verified allowlist only" in res.text
     assert "never open unknown" in res.text
+    assert "How to use" in res.text
+    assert "Copy transmit" in res.text
+
+
+def test_product_and_howto_are_unified():
+    product = client.get("/api/product").json()
+    assert product["name"] == "DEALS DEALS DEALS"
+    assert product["command"] == "deals"
+    howto = client.get("/api/howto").json()
+    assert howto["product"] == "DEALS DEALS DEALS"
+    assert "deals find --top 100" in howto["text"]
+    assert "deals transmit" in howto["text"]
+    health = client.get("/api/health").json()
+    assert health["product"] == "DEALS DEALS DEALS"
+
+
+def test_transmit_formats_the_current_winner():
+    res = client.post(
+        "/api/transmit",
+        json={"topic": "houses", "query": "arizona house", "budget": 350000, "to": "Kiet"},
+    )
+    assert res.status_code == 200
+    body = res.json()
+    assert body["text"].startswith("To: Kiet")
+    assert "DEALS DEALS DEALS RECOMMENDATION" in body["text"]
+    assert "— DEALS DEALS DEALS" in body["text"]
 
 
 def test_rank_strips_unknown_listing_urls_from_request_deals():

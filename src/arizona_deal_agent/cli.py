@@ -1,4 +1,4 @@
-"""Command line entry point for the Arizona Deal Agent."""
+"""Command line entry point for DEALS DEALS DEALS."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import sys
 from typing import Sequence
 
 from . import __version__
+from .brand import PRODUCT, PROGRAM
 from .howto import (
     DEFAULT_LISTINGS,
     format_command,
@@ -20,7 +21,6 @@ from .report import deal_to_dict, render_csv, render_explain, render_json, rende
 from .scoring import rank_listings, score_listing
 from .sources import DEFAULT_INSURANCE_RATE, DEFAULT_TAX_RATE, load_listings
 
-PROGRAM = "arizona-deal-agent"
 DEFAULT_TOP = 100
 MAX_TOP = 100
 
@@ -115,14 +115,14 @@ def add_weight_options(parser: argparse.ArgumentParser) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog=PROGRAM,
-        description="Find Arizona property deals and rank them by best value "
+        description=f"{PRODUCT}: find deals and rank them by best value "
         "(price + profitability + affordability).",
         epilog=(
             "How to use:\n"
-            "  arizona-deal-agent howto\n"
-            "  arizona-deal-agent howto --run balanced\n"
-            "  arizona-deal-agent find --top 100\n"
-            "  arizona-deal-agent transmit --to 'Investment team'\n"
+            f"  {PROGRAM} howto\n"
+            f"  {PROGRAM} howto --run balanced\n"
+            f"  {PROGRAM} find --top 100\n"
+            f"  {PROGRAM} transmit --to 'Investment team'\n"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )

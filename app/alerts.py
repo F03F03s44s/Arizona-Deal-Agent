@@ -173,7 +173,7 @@ def build_alert_email(search: SavedSearch, matches: list[ScoredDeal]) -> Outgoin
     lines.append(
         f"Budget {_money(search.budget)} - profit weight {search.profit_weight:.2f}"
     )
-    lines.append("Sent by Arizona Deal Agent.")
+    lines.append("Sent by DEALS DEALS DEALS.")
 
     return OutgoingEmail(to=search.email, subject=subject, body="\n".join(lines))
 

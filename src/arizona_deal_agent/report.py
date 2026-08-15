@@ -258,8 +258,8 @@ def render_transmit(deal: ScoredDeal, *, recipient: str | None = None) -> str:
         lines.append(f"To: {recipient}")
         lines.append("")
 
-    lines.append("ARIZONA DEAL RECOMMENDATION")
-    lines.append("=" * 28)
+    lines.append("DEALS DEALS DEALS RECOMMENDATION")
+    lines.append("=" * 32)
     lines.append(f"{listing.label} ({listing.id})")
     lines.append(
         f"Score {deal.composite_score:.1f}/100 — "
@@ -280,5 +280,5 @@ def render_transmit(deal: ScoredDeal, *, recipient: str | None = None) -> str:
             lines.append(f"  • {note}")
 
     lines.append("")
-    lines.append("— Arizona Deal Agent")
+    lines.append("— DEALS DEALS DEALS")
     return "\n".join(lines)

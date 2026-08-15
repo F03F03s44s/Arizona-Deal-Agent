@@ -174,7 +174,7 @@ def load_listings(path: str | Path | None = None) -> list[Listing]:
     """Load listings from a ``.csv`` or ``.json`` file.
 
     When ``path`` is omitted, the bundled Arizona sample catalog is used so
-    ``arizona-deal-agent find`` works with zero setup.
+    ``deals find`` works with zero setup.
     """
     resolved = resolve_listings_path(path)
     if not resolved.exists():

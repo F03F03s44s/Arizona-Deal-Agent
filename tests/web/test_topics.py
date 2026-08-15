@@ -81,10 +81,11 @@ def test_topic_pages_are_served():
         "/bundles",
         "/sales",
         "/free",
+        "/howto",
     ):
         res = client.get(path)
         assert res.status_code == 200, path
-        assert "Arizona Deal Agent" in res.text
+        assert "DEALS DEALS DEALS" in res.text
         assert "Household" in res.text or "topics" in res.text
 
 

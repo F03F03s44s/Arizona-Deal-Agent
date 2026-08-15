@@ -1,4 +1,4 @@
-"""Arizona Deal Agent -- find Arizona deals and rank them by best value."""
+"""DEALS DEALS DEALS -- find deals and rank them by best value."""
 
 from .finance import compute_metrics
 from .models import Assumptions, Budget, DealAgentError, Listing, Metrics, ScoredDeal, ValidationError, Weights

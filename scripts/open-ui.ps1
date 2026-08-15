@@ -1,4 +1,4 @@
-# Start the local Arizona Deal Agent page, then open it in your default browser.
+# Start the local DEALS DEALS DEALS page, then open it in your default browser.
 # Run from the repo folder:  powershell -ExecutionPolicy Bypass -File scripts\open-ui.ps1
 
 $ErrorActionPreference = "Stop"

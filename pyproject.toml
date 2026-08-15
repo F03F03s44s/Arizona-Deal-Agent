@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "arizona-deal-agent"
 version = "0.1.0"
-description = "Find Arizona property deals and rank them by best value."
+description = "DEALS DEALS DEALS — find deals and rank them by best value."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -24,6 +24,7 @@ web = [
 dev = ["pytest>=7.0"]
 
 [project.scripts]
+deals = "arizona_deal_agent.cli:main"
 arizona-deal-agent = "arizona_deal_agent.cli:main"
 
 [tool.setuptools.packages.find]
