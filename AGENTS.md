@@ -63,12 +63,15 @@ Operator guide: `HOW_TO_USE.md`.
 | `src/arizona_deal_agent/report.py` | Table, JSON, CSV, explain, transmit output |
 | `src/arizona_deal_agent/cli.py` | Command-line entry point |
 | `data/sample_listings.csv` | Sample Arizona listings (tracked input, not runtime state) |
-| `app/craigslist.py` | Craigslist JSON search scraper |
-| `app/market.py` | Market value estimated from comparable listings |
+| `app/craigslist.py` | Craigslist search scraper, posting detail, availability |
+| `app/categories.py` | Category/area reference; owner vs dealer comes from here |
+| `app/market.py` | Market value from comparables; property by price per sqft |
 | `app/deals.py` | Per-query scrape cache that keeps ranking off the network |
+| `app/sources.py` | Watch targets and the pluggable source registry |
+| `app/watcher.py` | Background scan for newly-posted deals |
 | `app/alerts.py` | Saved searches, dedupe, and SMTP alert emails |
-| `app/main.py` | FastAPI routes and the saved-search poller |
-| `app/static/index.html` | Single-page UI with live slider re-ranking |
+| `app/main.py` | FastAPI routes, event stream, and the pollers |
+| `app/static/index.html` | Single-page UI with live re-ranking and a live feed |
 | `tests/` | Finance, scoring, sources, and CLI tests |
 | `tests/web/` | Scraper, comparables, cache, alerts, and API tests |
 

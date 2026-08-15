@@ -319,6 +319,11 @@ pip install -e ".[dev,web]"
 # open http://localhost:8000
 ```
 
+It covers both **goods** (everything for sale, filterable by category) and
+**property** (real estate for sale, rentals, office and commercial), across all
+eight Arizona Craigslist areas, and can narrow to private sellers or to
+**dealers and wholesalers**.
+
 ### Where the numbers come from
 
 Craigslist only publishes an asking price, so market value is **estimated from
@@ -329,24 +334,57 @@ median is what the agent treats as profit.
 Listings with no real comparables are dropped rather than priced against an
 unrelated cohort — a search for power tools also drags in loafers and used cars,
 and pricing those off the rest of the results would invent margins that do not
-exist. Listings under $20 are ignored as placeholders.
+exist. Listings under $20 are ignored as placeholders, and a comparable more
+than 10x away from the listing's own price is never used.
+
+**Property is valued differently**, because a real-estate search returns land,
+monthly rentals and outright sales side by side and their prices are not the
+same kind of number. Homes are valued from what same-bedroom homes cost per
+square foot; a property with no square footage, such as a bare lot, is left
+unpriced rather than measured against houses.
 
 Craigslist's search pages are a JavaScript app and the legacy `format=rss`
 endpoint answers 403, so `app/craigslist.py` reads the JSON search service the
-site's own front end calls, decoding its position-encoded rows.
+site's own front end calls, decoding its position-encoded rows. Individual
+posting pages are server-rendered and carry a schema.org JSON-LD block, which
+is where the description, photos, coordinates and address come from.
+
+### What a listing tells you
+
+Every ranked row links to its Craigslist posting, and opening its details gets
+you the full description, photos, attributes, the seller's location with a map
+link, and a check of whether the posting is **still live** (Craigslist serves
+deleted postings with HTTP 200, so the body is inspected, not just the status
+code).
+
+On contact: Craigslist keeps seller contact details behind its reply flow, and
+its `robots.txt` disallows `/reply`. The agent therefore **links** the reply
+button for a human to click and never fetches it. Any phone number or email it
+shows is one the seller typed into the posting text themselves.
 
 ### API
 
-| Method | Path                           | Description                                    |
-| ------ | ------------------------------ | ---------------------------------------------- |
-| GET    | `/api/health`                  | Health check.                                  |
-| GET    | `/api/deals`                   | Scrape (or serve cached) Phoenix listings.     |
-| POST   | `/api/rank`                    | Rank deals against a budget and profit weight. |
-| GET    | `/api/saved-searches`          | List saved searches.                           |
-| POST   | `/api/saved-searches`          | Save a search and check it immediately.        |
-| POST   | `/api/saved-searches/{id}/run` | Re-run one saved search now.                   |
-| DELETE | `/api/saved-searches/{id}`     | Delete a saved search.                         |
-| GET    | `/api/alerts`                  | Alert emails the agent has sent, newest first. |
+| Method | Path                           | Description                                          |
+| ------ | ------------------------------ | ---------------------------------------------------- |
+| GET    | `/api/health`                  | Health check.                                        |
+| GET    | `/api/meta`                    | Areas, categories, seller types and source status.   |
+| GET    | `/api/deals`                   | Scrape (or serve cached) listings.                   |
+| POST   | `/api/rank`                    | Rank deals against a budget and profit weight.       |
+| GET    | `/api/deals/{id}/detail`       | Full posting: description, photos, where, contact.   |
+| GET    | `/api/deals/{id}/availability` | Is this listing still up?                            |
+| GET    | `/api/watch`                   | What the background scan is watching.                |
+| PUT    | `/api/watch`                   | Change targets, interval, threshold and alert email. |
+| POST   | `/api/watch/sweep`             | Scan every target right now.                         |
+| GET    | `/api/watch/findings`          | Newly-posted deals found, newest first.              |
+| GET    | `/api/watch/stream`            | Server-sent events, pushed as deals are found.       |
+| GET    | `/api/saved-searches`          | List saved searches.                                 |
+| POST   | `/api/saved-searches`          | Save a search and check it immediately.              |
+| POST   | `/api/saved-searches/{id}/run` | Re-run one saved search now.                         |
+| DELETE | `/api/saved-searches/{id}`     | Delete a saved search.                               |
+| GET    | `/api/alerts`                  | Alert emails the agent has sent, newest first.       |
+
+`/api/deals` and `/api/rank` both take `query`, `category`, `area_id` and
+`seller_type` (`owner` or `dealer`).
 
 ```bash
 # Rank live listings
@@ -372,6 +410,40 @@ tick without putting a network call in the request path. A new search query is
 the one thing that does re-scrape, so it waits for Enter rather than firing on
 each keystroke.
 
+### Watching for newly-posted deals
+
+A **watch target** is one area/category/query/seller combination. The watcher
+sweeps its whole list on a short interval (60 seconds by default), remembers the
+posting ids it has already seen, and reports only what is genuinely new. Phoenix
+goods and Phoenix property are watched out of the box; add any area or category
+from the UI or through `PUT /api/watch`.
+
+The first sweep of a target is deliberately silent — it records the existing
+backlog rather than announcing several hundred listings that were already there.
+After that, anything new that clears the score threshold is published
+immediately: the browser receives it over server-sent events and fills the "Just
+posted" feed without a refresh, and it is emailed if a watch email is set.
+Listing age comes from the posting timestamp, so genuinely just-posted listings
+are labelled as such.
+
+### On scanning "every source on the web"
+
+That is not something a scraper can honestly promise, so the sources it does and
+does not use are explicit — `GET /api/meta` reports the state of each, and the
+UI shows it:
+
+| Source | State | Why |
+| ------ | ----- | --- |
+| Craigslist | Scanning | `robots.txt` permits the search service and posting pages this reads. |
+| Zillow | Unavailable | Answers HTTP 403 to automated requests. |
+| Realtor.com | Unavailable | Rate-limits automated requests (HTTP 429). |
+| Redfin | Unavailable | `robots.txt` disallows `/stingray/`, where its search API lives. |
+
+`DealSource` in `app/sources.py` is the seam a licensed feed or an API key
+would slot into. Widening coverage within Craigslist, meanwhile, is just a
+matter of adding watch targets: eight Arizona areas times fourteen categories,
+optionally split by seller type.
+
 ### Email alerts
 
 Saved searches are polled in the background and each matching listing is emailed
@@ -386,7 +458,9 @@ exactly once. Configure a real mail server with environment variables:
 | `SMTP_FROM`           | `arizona-deal-agent@localhost` | Envelope sender.                          |
 | `SMTP_STARTTLS`       | `true`                         | Upgrade the connection before sending.    |
 | `ALERT_POLL_SECONDS`  | `900`                          | Saved-search poll interval; `0` disables. |
+| `WATCH_ENABLED`       | `1`                            | Run the background scan for new postings. |
 | `DEAL_AGENT_DATA_DIR` | `.agent-state`                 | Where saved searches are persisted.       |
+| `LOG_LEVEL`           | `INFO`                         | Verbosity of the agent's own logs.        |
 
 With no `SMTP_HOST` set, alerts are written to the application log and still
 recorded in `/api/alerts`, so the feature stays observable without credentials.
