@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Arizona Deal Agent</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>&#127964;</text></svg>" />
+<link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <div>
+      <h1>Arizona Deal Agent</h1>
+      <p>Finds Arizona property deals and ranks them by best value.</p>
+    </div>
+  </div>
+  <div class="vintage" id="vintage" aria-live="polite"></div>
+</header>
+
+<main class="layout">
+  <form class="panel controls" id="search-form" autocomplete="off">
+    <section class="group">
+      <h2>Where to look</h2>
+      <label class="check">
+        <input type="checkbox" name="source" value="hud-reo" checked />
+        <span>
+          <strong>HUD foreclosures</strong>
+          <em>Live from egis.hud.gov &middot; listed for sale</em>
+        </span>
+      </label>
+      <label class="check">
+        <input type="checkbox" name="source" value="hud-reo-all" />
+        <span>
+          <strong>HUD pipeline</strong>
+          <em>Live &middot; includes homes not yet listed</em>
+        </span>
+      </label>
+      <label class="check">
+        <input type="checkbox" name="source" value="sample" checked />
+        <span>
+          <strong>Sample listings</strong>
+          <em>Bundled offline demo catalogue</em>
+        </span>
+      </label>
+    </section>
+
+    <section class="group">
+      <h2>Filters</h2>
+      <label class="field">
+        <span>Cities <em>comma separated</em></span>
+        <input type="text" id="cities" placeholder="Phoenix, Tucson" />
+      </label>
+      <div class="row">
+        <label class="field">
+          <span>Max price</span>
+          <input type="number" id="max_price" min="0" step="5000" placeholder="any" />
+        </label>
+        <label class="field">
+          <span>Cash at closing</span>
+          <input type="number" id="budget_cash" min="0" step="1000" placeholder="any" />
+        </label>
+      </div>
+      <label class="field">
+        <span>Min cash flow <em>$ / month</em></span>
+        <input type="number" id="min_cash_flow" step="25" placeholder="none" />
+      </label>
+      <label class="check compact">
+        <input type="checkbox" id="include_over_budget" checked />
+        <span><strong>Show deals that miss a limit</strong></span>
+      </label>
+    </section>
+
+    <section class="group">
+      <h2>Financing</h2>
+      <div class="row">
+        <label class="field">
+          <span>Down payment %</span>
+          <input type="number" id="down_payment" value="20" min="0" max="100" step="1" />
+        </label>
+        <label class="field">
+          <span>Rate %</span>
+          <input type="number" id="rate" value="6.5" min="0" max="20" step="0.125" />
+        </label>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2>What "best value" means</h2>
+      <label class="slider">
+        <span>Discount to market <b id="w-discount-out">25%</b></span>
+        <input type="range" id="w_discount" min="0" max="100" value="25" />
+      </label>
+      <label class="slider">
+        <span>Profitability <b id="w-profit-out">40%</b></span>
+        <input type="range" id="w_profit" min="0" max="100" value="40" />
+      </label>
+      <label class="slider">
+        <span>Affordability <b id="w-afford-out">35%</b></span>
+        <input type="range" id="w_afford" min="0" max="100" value="35" />
+      </label>
+      <p class="hint">Weights are normalised, so only their relative size matters.</p>
+    </section>
+
+    <button type="submit" class="primary" id="submit">Find deals</button>
+    <p class="status" id="status" role="status"></p>
+  </form>
+
+  <section class="results">
+    <div class="summary" id="summary" hidden></div>
+    <div id="best"></div>
+    <div class="panel table-wrap" id="table-wrap" hidden>
+      <table id="results-table">
+        <thead>
+          <tr>
+            <th class="num">#</th>
+            <th>Property</th>
+            <th>Source</th>
+            <th class="num">Price</th>
+            <th class="num">Rent</th>
+            <th class="num">Cash flow</th>
+            <th class="num">Cap</th>
+            <th class="num">Score</th>
+          </tr>
+        </thead>
+        <tbody id="results-body"></tbody>
+      </table>
+    </div>
+    <div class="panel placeholder" id="placeholder">
+      <h2>Ready when you are</h2>
+      <p>
+        The agent pulls Arizona candidates from HUD's public foreclosure feed, fills in the
+        market value and rent for each ZIP from Zillow's public research data, underwrites
+        every property, and ranks what is left by best value.
+      </p>
+      <p class="hint">Press <b>Find deals</b> to run a search.</p>
+    </div>
+  </section>
+</main>
+
+<aside class="drawer" id="drawer" hidden>
+  <div class="drawer-inner">
+    <button class="close" id="drawer-close" aria-label="Close details">&times;</button>
+    <div id="drawer-body"></div>
+  </div>
+</aside>
+<div class="scrim" id="scrim" hidden></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
