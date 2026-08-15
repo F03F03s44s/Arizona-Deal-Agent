@@ -31,6 +31,13 @@ No browser? Rank the same catalog from the terminal:
 .venv/bin/python -m app --help
 ```
 
+## Tech stack
+
+- Python 3.12 + [FastAPI](https://fastapi.tiangolo.com/) for the API
+- [Uvicorn](https://www.uvicorn.org/) as the ASGI dev server
+- A single-page HTML/JS UI served by FastAPI
+- `pytest` for tests
+
 ## API
 
 | Method | Path | Description |
@@ -57,4 +64,4 @@ Empty `deals` uses the built-in Arizona sample catalog. Interactive docs:
 ## Cloud Agent environment
 
 `.cursor/environment.json` creates `.venv`, installs dependencies, and starts
-the API on port 8000 for Cursor Cloud Agents.
+the `api` terminal (Uvicorn on port 8000) for Cursor Cloud Agents.
