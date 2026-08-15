@@ -42,6 +42,18 @@ def test_rank_uses_sample_deals_when_none_given():
     assert body["recommendation"]["within_budget"] is True
 
 
+def test_rank_scrapes_once_across_many_slider_moves(offline_deal_service):
+    for weight in (0.0, 0.25, 0.5, 0.75, 1.0):
+        res = client.post(
+            "/api/rank",
+            json={"budget": 15000, "profit_weight": weight, "query": "cordless drill"},
+        )
+        assert res.status_code == 200
+
+    # Live re-ranking must not put a scrape in the request path.
+    assert len(offline_deal_service) == 1
+
+
 def test_rank_honours_the_profit_weight():
     def top(weight: float) -> str:
         res = client.post(

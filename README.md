@@ -68,6 +68,12 @@ curl -s http://localhost:8000/api/rank \
 unreachable the agent falls back to the sample deals in `app/data.py` and says
 so in the response's `warning` field.
 
+## Live re-ranking
+
+Scrapes are cached per query (10 minutes by default), so `POST /api/rank` is
+pure arithmetic on cached data. That is what lets the UI re-rank on every slider
+tick without putting a network call in the request path.
+
 ## Tests
 
 ```bash

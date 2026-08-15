@@ -12,6 +12,7 @@
         --sunset: #d9682e;
         --card: #ffffff;
         --muted: #6b6570;
+        --line: #e6dbc8;
       }
       * { box-sizing: border-box; }
       body {
@@ -21,21 +22,11 @@
         color: var(--dusk);
         min-height: 100vh;
       }
-      header {
-        padding: 32px 24px 8px;
-        text-align: center;
-      }
-      header h1 {
-        margin: 0;
-        font-size: 2rem;
-        letter-spacing: -0.5px;
-      }
+      header { padding: 30px 24px 6px; text-align: center; }
+      header h1 { margin: 0; font-size: 2rem; letter-spacing: -0.5px; }
       header p { color: var(--muted); margin: 8px 0 0; }
-      main {
-        max-width: 880px;
-        margin: 0 auto;
-        padding: 16px 24px 48px;
-      }
+      main { max-width: 1040px; margin: 0 auto; padding: 16px 24px 56px; }
+
       .controls {
         display: flex;
         flex-wrap: wrap;
@@ -48,23 +39,42 @@
       }
       .field { display: flex; flex-direction: column; gap: 6px; }
       .field label { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
-      .field input { padding: 8px 10px; border: 1px solid #d8cdbb; border-radius: 8px; font-size: 1rem; width: 160px; }
+      .field input[type="text"],
+      .field input[type="number"] {
+        padding: 8px 10px;
+        border: 1px solid #d8cdbb;
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 160px;
+      }
+      .field input[type="range"] { width: 220px; }
       .weight-value { font-variant-numeric: tabular-nums; color: var(--cactus); font-weight: 700; }
+
       button {
         background: var(--sunset);
         color: white;
         border: none;
-        padding: 10px 22px;
+        padding: 10px 20px;
         border-radius: 8px;
-        font-size: 1rem;
+        font-size: 0.95rem;
         font-weight: 600;
         cursor: pointer;
         transition: transform 0.05s ease, background 0.2s;
       }
       button:hover { background: #c15a24; }
       button:active { transform: translateY(1px); }
+      button.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+      button.ghost:hover { background: #f2ebdf; color: var(--dusk); }
+
+      .status { display: flex; align-items: center; gap: 10px; margin: 14px 2px 0; flex-wrap: wrap; min-height: 24px; }
+      .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.3px; }
+      .pill.live { background: #dceede; color: var(--cactus); }
+      .pill.sample { background: #f7e6c9; color: #96651a; }
+      .pill.busy { background: #e4e0ea; color: var(--muted); }
+      .warn { color: #a2521f; font-size: 0.85rem; }
+
       .recommendation {
-        margin: 24px 0 8px;
+        margin: 16px 0 8px;
         padding: 18px 20px;
         border-radius: 14px;
         background: var(--cactus);
@@ -72,36 +82,52 @@
         box-shadow: 0 6px 18px rgba(63, 125, 78, 0.25);
       }
       .recommendation h2 { margin: 0 0 4px; font-size: 1rem; opacity: 0.85; font-weight: 600; }
-      .recommendation .title { font-size: 1.4rem; font-weight: 700; }
-      .recommendation .meta { margin-top: 6px; opacity: 0.92; }
-      table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08); }
-      th, td { padding: 12px 14px; text-align: left; font-size: 0.92rem; }
-      thead th { background: #efe6d6; color: var(--muted); text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.5px; }
+      .recommendation .title { font-size: 1.35rem; font-weight: 700; }
+      .recommendation .title a { color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.45); }
+      .recommendation .meta { margin-top: 6px; opacity: 0.92; font-size: 0.92rem; }
+
+      table { width: 100%; border-collapse: collapse; margin-top: 18px; background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08); }
+      th, td { padding: 10px 12px; text-align: left; font-size: 0.9rem; }
+      thead th { background: #efe6d6; color: var(--muted); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
       tbody tr:nth-child(even) { background: #faf6ee; }
-      tbody tr.over-budget { opacity: 0.5; }
+      tbody tr.over-budget { opacity: 0.45; }
+      tbody tr.hot td { box-shadow: inset 3px 0 0 var(--cactus); }
+      td a { color: var(--dusk); text-decoration: none; border-bottom: 1px dotted #b7ab97; }
+      td a:hover { color: var(--sunset); }
       .num { text-align: right; font-variant-numeric: tabular-nums; }
-      .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; }
+      .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; }
       .badge.ok { background: #dceede; color: var(--cactus); }
       .badge.no { background: #f6dcd1; color: #b04a1f; }
       .rank-num { font-weight: 700; color: var(--sunset); }
+      .subtle { color: var(--muted); font-size: 0.78rem; }
     </style>
   </head>
   <body>
     <header>
       <h1>&#127796; Arizona Deal Agent</h1>
-      <p>Finds the lowest-cost, most profitable, most affordable deal for your budget.</p>
+      <p>Scrapes Phoenix Craigslist and ranks live listings against comparable asking prices.</p>
     </header>
     <main>
       <div class="controls">
         <div class="field">
+          <label for="query">Craigslist search</label>
+          <input id="query" type="text" value="power tools" style="width: 220px;" />
+        </div>
+        <div class="field">
           <label for="budget">Budget ($)</label>
-          <input id="budget" type="number" min="1" step="100" value="15000" />
+          <input id="budget" type="number" min="1" step="50" value="15000" />
         </div>
         <div class="field">
           <label for="weight">Profit vs. affordability: <span id="weightValue" class="weight-value">0.60</span></label>
-          <input id="weight" type="range" min="0" max="1" step="0.05" value="0.6" style="width: 220px;" />
+          <input id="weight" type="range" min="0" max="1" step="0.01" value="0.6" />
         </div>
-        <button id="rankBtn">Rank deals</button>
+        <button id="refreshBtn" class="ghost">Re-scrape listings</button>
+      </div>
+
+      <div class="status">
+        <span id="sourcePill" class="pill busy">loading&hellip;</span>
+        <span id="resultCount" class="subtle"></span>
+        <span id="warning" class="warn"></span>
       </div>
 
       <div id="recommendation" class="recommendation" style="display: none;">
@@ -114,10 +140,10 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>Deal</th>
-            <th>Category</th>
-            <th class="num">Cost</th>
-            <th class="num">Value</th>
+            <th>Listing</th>
+            <th>Location</th>
+            <th class="num">Asking</th>
+            <th class="num">Comparable</th>
             <th class="num">Profit</th>
             <th class="num">Score</th>
             <th>Budget</th>
@@ -128,57 +154,111 @@
     </main>
 
     <script>
+      const queryInput = document.getElementById("query");
+      const budgetInput = document.getElementById("budget");
       const weight = document.getElementById("weight");
       const weightValue = document.getElementById("weightValue");
-      weight.addEventListener("input", () => {
-        weightValue.textContent = Number(weight.value).toFixed(2);
-      });
+      const sourcePill = document.getElementById("sourcePill");
+      const resultCount = document.getElementById("resultCount");
+      const warningEl = document.getElementById("warning");
 
       const fmt = (n) => "$" + Number(n).toLocaleString(undefined, { maximumFractionDigits: 0 });
+      const esc = (s) =>
+        String(s ?? "").replace(/[&<>"']/g, (c) =>
+          ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
+        );
 
-      async function rank() {
-        const budget = Number(document.getElementById("budget").value);
-        const profit_weight = Number(weight.value);
+      function debounce(fn, ms) {
+        let timer;
+        return (...args) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => fn(...args), ms);
+        };
+      }
+
+      // Slider drags fire faster than the round trip, so responses that arrive
+      // out of order must be dropped rather than rendered.
+      let requestSeq = 0;
+
+      async function rank({ refresh = false } = {}) {
+        const seq = ++requestSeq;
+        const query = queryInput.value.trim() || "power tools";
+
+        if (refresh) {
+          sourcePill.className = "pill busy";
+          sourcePill.textContent = "re-scraping\u2026";
+          await fetch(`/api/deals?query=${encodeURIComponent(query)}&refresh=true`);
+          if (seq !== requestSeq) return;
+        }
+
         const res = await fetch("/api/rank", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ budget, profit_weight, deals: [] }),
+          body: JSON.stringify({
+            budget: Number(budgetInput.value) || 1,
+            profit_weight: Number(weight.value),
+            query,
+            deals: [],
+          }),
         });
         const data = await res.json();
+        if (seq !== requestSeq) return;
         render(data);
       }
 
+      const rankSoon = debounce(rank, 50);
+
       function render(data) {
+        const live = data.source === "craigslist";
+        sourcePill.className = "pill " + (live ? "live" : "sample");
+        sourcePill.textContent = live ? "live Craigslist \u00b7 Phoenix" : "sample data";
+        resultCount.textContent = `${data.ranked.length} listings ranked for "${data.query ?? ""}"`;
+        warningEl.textContent = data.warning ?? "";
+
         const rows = document.getElementById("rows");
-        rows.innerHTML = "";
-        data.ranked.forEach((s, i) => {
-          const tr = document.createElement("tr");
-          if (!s.within_budget) tr.className = "over-budget";
-          tr.innerHTML = `
-            <td class="rank-num">${i + 1}</td>
-            <td>${s.deal.title}</td>
-            <td>${s.deal.category}</td>
-            <td class="num">${fmt(s.deal.acquisition_cost)}</td>
-            <td class="num">${fmt(s.deal.market_value)}</td>
-            <td class="num">${fmt(s.profit)}</td>
-            <td class="num">${s.score.toFixed(3)}</td>
-            <td><span class="badge ${s.within_budget ? "ok" : "no"}">${s.within_budget ? "in budget" : "over"}</span></td>`;
-          rows.appendChild(tr);
-        });
+        rows.innerHTML = data.ranked
+          .map((s, i) => {
+            const d = s.deal;
+            const title = d.url
+              ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a>`
+              : esc(d.title);
+            return `
+              <tr class="${s.within_budget ? "" : "over-budget"} ${s.score >= 0.9 ? "hot" : ""}">
+                <td class="rank-num">${i + 1}</td>
+                <td>${title}</td>
+                <td class="subtle">${esc(d.location ?? "\u2014")}</td>
+                <td class="num">${fmt(d.acquisition_cost)}</td>
+                <td class="num">${fmt(d.market_value)}<div class="subtle">${d.comparable_count} comps</div></td>
+                <td class="num">${fmt(s.profit)}</td>
+                <td class="num">${s.score.toFixed(3)}</td>
+                <td><span class="badge ${s.within_budget ? "ok" : "no"}">${s.within_budget ? "in budget" : "over"}</span></td>
+              </tr>`;
+          })
+          .join("");
 
         const rec = document.getElementById("recommendation");
         if (data.recommendation) {
-          rec.style.display = "block";
-          document.getElementById("recTitle").textContent = data.recommendation.deal.title;
           const r = data.recommendation;
+          rec.style.display = "block";
+          document.getElementById("recTitle").innerHTML = r.deal.url
+            ? `<a href="${esc(r.deal.url)}" target="_blank" rel="noopener">${esc(r.deal.title)}</a>`
+            : esc(r.deal.title);
           document.getElementById("recMeta").textContent =
-            `Profit ${fmt(r.profit)} \u00b7 margin ${(r.profit_margin * 100).toFixed(0)}% \u00b7 cost ${fmt(r.deal.acquisition_cost)} \u00b7 score ${r.score.toFixed(3)}`;
+            `Asking ${fmt(r.deal.acquisition_cost)} \u00b7 comparable ${fmt(r.deal.market_value)} \u00b7 ` +
+            `profit ${fmt(r.profit)} (${(r.profit_margin * 100).toFixed(0)}%) \u00b7 score ${r.score.toFixed(3)}`;
         } else {
           rec.style.display = "none";
         }
       }
 
-      document.getElementById("rankBtn").addEventListener("click", rank);
+      weight.addEventListener("input", () => {
+        weightValue.textContent = Number(weight.value).toFixed(2);
+        rankSoon();
+      });
+      budgetInput.addEventListener("input", rankSoon);
+      queryInput.addEventListener("input", rankSoon);
+      document.getElementById("refreshBtn").addEventListener("click", () => rank({ refresh: true }));
+
       rank();
     </script>
   </body>
