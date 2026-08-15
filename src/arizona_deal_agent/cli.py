@@ -8,7 +8,7 @@ from typing import Sequence
 
 from . import __version__
 from .models import Assumptions, Budget, DealAgentError, Listing, ScoredDeal, Weights
-from .report import render_csv, render_explain, render_json, render_table
+from .report import deal_to_dict, render_csv, render_explain, render_json, render_table, render_transmit
 from .scoring import rank_listings, score_listing
 from .sources import DEFAULT_INSURANCE_RATE, DEFAULT_TAX_RATE, load_listings
 
@@ -109,6 +109,31 @@ def build_parser() -> argparse.ArgumentParser:
     add_assumption_options(score)
     add_weight_options(score)
 
+    transmit = subparsers.add_parser(
+        "transmit",
+        help="format the top deal as a shareable recommendation message",
+    )
+    transmit.add_argument("-i", "--input", required=True, metavar="PATH", help="listings file (.csv or .json)")
+    transmit.add_argument("--to", metavar="RECIPIENT", help="optional recipient name for the message header")
+    transmit.add_argument(
+        "-f",
+        "--format",
+        choices=("text", "json"),
+        default="text",
+        help="output format (default: text)",
+    )
+    transmit.add_argument("--city", action="append", metavar="CITY", help="keep only this city (repeatable)")
+    transmit.add_argument("--min-cash-flow", type=dollars, metavar="USD", help="drop deals below this monthly cash flow")
+    transmit.add_argument("--min-cap-rate", type=fraction, metavar="PCT", help="drop deals below this cap rate")
+    transmit.add_argument(
+        "--include-over-budget",
+        action="store_true",
+        help="allow deals that break a budget limit instead of dropping them",
+    )
+    add_budget_options(transmit)
+    add_assumption_options(transmit)
+    add_weight_options(transmit)
+
     return parser
 
 
@@ -153,10 +178,11 @@ def apply_filters(deals: list[ScoredDeal], args: argparse.Namespace) -> list[Sco
         selected = [deal for deal in selected if deal.metrics.cap_rate >= args.min_cap_rate]
     if not args.include_over_budget:
         selected = [deal for deal in selected if deal.qualifies]
-    if args.top is not None:
-        if args.top <= 0:
+    top = getattr(args, "top", None)
+    if top is not None:
+        if top <= 0:
             raise DealAgentError("--top must be a positive number")
-        selected = selected[: args.top]
+        selected = selected[:top]
 
     return selected
 
@@ -194,6 +220,28 @@ def run_explain(args: argparse.Namespace) -> int:
     return 0
 
 
+def run_transmit(args: argparse.Namespace) -> int:
+    import json
+
+    listings = load_listings(args.input)
+    deals = rank_listings(listings, assumptions_from_args(args), budget_from_args(args), weights_from_args(args))
+    selected = apply_filters(deals, args)
+
+    if not selected:
+        raise DealAgentError("no listings matched your filters; nothing to transmit")
+
+    top = selected[0]
+    if args.format == "json":
+        payload = {
+            "recipient": args.to,
+            "recommendation": deal_to_dict(top),
+        }
+        print(json.dumps(payload, indent=2))
+    else:
+        print(render_transmit(top, recipient=args.to))
+    return 0
+
+
 def run_score(args: argparse.Namespace) -> int:
     listing = Listing(
         id="ad-hoc",
@@ -217,7 +265,7 @@ def run_score(args: argparse.Namespace) -> int:
     return 0
 
 
-COMMANDS = {"rank": run_rank, "explain": run_explain, "score": run_score}
+COMMANDS = {"rank": run_rank, "explain": run_explain, "score": run_score, "transmit": run_transmit}
 
 
 def main(argv: Sequence[str] | None = None) -> int:

@@ -172,6 +172,45 @@ class TestScore:
         assert "0 bd / 0 ba" not in out
 
 
+class TestTransmit:
+    def test_formats_top_deal_as_shareable_text(self, capsys, sample_csv):
+        code, out, _ = run(capsys, "transmit", "-i", str(sample_csv))
+        assert code == 0
+        assert "ARIZONA DEAL RECOMMENDATION" in out
+        assert "Why this deal:" in out
+        assert "— Arizona Deal Agent" in out
+
+    def test_recipient_appears_in_header(self, capsys, sample_csv):
+        _, out, _ = run(capsys, "transmit", "-i", str(sample_csv), "--to", "Kiet")
+        assert out.startswith("To: Kiet\n")
+
+    def test_json_format_includes_recipient_and_recommendation(self, capsys, sample_csv):
+        _, out, _ = run(capsys, "transmit", "-i", str(sample_csv), "--format", "json", "--to", "team@example.com")
+        payload = json.loads(out)
+        assert payload["recipient"] == "team@example.com"
+        assert payload["recommendation"]["id"] == "AZ-003"
+        assert "scores" in payload["recommendation"]
+
+    def test_budget_filters_apply_before_transmitting(self, capsys, sample_csv):
+        _, out, _ = run(
+            capsys,
+            "transmit",
+            "-i",
+            str(sample_csv),
+            "--max-price",
+            "350000",
+            "--format",
+            "json",
+        )
+        payload = json.loads(out)
+        assert payload["recommendation"]["list_price"] <= 350_000
+
+    def test_no_matches_is_an_error(self, capsys, sample_csv):
+        code, _, err = run(capsys, "transmit", "-i", str(sample_csv), "--min-cash-flow", "999999")
+        assert code == 1
+        assert "nothing to transmit" in err
+
+
 class TestTopLevel:
     def test_version(self, capsys):
         with pytest.raises(SystemExit) as excinfo:

@@ -124,6 +124,39 @@ arizona-deal-agent score --price 240000 --rent 2100 --rehab 15000 --arv 330000
 Same breakdown as `explain`, straight from the flags. Only `--price` and `--rent` are
 required; taxes and insurance are estimated from the price when you leave them out.
 
+### 6. Transmit the top pick
+
+Format the best deal as a copy-paste-ready message for email or chat:
+
+```bash
+arizona-deal-agent transmit -i data/sample_listings.csv --to "Investment team"
+```
+
+```text
+To: Investment team
+
+ARIZONA DEAL RECOMMENDATION
+============================
+3110 E Fort Lowell Rd, Tucson (AZ-003)
+Score 84.8/100 — price 95, profit 65, afford 100
+
+List price:    $319,000
+Monthly rent:  $2,800
+Cash flow:     $288/mo
+Cap rate:      7.0%
+Cash to close: $82,370
+
+Why this deal:
+  • Strong cash flow at $288/mo
+  • DSCR 1.18 is under the 1.20 lenders look for
+  • $79,500 above the 70%-rule offer
+
+— Arizona Deal Agent
+```
+
+Use `--format json` to pipe the recommendation into another tool. Budget filters
+(`--max-price`, `--budget-cash`, and so on) apply before the top deal is chosen.
+
 ## Bring your own listings
 
 Pass any `.csv` or `.json` file to `-i`. Only three columns are required:

@@ -246,3 +246,39 @@ def render_explain(deal: ScoredDeal, assumptions: Assumptions, budget: Budget) -
             lines.append(f"  - {note}")
 
     return "\n".join(lines)
+
+
+def render_transmit(deal: ScoredDeal, *, recipient: str | None = None) -> str:
+    """Format the top deal as a copy-paste-ready recommendation message."""
+    listing = deal.listing
+    metrics = deal.metrics
+    lines: list[str] = []
+
+    if recipient:
+        lines.append(f"To: {recipient}")
+        lines.append("")
+
+    lines.append("ARIZONA DEAL RECOMMENDATION")
+    lines.append("=" * 28)
+    lines.append(f"{listing.label} ({listing.id})")
+    lines.append(
+        f"Score {deal.composite_score:.1f}/100 — "
+        f"price {deal.price_score:.0f}, profit {deal.profitability_score:.0f}, "
+        f"afford {deal.affordability_score:.0f}"
+    )
+    lines.append("")
+    lines.append(f"List price:    {money(listing.list_price)}")
+    lines.append(f"Monthly rent:  {money(listing.monthly_rent)}")
+    lines.append(f"Cash flow:     {money(metrics.monthly_cash_flow)}/mo")
+    lines.append(f"Cap rate:      {percent(metrics.cap_rate)}")
+    lines.append(f"Cash to close: {money(metrics.cash_to_close)}")
+
+    if deal.notes:
+        lines.append("")
+        lines.append("Why this deal:")
+        for note in deal.notes[:3]:
+            lines.append(f"  • {note}")
+
+    lines.append("")
+    lines.append("— Arizona Deal Agent")
+    return "\n".join(lines)
