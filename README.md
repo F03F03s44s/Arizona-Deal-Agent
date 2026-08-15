@@ -37,13 +37,13 @@ arizona-deal-agent howto --run profit
 A sample catalog of 13 Arizona properties ships with the repo. Zero-config:
 
 ```bash
-arizona-deal-agent find --top 5
+arizona-deal-agent find --top 100
 ```
 
 Or point at your own CSV/JSON:
 
 ```bash
-arizona-deal-agent rank -i data/sample_listings.csv --top 5
+arizona-deal-agent rank -i data/sample_listings.csv --top 100
 ```
 
 ```text
@@ -55,7 +55,7 @@ arizona-deal-agent rank -i data/sample_listings.csv --top 5
 4  AZ-008  1105 E Cottonwood Ln   Casa Grande  $259,900  $1,650      -$257  4.6%  -4.1%   39.7
 5  AZ-009  2870 S Avenue B        Yuma         $239,000  $1,500      -$255  4.7%  -5.0%   38.5
 
-Scored 13 listing(s), showing 5. Best: 3110 E Fort Lowell Rd, Tucson.
+Scored 25 listing(s), showing 25. Best: 3110 E Fort Lowell Rd, Tucson.
   - Strong cash flow at $288/mo
   - DSCR 1.18 is under the 1.20 lenders look for
   - $79,500 above the 70%-rule offer

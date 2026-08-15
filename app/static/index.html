@@ -200,6 +200,7 @@
           <button type="button" data-budget="15000" data-weight="1">Max profit</button>
           <button type="button" data-budget="15000" data-weight="0">Max affordability</button>
           <button type="button" data-budget="2000" data-weight="0.5">Tight $2,000</button>
+          <button type="button" data-budget="350000" data-weight="0.6" data-category="house">Houses</button>
         </div>
       </div>
 
@@ -209,6 +210,7 @@
         <div class="meta" id="recMeta"></div>
       </div>
 
+      <p id="resultCount" class="hint" style="margin: 16px 0 0; color: #6b6570;"></p>
       <table>
         <thead>
           <tr>
@@ -250,14 +252,18 @@
       weight.addEventListener("input", syncWeight);
 
       const fmt = (n) => "$" + Number(n).toLocaleString(undefined, { maximumFractionDigits: 0 });
+      const MAX_ROWS = 100;
+      let activeCategory = "";
 
       async function rank() {
         const budget = Number(document.getElementById("budget").value);
         const profit_weight = Number(weight.value);
+        const payload = { budget, profit_weight, deals: [] };
+        if (activeCategory) payload.category = activeCategory;
         const res = await fetch("/api/rank", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ budget, profit_weight, deals: [] }),
+          body: JSON.stringify(payload),
         });
         const data = await res.json();
         render(data);
@@ -266,7 +272,12 @@
       function render(data) {
         const rows = document.getElementById("rows");
         rows.innerHTML = "";
-        data.ranked.forEach((s, i) => {
+        const shown = data.ranked.slice(0, MAX_ROWS);
+        const count = document.getElementById("resultCount");
+        if (count) {
+          count.textContent = `Showing ${shown.length} top deal${shown.length === 1 ? "" : "s"} (up to ${MAX_ROWS}).`;
+        }
+        shown.forEach((s, i) => {
           const tr = document.createElement("tr");
           if (!s.within_budget) tr.className = "over-budget";
           tr.innerHTML = `
@@ -298,6 +309,7 @@
         button.addEventListener("click", () => {
           document.getElementById("budget").value = button.dataset.budget;
           weight.value = button.dataset.weight;
+          activeCategory = button.dataset.category || "";
           syncWeight();
           rank();
         });

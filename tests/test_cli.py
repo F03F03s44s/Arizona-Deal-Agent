@@ -53,7 +53,7 @@ class TestRank:
         assert code == 0
         assert "SCORE" in out and "CASH FLOW" in out
         assert out.count("AZ-") >= 13
-        assert "Scored 13 listing(s)" in out
+        assert "Scored 25 listing(s)" in out
 
     def test_top_limits_the_rows(self, capsys, sample_csv):
         _, out, _ = run(capsys, "rank", "-i", str(sample_csv), "--top", "3")
@@ -67,7 +67,7 @@ class TestRank:
     def test_json_output_is_valid_and_ordered(self, capsys, sample_csv):
         _, out, _ = run(capsys, "rank", "-i", str(sample_csv), "--format", "json")
         payload = json.loads(out)
-        assert payload["count"] == 13
+        assert payload["count"] == 25
         scores = [deal["scores"]["composite"] for deal in payload["deals"]]
         assert scores == sorted(scores, reverse=True)
         assert payload["deals"][0]["rank"] == 1
@@ -77,7 +77,7 @@ class TestRank:
         _, out, _ = run(capsys, "rank", "-i", str(sample_csv), "--format", "csv")
         lines = out.strip().splitlines()
         assert lines[0].startswith("rank,id,address")
-        assert len(lines) == 14
+        assert len(lines) == 26
 
     def test_city_filter(self, capsys, sample_csv):
         _, out, _ = run(capsys, "rank", "-i", str(sample_csv), "--city", "Tucson", "--format", "json")
@@ -122,7 +122,7 @@ class TestRank:
             "json",
         )
         deals = json.loads(out)["deals"]
-        assert len(deals) == 13
+        assert len(deals) == 25
         assert any(deal["fits_budget"] is False for deal in deals)
 
     def test_impossible_filters_report_no_matches(self, capsys, sample_csv):
@@ -239,7 +239,7 @@ class TestHowto:
         assert "How to use Arizona Deal Agent" in out
         assert "arizona-deal-agent rank" in out
         assert "arizona-deal-agent transmit" in out
-        for name in ("balanced", "profit", "affordability", "tight"):
+        for name in ("balanced", "profit", "affordability", "tight", "houses"):
             assert name in out
 
     def test_help_mentions_howto(self, capsys):

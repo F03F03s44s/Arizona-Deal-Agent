@@ -42,6 +42,10 @@ class RankRequest(BaseModel):
         le=1,
         description="How much to favor profit over affordability (0-1).",
     )
+    category: str | None = Field(
+        default=None,
+        description="Optional filter: house/property, or a catalog category.",
+    )
 
 
 class RankResponse(BaseModel):

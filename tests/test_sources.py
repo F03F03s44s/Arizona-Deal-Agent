@@ -118,7 +118,7 @@ class TestRecordToListing:
 class TestLoadCsv:
     def test_reads_the_bundled_sample(self, sample_csv):
         listings = load_listings(sample_csv)
-        assert len(listings) == 13
+        assert len(listings) == 25
         assert listings[0].id == "AZ-001"
         assert listings[0].city == "Phoenix"
         assert all(listing.list_price > 0 for listing in listings)

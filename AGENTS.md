@@ -8,7 +8,7 @@ MVP CLI that finds Arizona property deals and ranks them by best value
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
-arizona-deal-agent find --top 5
+arizona-deal-agent find --top 100
 ```
 
 Without installing, `PYTHONPATH=src python3 -m arizona_deal_agent` works the same way.

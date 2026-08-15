@@ -42,8 +42,8 @@ pip install -e .
 
 | Step | Command |
 | ---- | ------- |
-| Find best-value deals (sample catalog, no `-i`) | `arizona-deal-agent find --top 5` |
-| Rank a listings file | `arizona-deal-agent rank -i data/sample_listings.csv --top 5` |
+| Find best-value deals (sample catalog, no `-i`) | `arizona-deal-agent find --top 100` |
+| Rank a listings file | `arizona-deal-agent rank -i data/sample_listings.csv --top 100` |
 | Keep only what you can buy | `arizona-deal-agent rank -i data/sample_listings.csv --max-price 350000 --budget-cash 90000 --min-cash-flow 0` |
 | Open the winner | `arizona-deal-agent explain -i data/sample_listings.csv --id AZ-003` |
 | Score a deal not in a file | `arizona-deal-agent score --price 240000 --rent 2100 --rehab 15000 --arv 330000` |
@@ -61,13 +61,15 @@ arizona-deal-agent howto --run balanced
 arizona-deal-agent howto --run profit
 arizona-deal-agent howto --run affordability
 arizona-deal-agent howto --run tight
+arizona-deal-agent howto --run houses
 ```
 
 Against `data/sample_listings.csv`:
 
 | Scenario | What it does | Sample winner |
 | -------- | ------------ | ------------- |
-| `balanced` | Default weights (price 0.25 / profit 0.40 / afford 0.35), top 5 | AZ-003 3110 E Fort Lowell Rd, Tucson (84.8) |
+| `balanced` | Default weights (price 0.25 / profit 0.40 / afford 0.35), top 100 | AZ-003 3110 E Fort Lowell Rd, Tucson (84.8) |
+| `houses` | Same catalog — Arizona houses, top 100 | AZ-003 3110 E Fort Lowell Rd, Tucson (84.8) |
 | `profit` | `--weight-profit 1` (returns only) | AZ-012 5402 S 12th Ave, Tucson (65.6) |
 | `affordability` | `--weight-afford 1` (rent coverage / headroom) | AZ-003 3110 E Fort Lowell Rd, Tucson (100.0) |
 | `tight` | `--max-price 350000 --budget-cash 90000 --min-cash-flow 0` | AZ-003 only — everything else is filtered out |

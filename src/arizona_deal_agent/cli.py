@@ -21,6 +21,8 @@ from .scoring import rank_listings, score_listing
 from .sources import DEFAULT_INSURANCE_RATE, DEFAULT_TAX_RATE, load_listings
 
 PROGRAM = "arizona-deal-agent"
+DEFAULT_TOP = 100
+MAX_TOP = 100
 
 
 def add_input_option(parser: argparse.ArgumentParser, *, required: bool = False) -> None:
@@ -33,7 +35,14 @@ def add_input_option(parser: argparse.ArgumentParser, *, required: bool = False)
 
 
 def add_rank_filter_options(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("-n", "--top", type=int, metavar="N", help="show only the top N deals")
+    parser.add_argument(
+        "-n",
+        "--top",
+        type=int,
+        default=DEFAULT_TOP,
+        metavar="N",
+        help=f"show the top N deals (default: {DEFAULT_TOP}, max: {MAX_TOP})",
+    )
     parser.add_argument(
         "-f",
         "--format",
@@ -112,7 +121,7 @@ def build_parser() -> argparse.ArgumentParser:
             "How to use:\n"
             "  arizona-deal-agent howto\n"
             "  arizona-deal-agent howto --run balanced\n"
-            "  arizona-deal-agent find --top 5\n"
+            "  arizona-deal-agent find --top 100\n"
             "  arizona-deal-agent transmit --to 'Investment team'\n"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -245,11 +254,14 @@ def apply_filters(deals: list[ScoredDeal], args: argparse.Namespace) -> list[Sco
         selected = [deal for deal in selected if deal.metrics.cap_rate >= args.min_cap_rate]
     if not args.include_over_budget:
         selected = [deal for deal in selected if deal.qualifies]
-    top = getattr(args, "top", None)
-    if top is not None:
-        if top <= 0:
-            raise DealAgentError("--top must be a positive number")
-        selected = selected[:top]
+    top = getattr(args, "top", DEFAULT_TOP)
+    if top is None:
+        top = DEFAULT_TOP
+    if top <= 0:
+        raise DealAgentError("--top must be a positive number")
+    if top > MAX_TOP:
+        top = MAX_TOP
+    selected = selected[:top]
 
     return selected
 

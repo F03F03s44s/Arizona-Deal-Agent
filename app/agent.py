@@ -10,6 +10,8 @@ from __future__ import annotations
 
 from .models import Deal, RankResponse, ScoredDeal
 
+MAX_RANKED = 100
+
 
 def _profit_margin(deal: Deal) -> float:
     """Profit as a fraction of acquisition cost (can be negative)."""
@@ -65,6 +67,6 @@ def rank_deals(
     return RankResponse(
         budget=budget,
         profit_weight=profit_weight,
-        ranked=scored,
+        ranked=scored[:MAX_RANKED],
         recommendation=recommendation,
     )

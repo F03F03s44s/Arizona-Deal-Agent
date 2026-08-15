@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 
 from . import __version__
 from .agent import rank_deals
-from .data import DEFAULT_BUDGET, SAMPLE_DEALS
+from .data import DEFAULT_BUDGET, SAMPLE_DEALS, deals_for_category
 from .models import RankRequest, RankResponse
 
 STATIC_DIR = Path(__file__).parent / "static"
@@ -36,7 +36,7 @@ def list_deals() -> dict[str, object]:
 @app.post("/api/rank", response_model=RankResponse)
 def rank(request: RankRequest) -> RankResponse:
     """Rank a caller-provided set of deals against a budget."""
-    deals = request.deals or SAMPLE_DEALS
+    deals = request.deals or deals_for_category(request.category)
     return rank_deals(deals, request.budget, request.profit_weight)
 
 
