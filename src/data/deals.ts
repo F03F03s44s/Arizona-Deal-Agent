@@ -204,7 +204,7 @@ export const deals: Deal[] = [
     sqft: 2210,
     yearBuilt: 1971,
     daysOnMarket: 27,
-    image: `https://images.unsplash.com/photo-1599423300746-b62533397364${imageParams}`,
+    image: `https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6${imageParams}`,
     imageAlt: 'Southwestern duplex with separate entrances',
     tags: ['Two units', 'Highest cash flow'],
     summary:
