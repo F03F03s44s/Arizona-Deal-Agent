@@ -119,6 +119,23 @@ class Listing:
 
 
 @dataclass(frozen=True)
+class SearchResult:
+    """Listings from one search, plus when the source last refreshed them.
+
+    Craigslist serves this endpoint from a cache that only rolls every ~15
+    minutes; between rolls the response is byte-identical. ``cache_ts`` is how
+    a caller can tell new data from the same data fetched again.
+    """
+
+    listings: list[Listing]
+    cache_ts: int | None = None
+
+    @property
+    def cached_at(self) -> datetime | None:
+        return datetime.fromtimestamp(self.cache_ts, tz=UTC) if self.cache_ts else None
+
+
+@dataclass(frozen=True)
 class ListingDetail:
     """Everything the posting page says about one listing."""
 
@@ -297,7 +314,29 @@ def search(
     timeout: float = DEFAULT_TIMEOUT,
     client: httpx.Client | None = None,
 ) -> list[Listing]:
-    """Fetch listings for ``query`` in one Craigslist area.
+    """Fetch listings for ``query`` in one Craigslist area."""
+    return search_page(
+        query,
+        area_id=area_id,
+        category=category,
+        seller_type=seller_type,
+        limit=limit,
+        timeout=timeout,
+        client=client,
+    ).listings
+
+
+def search_page(
+    query: str = "",
+    *,
+    area_id: int = PHOENIX_AREA_ID,
+    category: str = DEFAULT_SEARCH_PATH,
+    seller_type: str | None = None,
+    limit: int = PAGE_SIZE,
+    timeout: float = DEFAULT_TIMEOUT,
+    client: httpx.Client | None = None,
+) -> SearchResult:
+    """Fetch listings along with the source's cache timestamp.
 
     ``category`` is a Craigslist search path (``sss`` for everything for sale,
     ``rea`` for real estate). ``seller_type`` narrows to ``owner`` or
@@ -328,7 +367,11 @@ def search(
         if owns_client:
             http.close()
 
-    return parse_search_payload(payload)[:limit]
+    cache_ts = (payload.get("data") or {}).get("cacheTs")
+    return SearchResult(
+        listings=parse_search_payload(payload)[:limit],
+        cache_ts=cache_ts if isinstance(cache_ts, int) else None,
+    )
 
 
 def _json_headers() -> dict[str, str]:

@@ -7,7 +7,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from app.craigslist import CraigslistError, Listing
+from app.craigslist import CraigslistError, Listing, SearchResult
 from app.sources import WatchTarget
 from app.watcher import DealWatcher, WatchConfig
 from tests.web.conftest import make_listing
@@ -32,13 +32,19 @@ def aged(posting_id: str, price: float, minutes: float) -> Listing:
 BACKLOG = [aged("a", 200, 600), aged("b", 220, 600), aged("c", 240, 600), aged("d", 260, 600)]
 
 
-def watcher_over(batches, **config) -> DealWatcher:
+def watcher_over(batches, *, cache_ts=None, **config) -> DealWatcher:
+    """A watcher whose source hands back ``batches`` one sweep at a time.
+
+    Each batch gets its own cache timestamp by default, so the source looks
+    like it refreshed between sweeps.
+    """
     calls = {"n": 0}
 
     def fetcher(target, limit=None):
-        batch = batches[min(calls["n"], len(batches) - 1)]
+        index = min(calls["n"], len(batches) - 1)
+        stamp = cache_ts if cache_ts is not None else 1_786_000_000 + calls["n"]
         calls["n"] += 1
-        return batch
+        return SearchResult(listings=batches[index], cache_ts=stamp)
 
     settings = {"targets": [WatchTarget()], "min_score": 0.9, "budget": 15000}
     settings.update(config)
@@ -119,7 +125,7 @@ def test_a_failing_target_does_not_stop_the_sweep():
     def fetcher(target, limit=None):
         if target.category == "rea":
             raise CraigslistError("403 blocked")
-        return BACKLOG
+        return SearchResult(listings=BACKLOG, cache_ts=1)
 
     watcher = DealWatcher(
         WatchConfig(targets=[WatchTarget(category="rea"), WatchTarget(category="sss")]),
@@ -138,7 +144,8 @@ def test_each_target_tracks_what_it_has_seen_separately():
 
     def fetcher(target, limit=None):
         seen_targets.append(target.category)
-        return BACKLOG if len(seen_targets) <= 2 else BACKLOG + [aged("steal", 40, 2)]
+        listings = BACKLOG if len(seen_targets) <= 2 else BACKLOG + [aged("steal", 40, 2)]
+        return SearchResult(listings=listings, cache_ts=len(seen_targets))
 
     watcher = DealWatcher(
         WatchConfig(
@@ -178,6 +185,31 @@ def test_findings_are_pushed_to_subscribers(prime_first):
         assert queue.empty()
 
     asyncio.run(scenario())
+
+
+def test_an_unrefreshed_source_is_not_reprocessed():
+    # Craigslist answers this search from a cache that only rolls every ~15
+    # minutes. Between rolls the response is identical, so there is nothing to
+    # look at even if the sweep interval is far shorter.
+    watcher = watcher_over([BACKLOG, BACKLOG + [aged("steal", 40, 2)]], cache_ts=777)
+    watcher.sweep()
+
+    assert watcher.sweep() == []
+    assert watcher.source_refreshed_at is not None
+
+
+def test_a_refreshed_source_is_processed():
+    watcher = watcher_over([BACKLOG, BACKLOG + [aged("steal", 40, 2)]])
+    watcher.sweep()
+
+    assert len(watcher.sweep()) == 1
+
+
+def test_source_refresh_time_is_reported():
+    watcher = watcher_over([BACKLOG], cache_ts=1_786_000_000)
+    watcher.sweep()
+
+    assert watcher.source_refreshed_at == datetime.fromtimestamp(1_786_000_000, tz=UTC)
 
 
 def test_findings_serialise_for_the_event_stream():

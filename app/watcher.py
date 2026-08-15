@@ -31,7 +31,11 @@ from .sources import WatchTarget
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_INTERVAL = 60.0
+# Craigslist answers this search from a cache that only rolls every ~15
+# minutes; polling faster returns byte-identical data. Sweeping every five
+# minutes still catches a roll promptly without hammering them for nothing.
+DEFAULT_INTERVAL = 300.0
+SOURCE_CACHE_SECONDS = 900
 DEFAULT_MIN_SCORE = 0.9
 DEFAULT_BUDGET = 1_000_000.0
 DEFAULT_PROFIT_WEIGHT = 0.6
@@ -104,19 +108,23 @@ class DealWatcher:
         self._fetch = fetcher
         self._clock = clock
         self._seen: dict[str, set[str]] = {}
+        self._cache_ts: dict[str, int] = {}
         self._events: deque[Finding] = deque(maxlen=MAX_EVENTS)
         self._subscribers: list[asyncio.Queue] = []
         self._lock = threading.Lock()
         self.last_swept_at: datetime | None = None
+        self.source_refreshed_at: datetime | None = None
         self.last_error: str | None = None
 
     def reset(self, config: WatchConfig | None = None) -> None:
         """Forget every seen listing and finding, and optionally reconfigure."""
         with self._lock:
             self._seen.clear()
+            self._cache_ts.clear()
             self._events.clear()
         self.config = config or WatchConfig()
         self.last_swept_at = None
+        self.source_refreshed_at = None
         self.last_error = None
 
     # -- subscriptions ----------------------------------------------------
@@ -152,7 +160,17 @@ class DealWatcher:
 
     def sweep_target(self, target: WatchTarget) -> list[Finding]:
         """Scan one target and return the new listings worth reporting."""
-        listings = self._fetch(target)
+        result = self._fetch(target)
+        listings = result.listings
+
+        if result.cache_ts is not None:
+            self.source_refreshed_at = datetime.fromtimestamp(result.cache_ts, tz=UTC)
+            if self._cache_ts.get(target.key) == result.cache_ts:
+                # The source has not refreshed, so this is the same snapshot
+                # already processed. Nothing can be new.
+                return []
+            self._cache_ts[target.key] = result.cache_ts
+
         first_pass = target.key not in self._seen
         seen = self._seen.setdefault(target.key, set())
 

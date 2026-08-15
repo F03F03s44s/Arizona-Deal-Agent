@@ -426,6 +426,25 @@ posted" feed without a refresh, and it is emailed if a watch email is set.
 Listing age comes from the posting timestamp, so genuinely just-posted listings
 are labelled as such.
 
+**How fresh can this actually be?** Not seconds. Craigslist answers this search
+from a cache that only rolls every **~15 minutes** — between rolls the response
+is byte-identical, so polling every second would return the same data hundreds
+of times and tell you nothing new. Measured directly:
+
+```
+t+  0s  cacheTs=1786835427  newest_post=23:10:07
+t+ 30s  cacheTs=1786835427  newest_post=23:10:07  | new rows vs previous: 0
+t+ 60s  cacheTs=1786835427  newest_post=23:10:07  | new rows vs previous: 0
+t+ 90s  cacheTs=1786836332  newest_post=23:25:06  | new rows vs previous: 359
+t+120s  cacheTs=1786836332  newest_post=23:25:06  | new rows vs previous: 0
+```
+
+So the watcher sweeps every five minutes by default, skips any target whose
+`cacheTs` has not moved, and reports the moment a roll brings new listings.
+`GET /api/watch` shows `source_refreshed_at` — when the source last published,
+as opposed to when the agent last asked — so the real freshness is visible
+rather than implied.
+
 ### On scanning "every source on the web"
 
 That is not something a scraper can honestly promise, so the sources it does and

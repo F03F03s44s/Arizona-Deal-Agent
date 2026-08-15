@@ -216,6 +216,10 @@ class WatchStatus(BaseModel):
     email: str | None = None
     targets: list[WatchTargetModel] = Field(default_factory=list)
     last_swept_at: datetime | None = None
+    source_refreshed_at: datetime | None = Field(
+        default=None,
+        description="When the source last published new data, not when we last asked.",
+    )
     last_error: str | None = None
     findings_held: int = 0
 

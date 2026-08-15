@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 
 from app import sources
-from app.craigslist import CraigslistError
+from app.craigslist import CraigslistError, SearchResult
 from app.sources import AREAS, DEFAULT_TARGETS, WatchTarget
 
 
@@ -50,7 +50,7 @@ def test_fetch_routes_through_the_named_source(monkeypatch):
         def fetch(self, target, *, limit):
             captured["target"] = target
             captured["limit"] = limit
-            return []
+            return SearchResult(listings=[], cache_ts=1)
 
     monkeypatch.setitem(sources.SOURCES, "craigslist", FakeSource())
     target = WatchTarget(area_id=244, category="rea")

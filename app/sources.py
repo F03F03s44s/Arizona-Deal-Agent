@@ -19,7 +19,7 @@ from typing import Protocol
 
 from . import craigslist
 from .categories import DEFAULT_SEARCH_PATH, PROPERTY_SEARCH_PATHS, SEARCH_PATHS
-from .craigslist import AREAS, PHOENIX_AREA_ID, Listing
+from .craigslist import AREAS, PHOENIX_AREA_ID, SearchResult
 
 DEFAULT_AREA_ID = PHOENIX_AREA_ID
 
@@ -68,12 +68,12 @@ _CATEGORY_LABELS = {path: label for label, path in SEARCH_PATHS.items()}
 
 
 class DealSource(Protocol):
-    """Fetches raw listings for a watch target."""
+    """Fetches listings for a watch target."""
 
     name: str
     label: str
 
-    def fetch(self, target: WatchTarget, *, limit: int) -> list[Listing]: ...
+    def fetch(self, target: WatchTarget, *, limit: int) -> SearchResult: ...
 
 
 class CraigslistSource:
@@ -82,8 +82,10 @@ class CraigslistSource:
     name = "craigslist"
     label = "Craigslist"
 
-    def fetch(self, target: WatchTarget, *, limit: int = craigslist.PAGE_SIZE) -> list[Listing]:
-        return craigslist.search(
+    def fetch(
+        self, target: WatchTarget, *, limit: int = craigslist.PAGE_SIZE
+    ) -> SearchResult:
+        return craigslist.search_page(
             target.query,
             area_id=target.area_id,
             category=target.category,
@@ -103,7 +105,7 @@ DEFAULT_TARGETS: tuple[WatchTarget, ...] = (
 )
 
 
-def fetch(target: WatchTarget, *, limit: int = craigslist.PAGE_SIZE) -> list[Listing]:
+def fetch(target: WatchTarget, *, limit: int = craigslist.PAGE_SIZE) -> SearchResult:
     """Fetch listings for one target through its source."""
     source = SOURCES.get(target.source)
     if source is None:

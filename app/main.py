@@ -315,6 +315,7 @@ def _watch_status() -> WatchStatus:
         email=getattr(watcher.config, "email", None),
         targets=[_target_model(t) for t in watcher.config.targets],
         last_swept_at=watcher.last_swept_at,
+        source_refreshed_at=watcher.source_refreshed_at,
         last_error=watcher.last_error,
         findings_held=len(watcher.recent(limit=1000)),
     )

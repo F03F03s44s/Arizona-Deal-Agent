@@ -576,9 +576,13 @@
           )
           .join("");
         const swept = w.last_swept_at ? new Date(w.last_swept_at).toLocaleTimeString() : "not yet";
+        const refreshed = w.source_refreshed_at
+          ? new Date(w.source_refreshed_at).toLocaleTimeString()
+          : "unknown";
         document.getElementById("watchStatus").textContent =
           `${w.enabled ? "Scanning" : "Paused"} \u00b7 every ${w.interval}s \u00b7 ` +
-          `notify above ${w.min_score} \u00b7 last swept ${swept}` +
+          `notify above ${w.min_score} \u00b7 last swept ${swept} \u00b7 ` +
+          `source data from ${refreshed}` +
           (w.last_error ? ` \u00b7 ${w.last_error}` : "");
         return w;
       }
