@@ -232,6 +232,52 @@ class TestTransmit:
         assert "nothing to transmit" in err
 
 
+class TestHowto:
+    def test_prints_operator_guide(self, capsys):
+        code, out, _ = run(capsys, "howto")
+        assert code == 0
+        assert "How to use Arizona Deal Agent" in out
+        assert "arizona-deal-agent rank" in out
+        assert "arizona-deal-agent transmit" in out
+        for name in ("balanced", "profit", "affordability", "tight"):
+            assert name in out
+
+    def test_help_mentions_howto(self, capsys):
+        with pytest.raises(SystemExit) as excinfo:
+            main(["--help"])
+        assert excinfo.value.code == 0
+        help_text = capsys.readouterr().out
+        assert "howto" in help_text
+        assert "How to use" in help_text
+
+    def test_run_balanced_recommends_fort_lowell(self, capsys, sample_csv):
+        code, out, _ = run(capsys, "howto", "--run", "balanced", "-i", str(sample_csv))
+        assert code == 0
+        assert "How to use — balanced" in out
+        assert "AZ-003" in out
+        assert "3110 E Fort Lowell Rd" in out
+        assert "Best:" in out
+
+    def test_run_profit_recommends_twelfth_ave(self, capsys, sample_csv):
+        code, out, _ = run(capsys, "howto", "--run", "profit", "-i", str(sample_csv))
+        assert code == 0
+        assert "AZ-012" in out
+        assert "5402 S 12th Ave" in out
+        assert out.index("AZ-012") < out.index("AZ-003")
+
+    def test_run_tight_keeps_only_fort_lowell(self, capsys, sample_csv):
+        code, out, _ = run(capsys, "howto", "--run", "tight", "-i", str(sample_csv))
+        assert code == 0
+        assert "AZ-003" in out
+        assert "showing 1" in out
+        assert "AZ-012" not in out
+
+    def test_unknown_scenario_is_an_error(self, capsys, sample_csv):
+        code, _, err = run(capsys, "howto", "--run", "flip", "-i", str(sample_csv))
+        assert code == 1
+        assert "unknown scenario 'flip'" in err
+
+
 class TestTopLevel:
     def test_version(self, capsys):
         with pytest.raises(SystemExit) as excinfo:

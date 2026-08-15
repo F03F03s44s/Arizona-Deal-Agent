@@ -6,6 +6,8 @@ Each listing is scored on three axes — price, profitability, and affordability
 then ranked so the lowest-priced deal that is still profitable and still affordable
 floats to the top, with a plain-language explanation of why it won.
 
+**Start here:** `arizona-deal-agent howto` or [HOW_TO_USE.md](HOW_TO_USE.md).
+
 ## How to use
 
 ### 1. Install
@@ -22,6 +24,13 @@ pip install -e .
 
 That installs the `arizona-deal-agent` command. If you would rather not install anything,
 `PYTHONPATH=src python3 -m arizona_deal_agent` works the same way everywhere below.
+
+Print the in-tool How to use card (steps plus named scenarios):
+
+```bash
+arizona-deal-agent howto
+arizona-deal-agent howto --run profit
+```
 
 ### 2. Find the best-value deals
 
