@@ -112,6 +112,11 @@ class Listing:
         category = describe(self.category_id)
         return category.seller_type if category else None
 
+    @property
+    def is_property(self) -> bool:
+        category = describe(self.category_id)
+        return bool(category and category.is_property)
+
 
 @dataclass(frozen=True)
 class ListingDetail:

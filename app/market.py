@@ -20,6 +20,13 @@ STRONG_OVERLAP = 2
 # posts), which would otherwise look like infinite-margin deals.
 MIN_CREDIBLE_PRICE = 20.0
 
+# A comparable more than an order of magnitude away from the listing is not
+# comparing like with like. Real estate searches are the clearest case: they
+# return monthly rents alongside outright sale prices, and pricing a $2,600
+# rental against a $378,000 sale invents a fortune in margin. A genuine flip
+# is a small multiple, so this is wide enough to keep every real bargain.
+MAX_COMP_RATIO = 10.0
+
 STOPWORDS = frozenset(
     {
         "and",
@@ -95,25 +102,65 @@ def title_tokens(title: str) -> frozenset[str]:
 def _comparable_prices(
     index: int, listings: list[Listing], tokens: list[frozenset[str]]
 ) -> list[float]:
-    """Prices of listings whose titles overlap ``listings[index]``.
+    """Prices of listings comparable to ``listings[index]``.
 
     Tightly-matching titles are preferred, relaxing to a single shared word.
+    Candidates outside :data:`MAX_COMP_RATIO` of the listing's own price are
+    never used, and property listings only compare against others with the
+    same bedroom count when enough of those exist.
+
     Returns nothing when a listing has no real comparables: a search for power
     tools also drags in loafers and used cars, and pricing those off the rest
     of the cohort would invent margins that do not exist.
     """
-    target = tokens[index]
+    target_tokens = tokens[index]
+    target = listings[index]
+    low = target.price / MAX_COMP_RATIO
+    high = target.price * MAX_COMP_RATIO
 
-    for threshold in (STRONG_OVERLAP, 1):
-        prices = [
-            listing.price
-            for other, listing in enumerate(listings)
-            if other != index and len(target & tokens[other]) >= threshold
-        ]
-        if len(prices) >= MIN_COMPARABLES:
-            return prices
+    for same_bedrooms in (True, False):
+        if same_bedrooms and target.bedrooms is None:
+            continue
+        for threshold in (STRONG_OVERLAP, 1):
+            prices = [
+                other.price
+                for position, other in enumerate(listings)
+                if position != index
+                and low <= other.price <= high
+                and len(target_tokens & tokens[position]) >= threshold
+                and (not same_bedrooms or other.bedrooms == target.bedrooms)
+            ]
+            if len(prices) >= MIN_COMPARABLES:
+                return prices
 
     return []
+
+
+def _property_comps(index: int, listings: list[Listing]) -> tuple[float, int] | None:
+    """Value a property from what comparable homes cost per square foot.
+
+    A real-estate search returns land, rentals and sales side by side, and
+    their prices are not the same kind of number. Square footage is the one
+    thing that makes them comparable, so a property with no square footage is
+    left unpriced rather than measured against whatever else came back.
+    """
+    target = listings[index]
+    if not target.area_sqft or not target.bedrooms:
+        return None
+
+    rates = [
+        other.price / other.area_sqft
+        for position, other in enumerate(listings)
+        if position != index
+        and other.area_sqft
+        and other.bedrooms == target.bedrooms
+        and other.price / other.area_sqft <= (target.price / target.area_sqft) * MAX_COMP_RATIO
+        and other.price / other.area_sqft >= (target.price / target.area_sqft) / MAX_COMP_RATIO
+    ]
+    if len(rates) < MIN_COMPARABLES:
+        return None
+
+    return float(median(rates)) * target.area_sqft, len(rates)
 
 
 def listings_to_deals(
@@ -132,10 +179,18 @@ def listings_to_deals(
 
     deals: list[Deal] = []
     for index, listing in enumerate(usable):
-        prices = _comparable_prices(index, usable, tokens)
-        if not prices:
-            continue
-        market_value = float(median(prices))
+        if listing.is_property:
+            valued = _property_comps(index, usable)
+            if valued is None:
+                continue
+            market_value, comparable_count = valued
+        else:
+            prices = _comparable_prices(index, usable, tokens)
+            if not prices:
+                continue
+            market_value = float(median(prices))
+            comparable_count = len(prices)
+
         if market_value <= 0:
             continue
 
@@ -150,7 +205,7 @@ def listings_to_deals(
                 location=listing.location,
                 posted_at=listing.posted_at,
                 source=source,
-                comparable_count=len(prices),
+                comparable_count=comparable_count,
                 seller_type=listing.seller_type,
                 bedrooms=listing.bedrooms,
                 area_sqft=listing.area_sqft,
