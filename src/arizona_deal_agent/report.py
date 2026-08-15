@@ -206,7 +206,7 @@ def render_table(result: SearchResult) -> str:
     best = result.best
     if best:
         parts.append(f"\nBest value: {best.listing.label} — score {best.score.composite:.1f}/100")
-        for reason in best.reasons[:4]:
+        for reason in best.reasons:
             parts.append(f"  - {reason}")
         if best.warnings:
             parts.append(f"  ! {'; '.join(best.warnings)}")
