@@ -147,8 +147,18 @@ def build_parser() -> argparse.ArgumentParser:
     score = subparsers.add_parser("score", help="score a single deal typed on the command line")
     score.add_argument("--price", type=dollars, required=True, metavar="USD", help="list price")
     score.add_argument("--rent", type=dollars, required=True, metavar="USD", help="expected monthly rent")
-    score.add_argument("--taxes", type=dollars, metavar="USD", help=f"annual property taxes (default: {DEFAULT_TAX_RATE:.2%} of price)")
-    score.add_argument("--insurance", type=dollars, metavar="USD", help=f"annual insurance (default: {DEFAULT_INSURANCE_RATE:.2%} of price)")
+    score.add_argument(
+        "--taxes",
+        type=dollars,
+        metavar="USD",
+        help=f"annual property taxes (default: {DEFAULT_TAX_RATE * 100:.2f}%% of price)",
+    )
+    score.add_argument(
+        "--insurance",
+        type=dollars,
+        metavar="USD",
+        help=f"annual insurance (default: {DEFAULT_INSURANCE_RATE * 100:.2f}%% of price)",
+    )
     score.add_argument("--hoa", type=dollars, default=0.0, metavar="USD", help="monthly HOA dues (default: 0)")
     score.add_argument("--rehab", type=dollars, default=0.0, metavar="USD", help="rehab budget (default: 0)")
     score.add_argument("--arv", type=dollars, metavar="USD", help="after-repair value, enables the 70%% rule")
