@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arizona Deal Agent — Phoenix Craigslist</title>
+    <style>
+      :root {
+        --sand: #f6efe4;
+        --dusk: #2d2a32;
+        --cactus: #3f7d4e;
+        --sunset: #d9682e;
+        --card: #ffffff;
+        --muted: #6b6570;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        background: linear-gradient(160deg, var(--sand), #efe2cc);
+        color: var(--dusk);
+        min-height: 100vh;
+      }
+      header {
+        padding: 32px 24px 8px;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 2rem;
+        letter-spacing: -0.5px;
+      }
+      header p { color: var(--muted); margin: 8px 0 0; }
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 16px 24px 48px;
+      }
+      .howto, .controls, .alerts, .status {
+        background: var(--card);
+        padding: 18px 20px;
+        border-radius: 14px;
+        box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08);
+        margin-bottom: 16px;
+      }
+      .howto h2, .alerts h2 {
+        margin: 0 0 8px;
+        font-size: 1.05rem;
+      }
+      .howto ol {
+        margin: 0;
+        padding-left: 20px;
+      }
+      .howto li { margin: 4px 0; }
+      .howto .hint, .status {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: flex-end;
+      }
+      .field { display: flex; flex-direction: column; gap: 6px; }
+      .field label { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+      .field input[type="number"],
+      .field input[type="email"],
+      .field input[type="text"] {
+        padding: 8px 10px;
+        border: 1px solid #d8cdbb;
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 200px;
+      }
+      .weight-value { font-variant-numeric: tabular-nums; color: var(--cactus); font-weight: 700; }
+      .slider-labels {
+        display: flex;
+        justify-content: space-between;
+        width: 220px;
+        font-size: 0.72rem;
+        color: var(--muted);
+      }
+      .weight-hint { font-size: 0.8rem; color: var(--muted); max-width: 260px; }
+      .live-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #dceede;
+        color: var(--cactus);
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 6px 10px;
+        border-radius: 999px;
+      }
+      .live-pill::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--cactus);
+        box-shadow: 0 0 0 0 rgba(63, 125, 78, 0.5);
+        animation: pulse 1.6s infinite;
+      }
+      @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(63, 125, 78, 0.45); }
+        70% { box-shadow: 0 0 0 8px rgba(63, 125, 78, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(63, 125, 78, 0); }
+      }
+      .scenarios {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        width: 100%;
+      }
+      .scenarios button, .alerts button {
+        background: #efe6d6;
+        color: var(--dusk);
+        border: 1px solid #d8cdbb;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .scenarios button:hover, .alerts button:hover { background: #e5d8c0; }
+      button.primary {
+        background: var(--sunset);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button.primary:hover { background: #c15a24; }
+      .alert-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: flex-end;
+      }
+      .recommendation {
+        margin: 8px 0 8px;
+        padding: 18px 20px;
+        border-radius: 14px;
+        background: var(--cactus);
+        color: white;
+        box-shadow: 0 6px 18px rgba(63, 125, 78, 0.25);
+      }
+      .recommendation h2 { margin: 0 0 4px; font-size: 1rem; opacity: 0.85; font-weight: 600; }
+      .recommendation .title { font-size: 1.4rem; font-weight: 700; }
+      .recommendation .meta { margin-top: 6px; opacity: 0.92; }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+        background: var(--card);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08);
+      }
+      th, td { padding: 12px 14px; text-align: left; font-size: 0.92rem; }
+      thead th {
+        background: #efe6d6;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 0.72rem;
+        letter-spacing: 0.5px;
+      }
+      tbody tr:nth-child(even) { background: #faf6ee; }
+      tbody tr.over-budget { opacity: 0.5; }
+      tbody tr.hot { outline: 2px solid rgba(217, 104, 46, 0.35); outline-offset: -2px; }
+      .num { text-align: right; font-variant-numeric: tabular-nums; }
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+      .badge.ok { background: #dceede; color: var(--cactus); }
+      .badge.no { background: #f6dcd1; color: #b04a1f; }
+      .badge.hot { background: #ffe1cf; color: #b04a1f; }
+      .rank-num { font-weight: 700; color: var(--sunset); }
+      a.deal-link { color: var(--dusk); text-decoration: none; border-bottom: 1px dotted #b9ad9a; }
+      a.deal-link:hover { color: var(--sunset); }
+      .saved-list { margin: 12px 0 0; padding: 0; list-style: none; font-size: 0.9rem; color: var(--muted); }
+      .saved-list li { margin: 6px 0; }
+      .msg { margin-top: 8px; font-size: 0.85rem; color: var(--cactus); }
+      .msg.error { color: #b04a1f; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Arizona Deal Agent</h1>
+      <p>Live Phoenix Craigslist rankings — lowest cost, highest profit, most affordable.</p>
+    </header>
+    <main>
+      <section class="howto" aria-labelledby="howto-heading">
+        <h2 id="howto-heading">How to use</h2>
+        <ol>
+          <li>Set your cash <strong>Budget ($)</strong>.</li>
+          <li>Drag <strong>Profit vs. affordability</strong> — the table re-ranks live as you slide.</li>
+          <li>Save a search with your email to get alerts when any deal scores ≥ 0.9.</li>
+        </ol>
+        <p class="hint">
+          Inventory is scraped from Phoenix Craigslist for-sale listings.
+          Same ranking is available as <code>python -m app</code> and <code>POST /api/rank</code>.
+        </p>
+      </section>
+
+      <div class="controls">
+        <div class="field">
+          <label for="budget">Budget ($)</label>
+          <input id="budget" type="number" min="1" step="100" value="15000" />
+        </div>
+        <div class="field">
+          <label for="query">Craigslist query (optional)</label>
+          <input id="query" type="text" placeholder="e.g. desk, macbook, tools" />
+        </div>
+        <div class="field">
+          <label for="weight">
+            Profit vs. affordability: <span id="weightValue" class="weight-value">0.60</span>
+          </label>
+          <input id="weight" type="range" min="0" max="1" step="0.05" value="0.6" style="width: 220px;" />
+          <div class="slider-labels"><span>Affordability</span><span>Profit</span></div>
+          <div id="weightHint" class="weight-hint">
+            Balance profit margin with how much cash the deal uses.
+          </div>
+        </div>
+        <span class="live-pill" title="Ranks update as you drag">Live ranking</span>
+        <button id="refreshBtn" class="primary" type="button">Refresh listings</button>
+        <div class="scenarios" aria-label="How-to scenarios">
+          <button type="button" data-budget="15000" data-weight="0.6">Balanced</button>
+          <button type="button" data-budget="15000" data-weight="1">Max profit</button>
+          <button type="button" data-budget="15000" data-weight="0">Max affordability</button>
+          <button type="button" data-budget="2000" data-weight="0.5">Tight $2,000</button>
+        </div>
+      </div>
+
+      <section class="alerts" aria-labelledby="alerts-heading">
+        <h2 id="alerts-heading">Saved search email alerts</h2>
+        <p class="hint" style="margin-top:0">
+          Emails fire when an in-budget deal scores at or above <strong>0.90</strong>
+          (configure SMTP via <code>SMTP_HOST</code> / <code>SMTP_FROM</code>; otherwise alerts are logged locally).
+        </p>
+        <form id="alertForm" class="alert-form">
+          <div class="field">
+            <label for="alertEmail">Email</label>
+            <input id="alertEmail" type="email" required placeholder="you@example.com" />
+          </div>
+          <button class="primary" type="submit">Save search (alert ≥ 0.9)</button>
+          <button type="button" id="checkAlertsBtn">Check now</button>
+        </form>
+        <div id="alertMsg" class="msg" hidden></div>
+        <ul id="savedList" class="saved-list"></ul>
+      </section>
+
+      <div id="status" class="status">Loading Phoenix Craigslist deals…</div>
+
+      <div id="recommendation" class="recommendation" style="display: none;">
+        <h2>Agent recommendation</h2>
+        <div class="title" id="recTitle"></div>
+        <div class="meta" id="recMeta"></div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Deal</th>
+            <th>Category</th>
+            <th class="num">Cost</th>
+            <th class="num">Value</th>
+            <th class="num">Profit</th>
+            <th class="num">Score</th>
+            <th>Budget</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </main>
+
+    <script>
+      const weight = document.getElementById("weight");
+      const weightValue = document.getElementById("weightValue");
+      const weightHint = document.getElementById("weightHint");
+      const budgetInput = document.getElementById("budget");
+      const queryInput = document.getElementById("query");
+      const statusEl = document.getElementById("status");
+      let rankTimer = null;
+      let lastRefresh = false;
+
+      function hintFor(value) {
+        if (value <= 0.3) return "Prefer cheaper deals that leave budget leftover.";
+        if (value >= 0.8) return "Prefer the fattest profit margin, as long as it fits the budget.";
+        return "Balance profit margin with how much cash the deal uses.";
+      }
+
+      function syncWeight() {
+        const value = Number(weight.value);
+        weightValue.textContent = value.toFixed(2);
+        weightHint.textContent = hintFor(value);
+      }
+
+      const fmt = (n) => "$" + Number(n).toLocaleString(undefined, { maximumFractionDigits: 0 });
+
+      function scheduleRank({ refresh = false, immediate = false } = {}) {
+        lastRefresh = refresh;
+        if (rankTimer) clearTimeout(rankTimer);
+        const delay = immediate ? 0 : (refresh ? 0 : 80);
+        rankTimer = setTimeout(() => rank({ refresh: lastRefresh }), delay);
+      }
+
+      async function rank({ refresh = false } = {}) {
+        const budget = Number(budgetInput.value);
+        const profit_weight = Number(weight.value);
+        const query = queryInput.value.trim() || null;
+        statusEl.textContent = refresh
+          ? "Refreshing Phoenix Craigslist…"
+          : "Re-ranking live…";
+        try {
+          const res = await fetch("/api/rank", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ budget, profit_weight, deals: [], refresh, query }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.detail || "Rank failed");
+          render(data);
+          statusEl.textContent =
+            `Showing ${data.scraped_count} deals from ${data.source}` +
+            (data.source === "craigslist" ? " (Phoenix Craigslist)." : " (offline fallback).");
+        } catch (err) {
+          statusEl.textContent = "Could not rank deals: " + err.message;
+        }
+      }
+
+      function render(data) {
+        const rows = document.getElementById("rows");
+        rows.innerHTML = "";
+        data.ranked.forEach((s, i) => {
+          const tr = document.createElement("tr");
+          if (!s.within_budget) tr.className = "over-budget";
+          if (s.within_budget && s.score >= 0.9) tr.classList.add("hot");
+          const title = s.deal.url
+            ? `<a class="deal-link" href="${s.deal.url}" target="_blank" rel="noopener">${escapeHtml(s.deal.title)}</a>`
+            : escapeHtml(s.deal.title);
+          const badge = s.within_budget
+            ? (s.score >= 0.9
+                ? `<span class="badge hot">≥ 0.9</span>`
+                : `<span class="badge ok">in budget</span>`)
+            : `<span class="badge no">over</span>`;
+          tr.innerHTML = `
+            <td class="rank-num">${i + 1}</td>
+            <td>${title}</td>
+            <td>${escapeHtml(s.deal.category)}</td>
+            <td class="num">${fmt(s.deal.acquisition_cost)}</td>
+            <td class="num">${fmt(s.deal.market_value)}</td>
+            <td class="num">${fmt(s.profit)}</td>
+            <td class="num">${s.score.toFixed(3)}</td>
+            <td>${badge}</td>`;
+          rows.appendChild(tr);
+        });
+
+        const rec = document.getElementById("recommendation");
+        if (data.recommendation) {
+          rec.style.display = "block";
+          document.getElementById("recTitle").textContent = data.recommendation.deal.title;
+          const r = data.recommendation;
+          document.getElementById("recMeta").textContent =
+            `Profit ${fmt(r.profit)} · margin ${(r.profit_margin * 100).toFixed(0)}% · cost ${fmt(r.deal.acquisition_cost)} · score ${r.score.toFixed(3)}`;
+        } else {
+          rec.style.display = "none";
+        }
+      }
+
+      function escapeHtml(text) {
+        return String(text)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;");
+      }
+
+      weight.addEventListener("input", () => {
+        syncWeight();
+        scheduleRank();
+      });
+      budgetInput.addEventListener("input", () => scheduleRank());
+      queryInput.addEventListener("change", () => scheduleRank({ refresh: true, immediate: true }));
+      document.getElementById("refreshBtn").addEventListener("click", () => {
+        scheduleRank({ refresh: true, immediate: true });
+      });
+
+      document.querySelectorAll(".scenarios button").forEach((button) => {
+        button.addEventListener("click", () => {
+          budgetInput.value = button.dataset.budget;
+          weight.value = button.dataset.weight;
+          syncWeight();
+          scheduleRank({ immediate: true });
+        });
+      });
+
+      const alertMsg = document.getElementById("alertMsg");
+      function showAlertMsg(text, isError = false) {
+        alertMsg.hidden = false;
+        alertMsg.textContent = text;
+        alertMsg.className = "msg" + (isError ? " error" : "");
+      }
+
+      async function refreshSavedList() {
+        const res = await fetch("/api/saved-searches");
+        const data = await res.json();
+        const list = document.getElementById("savedList");
+        list.innerHTML = "";
+        if (!data.searches.length) {
+          list.innerHTML = "<li>No saved searches yet.</li>";
+          return;
+        }
+        data.searches.forEach((s) => {
+          const li = document.createElement("li");
+          li.textContent =
+            `${s.email} · budget ${fmt(s.budget)} · weight ${s.profit_weight.toFixed(2)}` +
+            ` · min ${s.min_score.toFixed(2)} · alerts ${s.alert_count}` +
+            (s.query ? ` · “${s.query}”` : "");
+          list.appendChild(li);
+        });
+      }
+
+      document.getElementById("alertForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const payload = {
+          email: document.getElementById("alertEmail").value.trim(),
+          budget: Number(budgetInput.value),
+          profit_weight: Number(weight.value),
+          query: queryInput.value.trim() || null,
+          min_score: 0.9,
+        };
+        const res = await fetch("/api/saved-searches", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showAlertMsg(typeof data.detail === "string" ? data.detail : "Could not save search", true);
+          return;
+        }
+        showAlertMsg(`Saved search for ${data.email}. We'll email when score ≥ 0.9.`);
+        refreshSavedList();
+      });
+
+      document.getElementById("checkAlertsBtn").addEventListener("click", async () => {
+        showAlertMsg("Checking saved searches against live listings…");
+        const res = await fetch("/api/saved-searches/check?refresh=true", { method: "POST" });
+        const data = await res.json();
+        if (!res.ok) {
+          showAlertMsg("Check failed", true);
+          return;
+        }
+        showAlertMsg(`Checked ${data.checked} search(es); sent ${data.alerts_sent} alert(s).`);
+        refreshSavedList();
+      });
+
+      syncWeight();
+      refreshSavedList();
+      scheduleRank({ refresh: true, immediate: true });
+    </script>
+  </body>
+</html>
