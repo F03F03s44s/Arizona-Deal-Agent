@@ -59,3 +59,16 @@ def test_send_json_returns_record():
 def test_send_rejects_private_webhook():
     with pytest.raises(SystemExit):
         run(["send", "--url", "http://127.0.0.1/inbox"])
+
+
+def test_main_reads_sys_argv_for_send(monkeypatch, capsys):
+    monkeypatch.setattr(
+        "sys.argv",
+        ["__main__.py", "send", "--inbox", "--note", "sysargv"],
+    )
+    from app.cli import main
+
+    assert main() == 0
+    captured = capsys.readouterr().out
+    assert "Arizona Deal Agent — send" in captured
+    assert "Note: sysargv" in captured

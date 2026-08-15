@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from typing import Sequence
 
 from .agent import rank_deals
@@ -150,7 +151,7 @@ def format_send_report(record) -> str:
 
 def normalize_argv(argv: Sequence[str] | None) -> list[str]:
     """Treat bare flags as `rank` so `python -m app --budget 2000` still works."""
-    args = list(argv) if argv is not None else []
+    args = list(argv) if argv is not None else sys.argv[1:]
     if not args:
         return ["rank"]
     if args[0] in {"rank", "send"}:
