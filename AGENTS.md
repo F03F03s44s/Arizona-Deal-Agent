@@ -1,13 +1,14 @@
 # Arizona Deal Agent
 
-CLI tool that ranks Arizona property deals by price, profitability, and affordability.
+MVP CLI that finds Arizona property deals and ranks them by best value
+(price + profitability + affordability).
 
 ## How to run
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
-arizona-deal-agent rank -i data/sample_listings.csv --top 5
+arizona-deal-agent find --top 5
 ```
 
 Without installing, `PYTHONPATH=src python3 -m arizona_deal_agent` works the same way.
@@ -22,6 +23,7 @@ Without installing, `PYTHONPATH=src python3 -m arizona_deal_agent` works the sam
 
 | Command | Purpose |
 | ------- | ------- |
+| `find` | Find Arizona deals and rank by best value (sample catalog by default) |
 | `rank` | Score a listings file and show the best deals |
 | `explain` | Full breakdown for one listing by id |
 | `score` | Score a single deal from command-line flags |

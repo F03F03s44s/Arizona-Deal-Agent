@@ -26,6 +26,27 @@ class TestFractionArgument:
             fraction("cheap")
 
 
+class TestFind:
+    def test_find_uses_bundled_sample_catalog(self, capsys):
+        code, out, _ = run(capsys, "find", "--top", "3")
+        assert code == 0
+        assert "SCORE" in out
+        assert "showing 3" in out
+        assert "Best:" in out
+
+    def test_find_ranks_best_value_first(self, capsys):
+        _, out, _ = run(capsys, "find", "--format", "json")
+        deals = json.loads(out)["deals"]
+        scores = [deal["scores"]["composite"] for deal in deals]
+        assert scores == sorted(scores, reverse=True)
+        assert deals[0]["id"] == "AZ-003"
+
+    def test_rank_also_defaults_to_sample_catalog(self, capsys):
+        code, out, _ = run(capsys, "rank", "--top", "1", "--format", "json")
+        assert code == 0
+        assert json.loads(out)["deals"][0]["id"] == "AZ-003"
+
+
 class TestRank:
     def test_prints_a_ranked_table(self, capsys, sample_csv):
         code, out, _ = run(capsys, "rank", "-i", str(sample_csv))

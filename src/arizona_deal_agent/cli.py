@@ -15,6 +15,34 @@ from .sources import DEFAULT_INSURANCE_RATE, DEFAULT_TAX_RATE, load_listings
 PROGRAM = "arizona-deal-agent"
 
 
+def add_input_option(parser: argparse.ArgumentParser, *, required: bool = False) -> None:
+    help_text = (
+        "listings file (.csv or .json); defaults to the bundled Arizona sample catalog"
+        if not required
+        else "listings file (.csv or .json)"
+    )
+    parser.add_argument("-i", "--input", required=required, metavar="PATH", help=help_text)
+
+
+def add_rank_filter_options(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("-n", "--top", type=int, metavar="N", help="show only the top N deals")
+    parser.add_argument(
+        "-f",
+        "--format",
+        choices=("table", "json", "csv"),
+        default="table",
+        help="output format (default: table)",
+    )
+    parser.add_argument("--city", action="append", metavar="CITY", help="keep only this city (repeatable)")
+    parser.add_argument("--min-cash-flow", type=dollars, metavar="USD", help="drop deals below this monthly cash flow")
+    parser.add_argument("--min-cap-rate", type=fraction, metavar="PCT", help="drop deals below this cap rate")
+    parser.add_argument(
+        "--include-over-budget",
+        action="store_true",
+        help="keep deals that break a budget limit instead of dropping them",
+    )
+
+
 def fraction(text: str) -> float:
     """Accept ``0.065``, ``6.5`` or ``6.5%`` and always return a fraction.
 
@@ -70,25 +98,31 @@ def add_weight_options(parser: argparse.ArgumentParser) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog=PROGRAM,
-        description="Rank Arizona property deals by price, profitability and affordability.",
+        description="Find Arizona property deals and rank them by best value "
+        "(price + profitability + affordability).",
     )
     parser.add_argument("--version", action="version", version=f"{PROGRAM} {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
+    find = subparsers.add_parser(
+        "find",
+        help="find Arizona deals and rank them by best value (uses sample catalog by default)",
+    )
+    add_input_option(find)
+    add_rank_filter_options(find)
+    add_budget_options(find)
+    add_assumption_options(find)
+    add_weight_options(find)
+
     rank = subparsers.add_parser("rank", help="score a file of listings and show the best deals")
-    rank.add_argument("-i", "--input", required=True, metavar="PATH", help="listings file (.csv or .json)")
-    rank.add_argument("-n", "--top", type=int, metavar="N", help="show only the top N deals")
-    rank.add_argument("-f", "--format", choices=("table", "json", "csv"), default="table", help="output format (default: table)")
-    rank.add_argument("--city", action="append", metavar="CITY", help="keep only this city (repeatable)")
-    rank.add_argument("--min-cash-flow", type=dollars, metavar="USD", help="drop deals below this monthly cash flow")
-    rank.add_argument("--min-cap-rate", type=fraction, metavar="PCT", help="drop deals below this cap rate")
-    rank.add_argument("--include-over-budget", action="store_true", help="keep deals that break a budget limit instead of dropping them")
+    add_input_option(rank)
+    add_rank_filter_options(rank)
     add_budget_options(rank)
     add_assumption_options(rank)
     add_weight_options(rank)
 
     explain = subparsers.add_parser("explain", help="show the full breakdown for one listing")
-    explain.add_argument("-i", "--input", required=True, metavar="PATH", help="listings file (.csv or .json)")
+    add_input_option(explain)
     explain.add_argument("--id", required=True, metavar="ID", help="id of the listing to explain")
     add_budget_options(explain)
     add_assumption_options(explain)
@@ -113,7 +147,7 @@ def build_parser() -> argparse.ArgumentParser:
         "transmit",
         help="format the top deal as a shareable recommendation message",
     )
-    transmit.add_argument("-i", "--input", required=True, metavar="PATH", help="listings file (.csv or .json)")
+    add_input_option(transmit)
     transmit.add_argument("--to", metavar="RECIPIENT", help="optional recipient name for the message header")
     transmit.add_argument(
         "-f",
@@ -265,7 +299,13 @@ def run_score(args: argparse.Namespace) -> int:
     return 0
 
 
-COMMANDS = {"rank": run_rank, "explain": run_explain, "score": run_score, "transmit": run_transmit}
+COMMANDS = {
+    "find": run_rank,
+    "rank": run_rank,
+    "explain": run_explain,
+    "score": run_score,
+    "transmit": run_transmit,
+}
 
 
 def main(argv: Sequence[str] | None = None) -> int:
