@@ -150,6 +150,7 @@ def listings_to_deals(
                 location=listing.location,
                 posted_at=listing.posted_at,
                 source=source,
+                source_label="Craigslist Phoenix (allowlisted)",
                 comparable_count=len(prices),
             )
         )

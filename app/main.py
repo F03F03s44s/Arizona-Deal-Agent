@@ -25,7 +25,10 @@ from .models import (
     SavedSearch,
     SavedSearchCreate,
     SavedSearchRunResult,
+    SourceInfo,
+    TopicInfo,
 )
+from .topics import get_topic, page_slugs, source_infos, topic_infos
 
 logger = logging.getLogger(__name__)
 
@@ -78,10 +81,18 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Arizona Deal Agent",
-    description="Scrapes Phoenix Craigslist and ranks listings by profitability and affordability.",
+    description=(
+        "Topic pages for houses, household items, electronics, furniture, cars, and tools. "
+        "Live rows come only from allowlisted sources; scam-signal titles are dropped."
+    ),
     version=__version__,
     lifespan=lifespan,
 )
+
+
+def _budget_for(topic: str | None) -> float:
+    spec = get_topic(topic)
+    return spec.default_budget if spec else DEFAULT_BUDGET
 
 
 @app.get("/api/health")
@@ -89,19 +100,34 @@ def health() -> dict[str, str]:
     return {"status": "ok", "version": __version__}
 
 
+@app.get("/api/topics", response_model=list[TopicInfo])
+def list_topics() -> list[TopicInfo]:
+    return topic_infos()
+
+
+@app.get("/api/sources", response_model=list[SourceInfo])
+def list_sources() -> list[SourceInfo]:
+    return source_infos()
+
+
 @app.get("/api/deals", response_model=DealsResponse)
 def list_deals(
-    query: str = Query(default=DEFAULT_QUERY, description="Craigslist search terms."),
+    query: str | None = Query(default=None, description="Search terms."),
+    topic: str | None = Query(default=None, description="houses, household, electronics, furniture, cars, or tools."),
     refresh: bool = Query(default=False, description="Bypass the scrape cache."),
 ) -> DealsResponse:
-    """Scrape (or serve from cache) Phoenix listings for a search."""
-    sourced = deal_service.get_deals(query, refresh=refresh)
+    """Source (or serve from cache) allowlisted listings for a topic."""
+    if get_topic(topic) is None and topic:
+        raise HTTPException(status_code=404, detail=f"Unknown topic: {topic}")
+    search = query if topic is not None else (query or DEFAULT_QUERY)
+    sourced = deal_service.get_deals(search, topic=topic, refresh=refresh)
     return DealsResponse(
-        budget=DEFAULT_BUDGET,
+        budget=_budget_for(topic),
         query=sourced.query,
         source=sourced.source,
         deals=sourced.deals,
         warning=sourced.warning,
+        topic=sourced.topic,
     )
 
 
@@ -112,17 +138,23 @@ def rank(request: RankRequest) -> RankResponse:
     Caller-supplied deals win; otherwise the cached scrape for ``query`` is
     used, which keeps repeated slider-driven calls off the network.
     """
+    if request.topic and get_topic(request.topic) is None:
+        raise HTTPException(status_code=404, detail=f"Unknown topic: {request.topic}")
+
     if request.deals:
         ranked = rank_deals(request.deals, request.budget, request.profit_weight)
-        return ranked.model_copy(update={"source": "request", "query": request.query})
+        return ranked.model_copy(
+            update={"source": "request", "query": request.query, "topic": request.topic}
+        )
 
-    sourced = deal_service.get_deals(request.query)
+    sourced = deal_service.get_deals(request.query, topic=request.topic)
     ranked = rank_deals(sourced.deals, request.budget, request.profit_weight)
     return ranked.model_copy(
         update={
             "source": sourced.source,
             "query": sourced.query,
             "warning": sourced.warning,
+            "topic": sourced.topic,
         }
     )
 
@@ -162,6 +194,13 @@ def list_alerts(limit: int = Query(default=20, ge=1, le=200)) -> list[Alert]:
 
 @app.get("/")
 def index() -> FileResponse:
+    return FileResponse(STATIC_DIR / "index.html")
+
+
+@app.get("/{topic_path}")
+def topic_page(topic_path: str) -> FileResponse:
+    if topic_path not in page_slugs():
+        raise HTTPException(status_code=404, detail="Unknown topic page")
     return FileResponse(STATIC_DIR / "index.html")
 
 

@@ -139,3 +139,4 @@ def test_index_served():
     res = client.get("/")
     assert res.status_code == 200
     assert "Arizona Deal Agent" in res.text
+    assert "topics" in res.text

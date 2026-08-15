@@ -8,7 +8,7 @@ Two front ends live here, built in parallel and kept side by side:
 | Front end | Deals | Code |
 | --------- | ----- | ---- |
 | CLI (`arizona-deal-agent`) | Arizona property listings you supply | `src/arizona_deal_agent/` |
-| Web app (FastAPI) | Live Phoenix Craigslist for-sale listings | `app/` |
+| Web app (FastAPI) | Topic pages (houses, household, electronics, furniture, cars, tools) from allowlisted sources | `app/` |
 
 They share a name and a philosophy, not code. Consolidating them is an open
 decision — do not delete one to make room for the other without being asked.
@@ -63,9 +63,12 @@ Operator guide: `HOW_TO_USE.md`.
 | `src/arizona_deal_agent/report.py` | Table, JSON, CSV, explain, transmit output |
 | `src/arizona_deal_agent/cli.py` | Command-line entry point |
 | `data/sample_listings.csv` | Sample Arizona listings (tracked input, not runtime state) |
-| `app/craigslist.py` | Craigslist JSON search scraper |
+| `app/topics.py` | Topic pages and aliases (houses, household, electronics, …) |
+| `app/trust.py` | Allowlisted hosts and scam-signal title filter |
+| `app/catalog.py` | Curated Arizona house catalog as web deals |
+| `app/craigslist.py` | Craigslist JSON search scraper (per-topic section) |
 | `app/market.py` | Market value estimated from comparable listings |
-| `app/deals.py` | Per-query scrape cache that keeps ranking off the network |
+| `app/deals.py` | Per-topic scrape cache that keeps ranking off the network |
 | `app/alerts.py` | Saved searches, dedupe, and SMTP alert emails |
 | `app/main.py` | FastAPI routes and the saved-search poller |
 | `app/static/index.html` | Single-page UI with live slider re-ranking |

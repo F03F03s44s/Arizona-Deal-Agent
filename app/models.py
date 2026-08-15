@@ -7,6 +7,13 @@ from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field
 
 
+class LookupLink(BaseModel):
+    """An official-site page the buyer can open to verify an address."""
+
+    name: str
+    url: str
+
+
 class Deal(BaseModel):
     """A candidate deal the agent can evaluate.
 
@@ -24,8 +31,16 @@ class Deal(BaseModel):
     location: str | None = Field(default=None, description="Where the item is.")
     posted_at: datetime | None = Field(default=None, description="Listing timestamp.")
     source: str = Field(default="sample", description="Where the deal came from.")
+    source_label: str = Field(default="", description="Human-readable source name.")
+    verified: bool = Field(
+        default=False, description="True when the listing passed the allowlist / scam filter."
+    )
     comparable_count: int = Field(
         default=0, description="How many comparable listings set the market value."
+    )
+    lookup_urls: list[LookupLink] = Field(
+        default_factory=list,
+        description="Official sites where the buyer can double-check this address.",
     )
 
 
@@ -57,7 +72,11 @@ class RankRequest(BaseModel):
         description="How much to favor profit over affordability (0-1).",
     )
     query: str | None = Field(
-        default=None, description="Craigslist search to source deals from."
+        default=None, description="Search terms to source deals from."
+    )
+    topic: str | None = Field(
+        default=None,
+        description="Topic page: houses, household, electronics, furniture, cars, or tools.",
     )
 
 
@@ -73,6 +92,7 @@ class RankResponse(BaseModel):
     warning: str | None = Field(
         default=None, description="Set when the agent fell back to sample data."
     )
+    topic: str | None = None
 
 
 class DealsResponse(BaseModel):
@@ -83,13 +103,15 @@ class DealsResponse(BaseModel):
     source: str = "sample"
     deals: list[Deal] = Field(default_factory=list)
     warning: str | None = None
+    topic: str | None = None
 
 
 class SavedSearchCreate(BaseModel):
     """A standing search the agent re-runs and emails alerts for."""
 
-    query: str = Field(..., min_length=1, description="Craigslist search terms.")
+    query: str = Field(..., min_length=1, description="Search terms.")
     email: EmailStr = Field(..., description="Where alerts are sent.")
+    topic: str | None = Field(default=None, description="Optional topic page to search.")
     budget: float = Field(default=15000.0, gt=0)
     profit_weight: float = Field(default=0.6, ge=0, le=1)
     min_score: float = Field(
@@ -122,6 +144,28 @@ class Alert(BaseModel):
     transport: str
     error: str | None = None
     deal_ids: list[str] = Field(default_factory=list)
+
+
+class TopicInfo(BaseModel):
+    """One topic page the web app serves."""
+
+    id: str
+    title: str
+    blurb: str
+    path: str
+    default_query: str
+    default_budget: float
+
+
+class SourceInfo(BaseModel):
+    """A source the agent will or will not pull listings from."""
+
+    id: str
+    name: str
+    kind: str
+    topics: list[str]
+    blurb: str
+    url: str | None = None
 
 
 class SavedSearchRunResult(BaseModel):

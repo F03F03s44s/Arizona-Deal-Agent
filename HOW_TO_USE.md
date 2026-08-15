@@ -18,7 +18,7 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 4. Type exactly: `http://127.0.0.1:8000`
 5. Press Enter.
 
-You should see “Arizona Deal Agent” and the live Phoenix Craigslist deal list (search box, profit slider, and optional email alerts).
+You should see “Arizona Deal Agent” and topic pages for **Houses**, **Household**, **Electronics**, **Furniture**, **Cars**, and **Tools**. Live rows come only from allowlisted sources; gift-card / wire / crypto scam titles are dropped. House addresses include official Zillow / Redfin / Realtor.com lookup links (those sites are not scraped).
 
 Or run `powershell -ExecutionPolicy Bypass -File scripts\open-ui.ps1` from the repo folder; it starts the server and opens the browser.
 

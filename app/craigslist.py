@@ -39,6 +39,9 @@ DEFAULT_TIMEOUT = 20.0
 # smaller result set has to be taken by trimming the response.
 PAGE_SIZE = 360
 
+# Craigslist search paths we will call. Anything else is rejected.
+ALLOWED_SEARCH_PATHS = frozenset({"sss", "rea", "hhh", "cta", "hsh", "ele", "fuo", "tls"})
+
 # Positions within each encoded row.
 _IDX_POSTING_DELTA = 0
 _IDX_DATE_DELTA = 1
@@ -190,13 +193,21 @@ def search(
     limit: int = PAGE_SIZE,
     timeout: float = DEFAULT_TIMEOUT,
     client: httpx.Client | None = None,
+    search_path: str = "sss",
 ) -> list[Listing]:
-    """Fetch "for sale" listings for ``query`` in one Craigslist area."""
+    """Fetch listings for ``query`` in one Craigslist area.
+
+    ``search_path`` is a Craigslist section (``sss`` for sale, ``rea`` real
+    estate, ``cta`` cars+trucks). Unknown paths are rejected so we never hit
+    an arbitrary endpoint.
+    """
+    if search_path not in ALLOWED_SEARCH_PATHS:
+        raise CraigslistError(f"unsupported Craigslist search path: {search_path}")
     params = {
         "batch": f"{area_id}-0-{PAGE_SIZE}-0-0",
         "cc": "US",
         "lang": "en",
-        "searchPath": "sss",
+        "searchPath": search_path,
         "query": query,
     }
     headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}

@@ -307,11 +307,16 @@ best = deals[0]
 print(best.listing.label, round(best.composite_score, 1), best.notes)
 ```
 
-## Web app: live Craigslist deals
+## Web app: topic pages from allowlisted sources
 
-A second front end in `app/` scrapes live Phoenix-area Craigslist listings,
-prices each against comparable listings, and ranks them in a browser UI that
-re-ranks as you drag a profit-vs-affordability slider.
+A second front end in `app/` has a page per topic — **houses**, **household
+items**, **electronics**, **furniture**, **cars**, and **tools**. Live rows come
+only from allowlisted Craigslist sections. Gift-card / wire / crypto titles are
+dropped. Houses also include the curated Arizona catalog (`data/sample_listings.csv`)
+plus official Zillow / Redfin / Realtor.com lookup links. Those sites are **not**
+scraped.
+
+The UI re-ranks as you drag a profit-vs-affordability slider.
 
 ```bash
 pip install -e ".[dev,web]"

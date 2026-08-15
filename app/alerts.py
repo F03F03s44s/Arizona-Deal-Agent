@@ -278,7 +278,7 @@ class AlertService:
     deals: DealService = field(default_factory=lambda: deal_service)
 
     def run(self, search: SavedSearch) -> SavedSearchRunResult:
-        sourced = self.deals.get_deals(search.query)
+        sourced = self.deals.get_deals(search.query, topic=search.topic)
         ranked = rank_deals(sourced.deals, search.budget, search.profit_weight)
 
         matches = [
