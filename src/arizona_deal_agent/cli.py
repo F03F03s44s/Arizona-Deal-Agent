@@ -7,6 +7,14 @@ import sys
 from typing import Sequence
 
 from . import __version__
+from .howto import (
+    DEFAULT_LISTINGS,
+    format_command,
+    is_known_scenario,
+    render_howto,
+    scenario_argv,
+    unknown_scenario_message,
+)
 from .models import Assumptions, Budget, DealAgentError, Listing, ScoredDeal, Weights
 from .report import deal_to_dict, render_csv, render_explain, render_json, render_table, render_transmit
 from .scoring import rank_listings, score_listing
@@ -71,6 +79,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog=PROGRAM,
         description="Rank Arizona property deals by price, profitability and affordability.",
+        epilog=(
+            "How to use:\n"
+            "  arizona-deal-agent howto\n"
+            "  arizona-deal-agent howto --run balanced\n"
+            "  arizona-deal-agent rank -i data/sample_listings.csv --top 5\n"
+            "  arizona-deal-agent transmit -i data/sample_listings.csv --to 'Investment team'\n"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--version", action="version", version=f"{PROGRAM} {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -133,6 +149,23 @@ def build_parser() -> argparse.ArgumentParser:
     add_budget_options(transmit)
     add_assumption_options(transmit)
     add_weight_options(transmit)
+
+    howto = subparsers.add_parser(
+        "howto",
+        help="print How to use, or run a named ranking scenario",
+    )
+    howto.add_argument(
+        "-i",
+        "--input",
+        default=DEFAULT_LISTINGS,
+        metavar="PATH",
+        help=f"listings file used by --run (default: {DEFAULT_LISTINGS})",
+    )
+    howto.add_argument(
+        "--run",
+        metavar="SCENARIO",
+        help="run a named scenario: balanced, profit, affordability, or tight",
+    )
 
     return parser
 
@@ -242,6 +275,20 @@ def run_transmit(args: argparse.Namespace) -> int:
     return 0
 
 
+def run_howto(args: argparse.Namespace) -> int:
+    if args.run is None:
+        print(render_howto(args.input))
+        return 0
+    if not is_known_scenario(args.run):
+        raise DealAgentError(unknown_scenario_message(args.run))
+
+    argv = scenario_argv(args.run, args.input)
+    print(f"How to use — {args.run}")
+    print(f"$ {format_command(argv)}")
+    print()
+    return main(argv)
+
+
 def run_score(args: argparse.Namespace) -> int:
     listing = Listing(
         id="ad-hoc",
@@ -265,7 +312,13 @@ def run_score(args: argparse.Namespace) -> int:
     return 0
 
 
-COMMANDS = {"rank": run_rank, "explain": run_explain, "score": run_score, "transmit": run_transmit}
+COMMANDS = {
+    "rank": run_rank,
+    "explain": run_explain,
+    "score": run_score,
+    "transmit": run_transmit,
+    "howto": run_howto,
+}
 
 
 def main(argv: Sequence[str] | None = None) -> int:

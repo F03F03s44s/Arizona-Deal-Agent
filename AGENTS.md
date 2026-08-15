@@ -22,10 +22,13 @@ Without installing, `PYTHONPATH=src python3 -m arizona_deal_agent` works the sam
 
 | Command | Purpose |
 | ------- | ------- |
+| `howto` | Print How to use, or `--run` a named scenario (`balanced`, `profit`, `affordability`, `tight`) |
 | `rank` | Score a listings file and show the best deals |
 | `explain` | Full breakdown for one listing by id |
 | `score` | Score a single deal from command-line flags |
 | `transmit` | Format the top deal as a shareable recommendation |
+
+Operator guide: `HOW_TO_USE.md`.
 
 ## Key files
 

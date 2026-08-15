@@ -5,6 +5,8 @@ Finds the lowest-priced Arizona property that is still profitable and still affo
 Point it at a list of properties and it scores every one on three axes — price, profitability
 and affordability — then ranks them and tells you why the winner won.
 
+**Start here:** `arizona-deal-agent howto` or [HOW_TO_USE.md](HOW_TO_USE.md).
+
 ## How to use
 
 ### 1. Install
@@ -21,6 +23,13 @@ pip install -e .
 
 That installs the `arizona-deal-agent` command. If you would rather not install anything,
 `PYTHONPATH=src python3 -m arizona_deal_agent` works the same way everywhere below.
+
+Print the in-tool How to use card (steps plus named scenarios):
+
+```bash
+arizona-deal-agent howto
+arizona-deal-agent howto --run profit
+```
 
 ### 2. Rank a list of deals
 
