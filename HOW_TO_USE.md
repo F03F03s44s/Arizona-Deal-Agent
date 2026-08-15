@@ -43,14 +43,22 @@ python -m venv .venv
 pip install -e .
 ```
 
-**Windows PowerShell**
+**Windows PowerShell (no Git needed)**
+
+In PowerShell, `curl` is not the real curl. Use `curl.exe` or `Invoke-WebRequest`.
 
 ```powershell
-git clone https://github.com/F03F03s44s/Arizona-Deal-Agent.git
-cd Arizona-Deal-Agent
+cd C:\Users\$env:USERNAME
+curl.exe -L -o Arizona-Deal-Agent.zip https://github.com/F03F03s44s/Arizona-Deal-Agent/archive/refs/heads/main.zip
+tar -xf Arizona-Deal-Agent.zip
+cd Arizona-Deal-Agent-main
+dir pyproject.toml
 python -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\.venv\Scripts\Activate.ps1
 pip install -e .
+arizona-deal-agent howto
+arizona-deal-agent find --top 5
 ```
 
 **macOS / Linux**

@@ -38,7 +38,18 @@ python -m venv .venv
 pip install -e .
 ```
 
-Windows PowerShell: same, but activate with `.\.venv\Scripts\Activate.ps1`.
+Windows PowerShell (`curl` is an alias here — use `curl.exe`):
+
+```powershell
+cd C:\Users\$env:USERNAME
+curl.exe -L -o Arizona-Deal-Agent.zip https://github.com/F03F03s44s/Arizona-Deal-Agent/archive/refs/heads/main.zip
+tar -xf Arizona-Deal-Agent.zip
+cd Arizona-Deal-Agent-main
+python -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+pip install -e .
+```
 
 macOS / Linux:
 
