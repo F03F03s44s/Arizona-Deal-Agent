@@ -84,6 +84,22 @@ class TestComponentScores:
         with_flip = scoring.price_score(with_arv, finance.compute_metrics(with_arv, assumptions))
         assert with_flip >= without
 
+    def test_all_cash_is_not_punished_for_having_no_debt_coverage(self, assumptions):
+        listing = rental(300_000, 2_000)
+        all_cash = replace(assumptions, down_payment_pct=1.0)
+        leveraged = finance.compute_metrics(listing, assumptions)
+        unleveraged = finance.compute_metrics(listing, all_cash)
+        # DSCR is reported as 0.0 when there is no debt; that must not read as failure.
+        assert unleveraged.dscr == 0.0
+        assert scoring.profitability_score(unleveraged) > scoring.profitability_score(leveraged)
+
+    def test_a_property_with_nothing_to_pay_is_fully_affordable(self):
+        free_to_hold = Listing(id="F", list_price=100_000, monthly_rent=1_000)
+        no_debt = Assumptions(down_payment_pct=1.0)
+        metrics = finance.compute_metrics(free_to_hold, no_debt)
+        assert metrics.rent_coverage is None
+        assert scoring.affordability_score(free_to_hold, metrics, Budget()) == 100.0
+
     def test_deep_discount_lifts_the_price_score(self, assumptions):
         thin = rental(300_000, 1_400, rehab_cost=20_000, arv=340_000)
         deep = rental(150_000, 1_400, rehab_cost=20_000, arv=340_000)

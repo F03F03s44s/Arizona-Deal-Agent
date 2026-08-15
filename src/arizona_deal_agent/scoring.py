@@ -52,10 +52,14 @@ def interpolate(value: float, curve: Curve) -> float:
 
 def profitability_score(metrics: Metrics) -> float:
     """Blend of cap rate, cash-on-cash return, DSCR and monthly cash flow."""
+    # An all-cash purchase carries no debt, so there is no coverage to fall
+    # short of. Scoring its zero DSCR off the curve would punish the safest
+    # way to buy.
+    coverage = 100.0 if metrics.annual_debt_service <= 0 else interpolate(metrics.dscr, DSCR_CURVE)
     parts = {
         "cap_rate": interpolate(metrics.cap_rate, CAP_RATE_CURVE),
         "cash_on_cash": interpolate(metrics.cash_on_cash, CASH_ON_CASH_CURVE),
-        "dscr": interpolate(metrics.dscr, DSCR_CURVE),
+        "dscr": coverage,
         "cash_flow": interpolate(metrics.monthly_cash_flow, MONTHLY_CASH_FLOW_CURVE),
     }
     return sum(parts[name] * weight for name, weight in PROFITABILITY_MIX)
@@ -91,7 +95,8 @@ def affordability_score(listing: Listing, metrics: Metrics, budget: Budget) -> f
     """
     if budget.is_empty:
         if metrics.rent_coverage is None:
-            return 0.0
+            # Nothing is owed each month, so there is nothing to fall short on.
+            return 100.0
         return interpolate(metrics.rent_coverage, RENT_COVERAGE_CURVE)
 
     usages: list[float] = []
