@@ -22,6 +22,9 @@ EXPECTED_TOPICS = {
     "pokemon",
     "sports-cards",
     "jerseys",
+    "bulk",
+    "pallets",
+    "bundles",
 }
 
 
@@ -46,6 +49,9 @@ def test_topics_list_covers_household_electronics_houses_cars_furniture():
         "Pokémon cards",
         "Sports cards",
         "Jerseys",
+        "Bulk sales",
+        "Pallets",
+        "Bundles",
     } <= titles
 
 
@@ -66,6 +72,9 @@ def test_topic_pages_are_served():
         "/pokemon",
         "/sports-cards",
         "/jerseys",
+        "/bulk",
+        "/pallets",
+        "/bundles",
     ):
         res = client.get(path)
         assert res.status_code == 200, path
@@ -127,6 +136,16 @@ def test_designer_cards_and_jerseys_use_their_craigslist_sections(offline_deal_s
     assert paths["jersey"] == "cla"
 
 
+def test_bulk_pallets_and_bundles_use_their_sections(offline_deal_service):
+    client.get("/api/deals", params={"topic": "wholesale"})
+    client.get("/api/deals", params={"topic": "pallets"})
+    client.get("/api/deals", params={"topic": "bundals"})
+    paths = {query: kwargs.get("search_path") for query, kwargs in offline_deal_service}
+    assert paths["bulk lot wholesale"] == "bfa"
+    assert paths["pallet"] == "sss"
+    assert paths["bundle lot"] == "sss"
+
+
 def test_gold_silver_and_diamonds_use_the_jewelry_section(offline_deal_service):
     for topic, query in (("gold", "gold"), ("silvers", "silver"), ("diamonds", "diamond")):
         client.get("/api/deals", params={"topic": topic})
@@ -151,6 +170,9 @@ def test_sources_list_marks_zillow_as_lookup_only():
     gia = next(row for row in body if row["name"] == "GIA")
     assert gia["kind"] == "lookup-only"
     assert "diamonds" in gia["topics"]
+    bstock = next(row for row in body if row["id"] == "bstock")
+    assert bstock["kind"] == "lookup-only"
+    assert "pallets" in bstock["topics"]
 
 
 def test_rank_on_the_houses_page_recommends_a_catalog_deal():

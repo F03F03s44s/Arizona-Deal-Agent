@@ -207,6 +207,42 @@ TOPICS: dict[str, Topic] = {
         uses_ebay=True,
         path="/jerseys",
     ),
+    "bulk": Topic(
+        id="bulk",
+        title="Bulk sales",
+        blurb="Wholesale lots and bulk sales from allowlisted Craigslist and official eBay.",
+        default_query="bulk lot wholesale",
+        default_budget=8_000.0,
+        craigslist_path="bfa",
+        min_live_price=50.0,
+        uses_catalog=False,
+        uses_ebay=True,
+        path="/bulk",
+    ),
+    "pallets": Topic(
+        id="pallets",
+        title="Pallets",
+        blurb="Liquidation pallets from allowlisted Craigslist and official eBay.",
+        default_query="pallet",
+        default_budget=8_000.0,
+        craigslist_path="sss",
+        min_live_price=75.0,
+        uses_catalog=False,
+        uses_ebay=True,
+        path="/pallets",
+    ),
+    "bundles": Topic(
+        id="bundles",
+        title="Bundles",
+        blurb="Bundled lots from allowlisted Craigslist and official eBay.",
+        default_query="bundle lot",
+        default_budget=2_000.0,
+        craigslist_path="sss",
+        min_live_price=30.0,
+        uses_catalog=False,
+        uses_ebay=True,
+        path="/bundles",
+    ),
 }
 
 TOPIC_ALIASES = {
@@ -239,6 +275,15 @@ TOPIC_ALIASES = {
     "sportscards": "sports-cards",
     "trading-cards": "sports-cards",
     "jersey": "jerseys",
+    "bulk-sales": "bulk",
+    "bulk-sale": "bulk",
+    "wholesale": "bulk",
+    "liquidation": "pallets",
+    "pallet": "pallets",
+    "bundle": "bundles",
+    "bundal": "bundles",
+    "bundals": "bundles",
+    "lots": "bulk",
 }
 
 
@@ -360,6 +405,14 @@ def source_infos() -> list[SourceInfo]:
                 topics=["coins"],
                 blurb="Coin certification lookup. We do not scrape it.",
                 url="https://www.pcgs.com/",
+            ),
+            SourceInfo(
+                id="bstock",
+                name="B-Stock",
+                kind="lookup-only",
+                topics=["bulk", "pallets", "bundles"],
+                blurb="Official liquidation marketplace — open to check pallet comps. We do not scrape it.",
+                url="https://bstock.com/",
             ),
         ]
     )

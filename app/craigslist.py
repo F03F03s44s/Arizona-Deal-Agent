@@ -41,7 +41,7 @@ PAGE_SIZE = 360
 
 # Craigslist search paths we will call. Anything else is rejected.
 ALLOWED_SEARCH_PATHS = frozenset(
-    {"sss", "rea", "hhh", "cta", "hsh", "ele", "fuo", "tls", "jwa", "cla", "cba", "taa", "sga"}
+    {"sss", "rea", "hhh", "cta", "hsh", "ele", "fuo", "tls", "jwa", "cla", "cba", "taa", "sga", "bfa"}
 )
 
 # Positions within each encoded row.
