@@ -15,6 +15,7 @@ from urllib.parse import quote_plus
 import httpx
 
 from .craigslist import Listing
+from .trust import is_allowlisted_url
 
 BROWSE_URL = "https://api.ebay.com/buy/browse/v1/item_summary/search"
 DEFAULT_LIMIT = 50
@@ -71,6 +72,8 @@ def parse_search_payload(payload: dict[str, Any]) -> list[Listing]:
         item_id = item.get("itemId")
         price = _price(item)
         if not title or not url or not item_id or price is None:
+            continue
+        if not is_allowlisted_url(str(url)):
             continue
         listings.append(
             Listing(

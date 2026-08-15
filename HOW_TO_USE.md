@@ -20,6 +20,8 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 You should see “Arizona Deal Agent” and topic tabs including **big sales**, **bundles**, **pallets**, **bulk**, and **free & high return**. The list **live-updates** about every 45 seconds. Free posts are ranked by a conservative resale estimate (working TVs and tools rise; broken / parts-only posts are dropped). Gift-card / wire / crypto / replica titles are dropped. eBay is used through its official API when `EBAY_OAUTH_TOKEN` is set; otherwise you get an official eBay search link (pages are not scraped).
 
+Every listing URL must be **HTTPS** on **craigslist.org** or **ebay.com**. Unknown hosts, URL shorteners, and chat/pay links are dropped. That is **site verification**, not a promise that every seller is honest — still meet in a public place and never wire money to a stranger.
+
 Or run `powershell -ExecutionPolicy Bypass -File scripts\open-ui.ps1` from the repo folder; it starts the server and opens the browser.
 
 The agent is also a **CLI**. Point it at a listings file. It scores every property on

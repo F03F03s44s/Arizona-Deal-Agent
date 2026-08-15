@@ -316,10 +316,12 @@ pallets, bundles, big sales, and free items with a high estimated return.
 An open page
 **re-pulls live listings about every 45 seconds** so new posts show up without
 a reload. Live rows come from allowlisted Craigslist sections and, when
-`EBAY_OAUTH_TOKEN` is set, the official eBay Browse API. Gift-card / wire /
-crypto / replica titles are dropped. Houses also include the curated Arizona
-catalog plus official Zillow / Redfin / Realtor.com lookup links. Those sites
-and eBay HTML pages are **not** scraped.
+`EBAY_OAUTH_TOKEN` is set, the official eBay Browse API. Listing URLs must be
+HTTPS on craigslist.org or ebay.com; unknown hosts, shorteners, and gift-card /
+wire / crypto / replica titles are dropped. Houses also include the curated
+Arizona catalog plus official Zillow / Redfin / Realtor.com lookup links. Those
+sites and eBay HTML pages are **not** scraped. This checks the **site**, not
+every seller.
 
 The UI re-ranks as you drag a profit-vs-affordability slider.
 

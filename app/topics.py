@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .models import SourceInfo, TopicInfo
-from .trust import LOOKUP_ONLY_HOSTS
+from .trust import LOOKUP_ONLY_HOSTS, filter_lookup_links, filter_source_infos
 
 
 @dataclass(frozen=True)
@@ -371,25 +371,28 @@ def source_infos() -> list[SourceInfo]:
             kind="catalog",
             topics=["property"],
             blurb="Curated Arizona house listings that ship with this project. Same file the CLI ranks.",
+            verified=True,
         ),
         SourceInfo(
             id="craigslist",
             name="Craigslist Phoenix",
             kind="live",
             topics=live_topics,
-            blurb="Allowlisted live classifieds. The open page re-pulls this feed on a timer.",
+            blurb="Allowlisted live classifieds on craigslist.org. The open page re-pulls this feed on a timer.",
             url="https://phoenix.craigslist.org/",
+            verified=True,
         ),
         SourceInfo(
             id="ebay",
             name="eBay",
             kind="live",
             topics=[topic.id for topic in TOPICS.values() if topic.uses_ebay],
-            blurb="Official Browse API when EBAY_OAUTH_TOKEN is set; otherwise an official search link. We do not scrape eBay HTML.",
+            blurb="Official Browse API when EBAY_OAUTH_TOKEN is set; otherwise an official ebay.com search link. We do not scrape eBay HTML.",
             url="https://www.ebay.com/",
+            verified=True,
         ),
     ]
-    for link in LOOKUP_ONLY_HOSTS:
+    for link in filter_lookup_links(list(LOOKUP_ONLY_HOSTS)):
         sources.append(
             SourceInfo(
                 id=link.name.lower().replace(" ", "-").replace(".", ""),
@@ -398,6 +401,7 @@ def source_infos() -> list[SourceInfo]:
                 topics=["property"],
                 blurb="Official site — open in your browser to verify an address. We do not scrape it.",
                 url=link.url,
+                verified=True,
             )
         )
     sources.extend(
@@ -409,6 +413,7 @@ def source_infos() -> list[SourceInfo]:
                 topics=["gold", "silver"],
                 blurb="Spot prices — open in your browser to check melt value. We do not scrape it.",
                 url="https://www.kitco.com/",
+                verified=True,
             ),
             SourceInfo(
                 id="gia",
@@ -417,6 +422,7 @@ def source_infos() -> list[SourceInfo]:
                 topics=["diamonds"],
                 blurb="Diamond grading reports — open in your browser to verify a cert. We do not scrape it.",
                 url="https://www.gia.edu/report-check-landing",
+                verified=True,
             ),
             SourceInfo(
                 id="stockx",
@@ -425,6 +431,7 @@ def source_infos() -> list[SourceInfo]:
                 topics=["designer", "jerseys", "luxury"],
                 blurb="Official marketplace — open to check comps. We do not scrape it.",
                 url="https://stockx.com/",
+                verified=True,
             ),
             SourceInfo(
                 id="tcgplayer",
@@ -433,6 +440,7 @@ def source_infos() -> list[SourceInfo]:
                 topics=["pokemon"],
                 blurb="Official card marketplace — open to check comps. We do not scrape it.",
                 url="https://www.tcgplayer.com/",
+                verified=True,
             ),
             SourceInfo(
                 id="pcgs",
@@ -441,6 +449,7 @@ def source_infos() -> list[SourceInfo]:
                 topics=["coins"],
                 blurb="Coin certification lookup. We do not scrape it.",
                 url="https://www.pcgs.com/",
+                verified=True,
             ),
             SourceInfo(
                 id="bstock",
@@ -449,7 +458,8 @@ def source_infos() -> list[SourceInfo]:
                 topics=["bulk", "pallets", "bundles", "sales"],
                 blurb="Official liquidation marketplace — open to check pallet comps. We do not scrape it.",
                 url="https://bstock.com/",
+                verified=True,
             ),
         ]
     )
-    return sources
+    return filter_source_infos(sources)

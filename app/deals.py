@@ -24,7 +24,7 @@ from .market import listings_to_deals
 from .models import Deal, LookupLink
 from .resale import free_listings_to_deals
 from .topics import Topic, get_topic
-from .trust import filter_live_deals
+from .trust import filter_live_deals, filter_lookup_links
 
 logger = logging.getLogger(__name__)
 
@@ -151,6 +151,7 @@ class DealService:
             links.append(LookupLink(name="eBay", url=ebay.search_url(query)))
         if spec.id in {"sales", "bulk", "pallets", "bundles"}:
             links.append(LookupLink(name="B-Stock", url="https://bstock.com/"))
+        links = filter_lookup_links(links)
         if not links:
             return deals
         return [deal.model_copy(update={"lookup_urls": [*deal.lookup_urls, *links]}) for deal in deals]

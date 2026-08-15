@@ -64,7 +64,7 @@ Operator guide: `HOW_TO_USE.md`.
 | `src/arizona_deal_agent/cli.py` | Command-line entry point |
 | `data/sample_listings.csv` | Sample Arizona listings (tracked input, not runtime state) |
 | `app/topics.py` | Topic pages and aliases (houses, household, electronics, …) |
-| `app/trust.py` | Allowlisted hosts and scam-signal title filter |
+| `app/trust.py` | Allowlisted hosts (HTTPS craigslist.org / ebay.com only) and scam-signal title filter |
 | `app/catalog.py` | Curated Arizona house catalog as web deals |
 | `app/resale.py` | Conservative resale floors for free-pile listings |
 | `app/ebay.py` | Official eBay Browse API client (token optional) |

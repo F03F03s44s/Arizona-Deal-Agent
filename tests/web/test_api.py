@@ -143,3 +143,46 @@ def test_index_served():
     assert "topics" in res.text
     assert "LIVE_POLL_MS" in res.text
     assert "refresh=true" in res.text
+    assert "Verified allowlist only" in res.text
+    assert "never open unknown" in res.text
+
+
+def test_rank_strips_unknown_listing_urls_from_request_deals():
+    res = client.post(
+        "/api/rank",
+        json={
+            "budget": 1000,
+            "deals": [
+                {
+                    "id": "x",
+                    "title": "DeWalt drill",
+                    "acquisition_cost": 100,
+                    "market_value": 400,
+                    "url": "https://bit.ly/totally-legit",
+                }
+            ],
+        },
+    )
+    assert res.status_code == 200
+    assert res.json()["ranked"][0]["deal"]["url"] is None
+
+
+def test_rank_drops_scam_titled_request_deals():
+    res = client.post(
+        "/api/rank",
+        json={
+            "budget": 1000,
+            "deals": [
+                {
+                    "id": "x",
+                    "title": "Pay holding fee on Cash App",
+                    "acquisition_cost": 100,
+                    "market_value": 400,
+                    "url": "https://www.craigslist.org/view/d/slug/abc",
+                }
+            ],
+        },
+    )
+    assert res.status_code == 200
+    assert res.json()["ranked"] == []
+    assert res.json()["recommendation"] is None

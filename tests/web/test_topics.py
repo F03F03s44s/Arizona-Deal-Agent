@@ -106,6 +106,14 @@ def test_property_topic_includes_verified_arizona_houses():
     assert house["verified"] is True
     assert house["location"] == "Tucson, AZ"
     assert any(link["name"] == "Zillow" for link in house["lookup_urls"])
+    assert all(link["url"].startswith("https://") for link in house["lookup_urls"])
+    assert all(
+        any(
+            host in link["url"]
+            for host in ("zillow.com", "redfin.com", "realtor.com", "google.com")
+        )
+        for link in house["lookup_urls"]
+    )
 
 
 def test_property_query_filters_the_catalog_by_city():
@@ -171,12 +179,16 @@ def test_gold_silver_and_diamonds_use_the_jewelry_section(offline_deal_service):
 
 def test_sources_list_marks_zillow_as_lookup_only():
     body = client.get("/api/sources").json()
+    assert all(row["verified"] is True for row in body)
     zillow = next(row for row in body if row["name"] == "Zillow")
     assert zillow["kind"] == "lookup-only"
+    assert zillow["url"].startswith("https://www.zillow.com")
     craigslist = next(row for row in body if row["id"] == "craigslist")
     assert craigslist["kind"] == "live"
+    assert craigslist["url"] == "https://phoenix.craigslist.org/"
     ebay = next(row for row in body if row["id"] == "ebay")
     assert ebay["kind"] == "live"
+    assert ebay["url"] == "https://www.ebay.com/"
     assert "pokemon" in ebay["topics"]
     kitco = next(row for row in body if row["name"] == "Kitco")
     assert kitco["kind"] == "lookup-only"
@@ -187,6 +199,9 @@ def test_sources_list_marks_zillow_as_lookup_only():
     bstock = next(row for row in body if row["id"] == "bstock")
     assert bstock["kind"] == "lookup-only"
     assert "pallets" in bstock["topics"]
+    names = {row["name"] for row in body}
+    assert "Facebook" not in names
+    assert "OfferUp" not in names
 
 
 def test_rank_on_the_houses_page_recommends_a_catalog_deal():

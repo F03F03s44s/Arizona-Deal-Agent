@@ -170,6 +170,10 @@ class SourceInfo(BaseModel):
     topics: list[str]
     blurb: str
     url: str | None = None
+    verified: bool = Field(
+        default=True,
+        description="True when this source is on the agent's allowlist.",
+    )
 
 
 class SavedSearchRunResult(BaseModel):

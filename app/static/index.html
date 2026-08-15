@@ -131,10 +131,15 @@
   <body>
     <header>
       <h1>&#127796; Arizona Deal Agent</h1>
-      <p id="tagline">Live allowlisted deals — the list refreshes itself when source sites post something new.</p>
+      <p id="tagline">Verified allowlist only — Craigslist.org and official eBay.com. We never open unknown sites.</p>
     </header>
     <nav id="topics" class="topics" aria-label="Deal topics"></nav>
     <p id="sources" class="sources"></p>
+    <p class="sources">
+      Verified allowlist only — listing links are HTTPS on Craigslist.org or eBay.com.
+      Other names are official lookup pages we already checked. We never open unknown or shortened URLs.
+      That checks the site, not every seller — meet in public and never wire money to a stranger.
+    </p>
     <main>
       <div class="controls">
         <div class="field">
@@ -228,6 +233,15 @@
         String(s ?? "").replace(/[&<>"']/g, (c) =>
           ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
         );
+      function safeHref(url) {
+        try {
+          const parsed = new URL(String(url || ""), location.origin);
+          if (parsed.protocol !== "https:") return "";
+          return String(url);
+        } catch (err) {
+          return "";
+        }
+      }
 
       function debounce(fn, ms) {
         let timer;
@@ -300,7 +314,8 @@
           ? " Verify on " + lookups.map((s) => s.name).join(", ") + " (we do not scrape those sites)."
           : "";
         document.getElementById("sources").textContent =
-          "Verified sources for this page: " + (live || "none") + "." + extra;
+          "Verified sources for this page: " + (live || "none") + "." + extra +
+          " Unknown hosts are never linked.";
       }
 
       function applyTopicDefaults() {
@@ -380,15 +395,21 @@
           .slice(0, MAX_ROWS)
           .map((s, i) => {
             const d = s.deal;
-            const title = d.url
-              ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a>`
+            const listingHref = safeHref(d.url);
+            const title = listingHref
+              ? `<a href="${esc(listingHref)}" target="_blank" rel="noopener">${esc(d.title)}</a>`
               : esc(d.title);
             const lookups = (d.lookup_urls || [])
-              .map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.name)}</a>`)
+              .map((l) => {
+                const href = safeHref(l.url);
+                return href
+                  ? `<a href="${esc(href)}" target="_blank" rel="noopener">${esc(l.name)}</a>`
+                  : "";
+              })
               .join(" ");
             const sourceLabel = d.source_label || d.source || "\u2014";
             const verified = d.verified
-              ? '<span class="badge ok">verified</span>'
+              ? '<span class="badge ok">verified site</span>'
               : '<span class="badge no">unverified</span>';
             return `
               <tr class="${s.within_budget ? "" : "over-budget"} ${s.score >= 0.9 ? "hot" : ""} ${newcomers.has(d.id) ? "just-in" : ""}">
@@ -409,8 +430,9 @@
         if (data.recommendation) {
           const r = data.recommendation;
           rec.style.display = "block";
-          document.getElementById("recTitle").innerHTML = r.deal.url
-            ? `<a href="${esc(r.deal.url)}" target="_blank" rel="noopener">${esc(r.deal.title)}</a>`
+          const recHref = safeHref(r.deal.url);
+          document.getElementById("recTitle").innerHTML = recHref
+            ? `<a href="${esc(recHref)}" target="_blank" rel="noopener">${esc(r.deal.title)}</a>`
             : esc(r.deal.title);
           document.getElementById("recMeta").textContent =
             `Asking ${fmt(r.deal.acquisition_cost)} \u00b7 comparable ${fmt(r.deal.market_value)} \u00b7 ` +

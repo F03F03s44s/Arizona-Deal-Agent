@@ -29,6 +29,7 @@ from .models import (
     TopicInfo,
 )
 from .topics import get_topic, page_slugs, source_infos, topic_infos
+from .trust import sanitize_request_deals
 
 logger = logging.getLogger(__name__)
 
@@ -82,8 +83,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Arizona Deal Agent",
     description=(
-        "Topic pages that live-update from allowlisted sources. "
-        "Scam-signal titles are dropped."
+        "Topic pages that live-update from verified Craigslist.org and official "
+        "eBay.com sources. Unknown hosts and scam-signal titles are dropped."
     ),
     version=__version__,
     lifespan=lifespan,
@@ -143,7 +144,9 @@ def rank(request: RankRequest) -> RankResponse:
         raise HTTPException(status_code=404, detail=f"Unknown topic: {request.topic}")
 
     if request.deals:
-        ranked = rank_deals(request.deals, request.budget, request.profit_weight)
+        ranked = rank_deals(
+            sanitize_request_deals(request.deals), request.budget, request.profit_weight
+        )
         return ranked.model_copy(
             update={"source": "request", "query": request.query, "topic": request.topic}
         )

@@ -15,6 +15,7 @@ from urllib.parse import quote
 from arizona_deal_agent.sources import load_listings
 
 from .models import Deal, LookupLink
+from .trust import filter_lookup_links
 
 DEFAULT_CATALOG = Path(__file__).resolve().parents[1] / "data" / "sample_listings.csv"
 
@@ -30,12 +31,13 @@ def official_lookups(address: str, city: str, zip_code: str) -> list[LookupLink]
     full = " ".join(part for part in (address, city, "AZ", zip_code) if part)
     zillow_slug = quote(full.replace(" ", "-")) if full.strip() else city_slug
     query = quote(full) if full.strip() else quote(f"{city} AZ")
-    return [
+    links = [
         LookupLink(name="Zillow", url=f"https://www.zillow.com/homes/{zillow_slug}_rb/"),
         LookupLink(name="Redfin", url=f"https://www.redfin.com/AZ/{city_slug}"),
         LookupLink(name="Realtor.com", url=f"https://www.realtor.com/realestateandhomes-search/{city_slug}_AZ"),
         LookupLink(name="Google", url=f"https://www.google.com/search?q={query}"),
     ]
+    return filter_lookup_links(links)
 
 
 def _matches_query(listing, query: str) -> bool:

@@ -68,6 +68,28 @@ def test_search_uses_the_official_browse_api(monkeypatch):
     assert seen["auth"] == "Bearer test-token"
 
 
+def test_parse_skips_items_on_unknown_hosts():
+    listings = parse_search_payload(
+        {
+            "itemSummaries": [
+                {
+                    "itemId": "v1|bad|0",
+                    "title": "Charizard",
+                    "price": {"value": "80.00", "currency": "USD"},
+                    "itemWebUrl": "https://ebay-deals.tk/itm/bad",
+                },
+                {
+                    "itemId": "v1|ok|0",
+                    "title": "Charizard",
+                    "price": {"value": "70.00", "currency": "USD"},
+                    "itemWebUrl": "https://www.ebay.com/itm/ok",
+                },
+            ]
+        }
+    )
+    assert [row.url for row in listings] == ["https://www.ebay.com/itm/ok"]
+
+
 def test_parse_skips_items_without_a_price():
     listings = parse_search_payload(
         {
