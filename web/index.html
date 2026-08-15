@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arizona Deal Agent</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">AZ</span>
+        <div>
+          <h1>Arizona Deal Agent</h1>
+          <p class="tagline">Every listing scored 0&ndash;100 for value &mdash; best deals first</p>
+        </div>
+      </div>
+      <span class="pill" id="dataset-pill">loading&hellip;</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="filters" aria-label="Filters">
+      <div class="field">
+        <label for="city">City</label>
+        <select id="city"><option value="">All of Arizona</option></select>
+      </div>
+      <div class="field">
+        <label for="max-price">Max price</label>
+        <select id="max-price">
+          <option value="">Any</option>
+          <option value="300000">$300k</option>
+          <option value="400000">$400k</option>
+          <option value="500000">$500k</option>
+          <option value="750000">$750k</option>
+          <option value="1000000">$1M</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="min-beds">Min beds</label>
+        <select id="min-beds">
+          <option value="">Any</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="property-type">Type</label>
+        <select id="property-type">
+          <option value="">Any</option>
+          <option value="single_family">Single family</option>
+          <option value="townhouse">Townhouse</option>
+          <option value="condo">Condo</option>
+          <option value="manufactured">Manufactured</option>
+        </select>
+      </div>
+      <button id="reset" class="btn-ghost" type="button">Reset</button>
+    </section>
+
+    <section class="stats" id="stats" aria-label="Summary"></section>
+
+    <section id="results" aria-label="Ranked deals"></section>
+  </main>
+
+  <footer class="container footnote">
+    <p>Deal Score = 40% price vs. city median $/sqft &middot; 30% est. gross rental yield &middot; 20% seller motivation (days on market, price cuts) &middot; 10% property risk (age, HOA). Rent and market baselines are city-level estimates &mdash; verify before you offer.</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
