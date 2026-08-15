@@ -30,6 +30,13 @@ def test_skips_listings_without_a_price(phoenix_listings):
     assert all(listing.price > 0 for listing in phoenix_listings)
 
 
+def test_free_section_keeps_zero_price_rows(phoenix_payload):
+    priced = parse_search_payload(phoenix_payload)
+    including_free = parse_search_payload(phoenix_payload, allow_free=True)
+    assert len(including_free) == len(priced) + 1
+    assert all(listing.price > 0 for listing in including_free)
+
+
 def test_recovers_city_from_the_listing_slug(phoenix_listings):
     cities = {listing.location for listing in phoenix_listings}
     assert "Apache Junction" in cities

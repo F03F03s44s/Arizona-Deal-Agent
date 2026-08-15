@@ -25,6 +25,8 @@ EXPECTED_TOPICS = {
     "bulk",
     "pallets",
     "bundles",
+    "sales",
+    "free",
 }
 
 
@@ -52,6 +54,8 @@ def test_topics_list_covers_household_electronics_houses_cars_furniture():
         "Bulk sales",
         "Pallets",
         "Bundles",
+        "Big sales",
+        "Free & high return",
     } <= titles
 
 
@@ -75,6 +79,8 @@ def test_topic_pages_are_served():
         "/bulk",
         "/pallets",
         "/bundles",
+        "/sales",
+        "/free",
     ):
         res = client.get(path)
         assert res.status_code == 200, path
@@ -134,6 +140,14 @@ def test_designer_cards_and_jerseys_use_their_craigslist_sections(offline_deal_s
     assert paths["pokemon cards"] == "taa"
     assert paths["sports cards"] == "cba"
     assert paths["jersey"] == "cla"
+
+
+def test_sales_and_free_use_their_craigslist_sections(offline_deal_service):
+    client.get("/api/deals", params={"topic": "big-sales"})
+    client.get("/api/deals", params={"topic": "high-returns"})
+    paths = {query: kwargs.get("search_path") for query, kwargs in offline_deal_service}
+    assert paths["clearance sale"] == "sss"
+    assert paths["free"] == "zip"
 
 
 def test_bulk_pallets_and_bundles_use_their_sections(offline_deal_service):

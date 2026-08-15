@@ -41,7 +41,7 @@ PAGE_SIZE = 360
 
 # Craigslist search paths we will call. Anything else is rejected.
 ALLOWED_SEARCH_PATHS = frozenset(
-    {"sss", "rea", "hhh", "cta", "hsh", "ele", "fuo", "tls", "jwa", "cla", "cba", "taa", "sga", "bfa"}
+    {"sss", "rea", "hhh", "cta", "hsh", "ele", "fuo", "tls", "jwa", "cla", "cba", "taa", "sga", "bfa", "zip"}
 )
 
 # Positions within each encoded row.
@@ -127,8 +127,13 @@ def _location_label(row: list[Any], locations: list[Any], slug: str, title: str)
     return SUBAREA_LABELS.get(entry[2], entry[2])
 
 
-def parse_search_payload(payload: dict[str, Any]) -> list[Listing]:
-    """Decode the JSON search service's position-encoded rows into listings."""
+def parse_search_payload(payload: dict[str, Any], *, allow_free: bool = False) -> list[Listing]:
+    """Decode the JSON search service's position-encoded rows into listings.
+
+    Free-section posts often have a $0 price. Those are kept only when
+    ``allow_free`` is set, and recorded as $1 so the ranking models can
+    treat them as near-zero cost.
+    """
     data = payload.get("data")
     if not isinstance(data, dict):
         raise CraigslistError("Craigslist response had no data section")
@@ -154,7 +159,10 @@ def parse_search_payload(payload: dict[str, Any]) -> list[Listing]:
 
         price_raw = row[_IDX_PRICE]
         if not isinstance(price_raw, (int, float)) or price_raw <= 0:
-            continue
+            if allow_free:
+                price_raw = 1.0
+            else:
+                continue
 
         slug_group = _group(row, _GROUP_SLUG)
         hash_group = _group(row, _GROUP_HASH_ID)
@@ -228,4 +236,4 @@ def search(
         if owns_client:
             http.close()
 
-    return parse_search_payload(payload)[:limit]
+    return parse_search_payload(payload, allow_free=search_path == "zip")[:limit]

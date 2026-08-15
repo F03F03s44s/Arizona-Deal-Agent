@@ -24,6 +24,7 @@ class Topic:
     uses_catalog: bool
     uses_ebay: bool
     path: str
+    free_items: bool = False
 
 
 TOPICS: dict[str, Topic] = {
@@ -243,6 +244,31 @@ TOPICS: dict[str, Topic] = {
         uses_ebay=True,
         path="/bundles",
     ),
+    "sales": Topic(
+        id="sales",
+        title="Big sales",
+        blurb="Clearance and big-sale listings from allowlisted Craigslist and official eBay.",
+        default_query="clearance sale",
+        default_budget=5_000.0,
+        craigslist_path="sss",
+        min_live_price=20.0,
+        uses_catalog=False,
+        uses_ebay=True,
+        path="/sales",
+    ),
+    "free": Topic(
+        id="free",
+        title="Free & high return",
+        blurb="Free Craigslist posts with a conservative resale estimate — only items that look like they can return money.",
+        default_query="free",
+        default_budget=500.0,
+        craigslist_path="zip",
+        min_live_price=0.0,
+        uses_catalog=False,
+        uses_ebay=True,
+        path="/free",
+        free_items=True,
+    ),
 }
 
 TOPIC_ALIASES = {
@@ -284,6 +310,16 @@ TOPIC_ALIASES = {
     "bundal": "bundles",
     "bundals": "bundles",
     "lots": "bulk",
+    "big-sales": "sales",
+    "big-sale": "sales",
+    "clearance": "sales",
+    "bargain": "sales",
+    "bargains": "sales",
+    "deals": "sales",
+    "freebies": "free",
+    "free-stuff": "free",
+    "high-returns": "free",
+    "high-return": "free",
 }
 
 
@@ -410,7 +446,7 @@ def source_infos() -> list[SourceInfo]:
                 id="bstock",
                 name="B-Stock",
                 kind="lookup-only",
-                topics=["bulk", "pallets", "bundles"],
+                topics=["bulk", "pallets", "bundles", "sales"],
                 blurb="Official liquidation marketplace — open to check pallet comps. We do not scrape it.",
                 url="https://bstock.com/",
             ),

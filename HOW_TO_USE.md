@@ -18,7 +18,7 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 4. Type exactly: `http://127.0.0.1:8000`
 5. Press Enter.
 
-You should see “Arizona Deal Agent” and topic tabs (houses, household, electronics, furniture, cars, tools, gold, silver, diamonds, designer, luxury, coins, Pokémon cards, sports cards, jerseys, **bulk sales**, **pallets**, **bundles**). The list **live-updates** about every 45 seconds when Craigslist or eBay posts something new — leave the window open. Gift-card / wire / crypto / replica titles are dropped. eBay is used through its official API when `EBAY_OAUTH_TOKEN` is set; otherwise you get an official eBay search link (pages are not scraped).
+You should see “Arizona Deal Agent” and topic tabs including **big sales**, **bundles**, **pallets**, **bulk**, and **free & high return**. The list **live-updates** about every 45 seconds. Free posts are ranked by a conservative resale estimate (working TVs and tools rise; broken / parts-only posts are dropped). Gift-card / wire / crypto / replica titles are dropped. eBay is used through its official API when `EBAY_OAUTH_TOKEN` is set; otherwise you get an official eBay search link (pages are not scraped).
 
 Or run `powershell -ExecutionPolicy Bypass -File scripts\open-ui.ps1` from the repo folder; it starts the server and opens the browser.
 

@@ -22,6 +22,7 @@ from .data import DEFAULT_QUERY, SAMPLE_DEALS
 from .ebay import EbayError
 from .market import listings_to_deals
 from .models import Deal, LookupLink
+from .resale import free_listings_to_deals
 from .topics import Topic, get_topic
 from .trust import filter_live_deals
 
@@ -110,7 +111,10 @@ class DealService:
             logger.warning("Craigslist scrape failed for %r: %s", query, exc)
             return [], f"Craigslist unavailable ({exc})"
 
-        deals = listings_to_deals(listings, category=query, min_price=min_price)
+        if spec is not None and spec.free_items:
+            deals = free_listings_to_deals(listings, category=query)
+        else:
+            deals = listings_to_deals(listings, category=query, min_price=min_price)
         deals = filter_live_deals(deals)
         if not deals:
             return [], f"No priced Craigslist listings for {query!r}"
@@ -140,10 +144,16 @@ class DealService:
         return deals, None
 
     def _with_lookups(self, deals: list[Deal], query: str, spec: Topic | None) -> list[Deal]:
-        if spec is None or not spec.uses_ebay:
+        if spec is None:
             return deals
-        link = LookupLink(name="eBay", url=ebay.search_url(query))
-        return [deal.model_copy(update={"lookup_urls": [*deal.lookup_urls, link]}) for deal in deals]
+        links: list[LookupLink] = []
+        if spec.uses_ebay:
+            links.append(LookupLink(name="eBay", url=ebay.search_url(query)))
+        if spec.id in {"sales", "bulk", "pallets", "bundles"}:
+            links.append(LookupLink(name="B-Stock", url="https://bstock.com/"))
+        if not links:
+            return deals
+        return [deal.model_copy(update={"lookup_urls": [*deal.lookup_urls, *links]}) for deal in deals]
 
     def _fetch(self, query: str, spec: Topic | None) -> SourcedDeals:
         topic_id = spec.id if spec else None

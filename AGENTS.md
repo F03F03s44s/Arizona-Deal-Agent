@@ -66,6 +66,7 @@ Operator guide: `HOW_TO_USE.md`.
 | `app/topics.py` | Topic pages and aliases (houses, household, electronics, …) |
 | `app/trust.py` | Allowlisted hosts and scam-signal title filter |
 | `app/catalog.py` | Curated Arizona house catalog as web deals |
+| `app/resale.py` | Conservative resale floors for free-pile listings |
 | `app/ebay.py` | Official eBay Browse API client (token optional) |
 | `app/craigslist.py` | Craigslist JSON search scraper (per-topic section) |
 | `app/market.py` | Market value estimated from comparable listings |

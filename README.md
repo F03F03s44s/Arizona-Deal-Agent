@@ -312,7 +312,8 @@ print(best.listing.label, round(best.composite_score, 1), best.notes)
 A second front end in `app/` has a page per topic — houses, household items,
 electronics, furniture, cars, tools, gold, silver, diamonds, designer, luxury
 and rare items, coins, Pokémon cards, sports cards, jerseys, bulk sales,
-pallets, and bundles. An open page
+pallets, bundles, big sales, and free items with a high estimated return.
+An open page
 **re-pulls live listings about every 45 seconds** so new posts show up without
 a reload. Live rows come from allowlisted Craigslist sections and, when
 `EBAY_OAUTH_TOKEN` is set, the official eBay Browse API. Gift-card / wire /
