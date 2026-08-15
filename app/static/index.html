@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arizona Deal Agent — Send</title>
+    <style>
+      :root {
+        --sand: #f6efe4;
+        --dusk: #2d2a32;
+        --cactus: #3f7d4e;
+        --sunset: #d9682e;
+        --card: #ffffff;
+        --muted: #6b6570;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        background: linear-gradient(160deg, var(--sand), #efe2cc);
+        color: var(--dusk);
+        min-height: 100vh;
+      }
+      header { padding: 32px 24px 8px; text-align: center; }
+      header h1 { margin: 0; font-size: 2rem; letter-spacing: -0.5px; }
+      header p { color: var(--muted); margin: 8px 0 0; }
+      main { max-width: 920px; margin: 0 auto; padding: 16px 24px 48px; }
+      .card {
+        background: var(--card);
+        padding: 18px 20px;
+        border-radius: 14px;
+        box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08);
+        margin-bottom: 16px;
+      }
+      .card h2 { margin: 0 0 10px; font-size: 1.05rem; }
+      .controls, .send-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: flex-end;
+      }
+      .field { display: flex; flex-direction: column; gap: 6px; }
+      .field.grow { flex: 1 1 240px; }
+      .field label { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+      .field input[type="number"],
+      .field input[type="url"],
+      .field input[type="text"],
+      .field select {
+        padding: 8px 10px;
+        border: 1px solid #d8cdbb;
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 100%;
+        min-width: 160px;
+      }
+      .weight-value { font-variant-numeric: tabular-nums; color: var(--cactus); font-weight: 700; }
+      .check { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--dusk); }
+      button.primary, button.secondary {
+        border: none;
+        padding: 10px 22px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button.primary { background: var(--sunset); color: white; }
+      button.primary:hover { background: #c15a24; }
+      button.secondary { background: var(--cactus); color: white; }
+      button.secondary:hover { background: #32653e; }
+      button:disabled { opacity: 0.6; cursor: not-allowed; }
+      .recommendation {
+        margin: 8px 0 16px;
+        padding: 18px 20px;
+        border-radius: 14px;
+        background: var(--cactus);
+        color: white;
+        box-shadow: 0 6px 18px rgba(63, 125, 78, 0.25);
+      }
+      .recommendation h2 { margin: 0 0 4px; font-size: 1rem; opacity: 0.85; font-weight: 600; }
+      .recommendation .title { font-size: 1.4rem; font-weight: 700; }
+      .recommendation .meta { margin-top: 6px; opacity: 0.92; }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+        background: var(--card);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08);
+      }
+      th, td { padding: 12px 14px; text-align: left; font-size: 0.92rem; }
+      thead th {
+        background: #efe6d6;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 0.72rem;
+        letter-spacing: 0.5px;
+      }
+      tbody tr:nth-child(even) { background: #faf6ee; }
+      tbody tr.over-budget { opacity: 0.5; }
+      .num { text-align: right; font-variant-numeric: tabular-nums; }
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+      .badge.ok { background: #dceede; color: var(--cactus); }
+      .badge.no { background: #f6dcd1; color: #b04a1f; }
+      .badge.log { background: #efe6d6; color: var(--dusk); }
+      .rank-num { font-weight: 700; color: var(--sunset); }
+      .status { min-height: 1.2em; font-size: 0.9rem; margin-top: 10px; }
+      .status.ok { color: var(--cactus); }
+      .status.err { color: #b04a1f; }
+      .hint { color: var(--muted); font-size: 0.88rem; margin: 0 0 12px; }
+      .empty { color: var(--muted); font-size: 0.9rem; padding: 8px 0; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>&#127796; Arizona Deal Agent</h1>
+      <p>Rank the lowest-cost, most profitable deal — then send it.</p>
+    </header>
+    <main>
+      <section class="card">
+        <h2>Rank</h2>
+        <div class="controls">
+          <div class="field">
+            <label for="budget">Budget ($)</label>
+            <input id="budget" type="number" min="1" step="100" value="15000" />
+          </div>
+          <div class="field">
+            <label for="weight">
+              Profit vs. affordability: <span id="weightValue" class="weight-value">0.60</span>
+            </label>
+            <input id="weight" type="range" min="0" max="1" step="0.05" value="0.6" style="width: 220px;" />
+          </div>
+          <button id="rankBtn" class="primary" type="button">Rank deals</button>
+        </div>
+      </section>
+
+      <div id="recommendation" class="recommendation" style="display: none;">
+        <h2>Agent recommendation</h2>
+        <div class="title" id="recTitle"></div>
+        <div class="meta" id="recMeta"></div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Deal</th>
+            <th>Category</th>
+            <th class="num">Cost</th>
+            <th class="num">Value</th>
+            <th class="num">Profit</th>
+            <th class="num">Score</th>
+            <th>Budget</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+
+      <section class="card" style="margin-top: 20px;">
+        <h2>Send</h2>
+        <p class="hint">
+          Transmit the current recommendation. Inbox stays on this server.
+          Webhook POSTs JSON (or a Slack text summary) to a public https URL.
+        </p>
+        <div class="send-grid">
+          <div class="field">
+            <label for="destination">Destination</label>
+            <select id="destination">
+              <option value="inbox" selected>Inbox (this app)</option>
+              <option value="webhook">Webhook URL</option>
+              <option value="log">Log only</option>
+            </select>
+          </div>
+          <div class="field grow" id="urlField" style="display: none;">
+            <label for="webhookUrl">Webhook URL</label>
+            <input id="webhookUrl" type="url" placeholder="https://example.com/hooks/deals" />
+          </div>
+          <div class="field">
+            <label for="payloadFormat">Format</label>
+            <select id="payloadFormat">
+              <option value="json" selected>JSON envelope</option>
+              <option value="slack">Slack text</option>
+            </select>
+          </div>
+          <div class="field grow">
+            <label for="note">Note</label>
+            <input id="note" type="text" maxlength="280" placeholder="Optional context for the receiver" />
+          </div>
+          <label class="check">
+            <input id="includeRanking" type="checkbox" checked />
+            Include full ranking
+          </label>
+          <button id="sendBtn" class="secondary" type="button">Send recommendation</button>
+        </div>
+        <div id="sendStatus" class="status" role="status"></div>
+      </section>
+
+      <section class="card">
+        <h2>Outbox</h2>
+        <div id="outboxEmpty" class="empty">Nothing sent yet.</div>
+        <table id="outboxTable" style="display: none; box-shadow: none;">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Destination</th>
+              <th>Recommendation</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody id="outboxRows"></tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Inbox</h2>
+        <div id="inboxEmpty" class="empty">No deliveries received yet.</div>
+        <table id="inboxTable" style="display: none; box-shadow: none;">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Recommendation</th>
+              <th>Note</th>
+              <th class="num">Deals</th>
+            </tr>
+          </thead>
+          <tbody id="inboxRows"></tbody>
+        </table>
+      </section>
+    </main>
+
+    <script>
+      const weight = document.getElementById("weight");
+      const weightValue = document.getElementById("weightValue");
+      const destination = document.getElementById("destination");
+      const urlField = document.getElementById("urlField");
+      const sendStatus = document.getElementById("sendStatus");
+
+      weight.addEventListener("input", () => {
+        weightValue.textContent = Number(weight.value).toFixed(2);
+      });
+      destination.addEventListener("change", () => {
+        urlField.style.display = destination.value === "webhook" ? "flex" : "none";
+      });
+
+      const fmt = (n) => "$" + Number(n).toLocaleString(undefined, { maximumFractionDigits: 0 });
+
+      function setText(id, value) {
+        document.getElementById(id).textContent = value;
+      }
+
+      function badgeClass(status) {
+        if (status === "sent") return "ok";
+        if (status === "logged") return "log";
+        return "no";
+      }
+
+      function destLabel(record) {
+        if (record.destination === "webhook") {
+          return record.webhook_host ? "webhook · " + record.webhook_host : "webhook";
+        }
+        return record.destination;
+      }
+
+      async function rank() {
+        const budget = Number(document.getElementById("budget").value);
+        const profit_weight = Number(weight.value);
+        const res = await fetch("/api/rank", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ budget, profit_weight, deals: [] }),
+        });
+        const data = await res.json();
+        renderRank(data);
+      }
+
+      function renderRank(data) {
+        const rows = document.getElementById("rows");
+        rows.replaceChildren();
+        data.ranked.forEach((s, i) => {
+          const tr = document.createElement("tr");
+          if (!s.within_budget) tr.className = "over-budget";
+          const cells = [
+            [String(i + 1), "rank-num"],
+            [s.deal.title, ""],
+            [s.deal.category, ""],
+            [fmt(s.deal.acquisition_cost), "num"],
+            [fmt(s.deal.market_value), "num"],
+            [fmt(s.profit), "num"],
+            [s.score.toFixed(3), "num"],
+          ];
+          cells.forEach(([text, cls]) => {
+            const td = document.createElement("td");
+            if (cls) td.className = cls;
+            td.textContent = text;
+            tr.appendChild(td);
+          });
+          const badgeTd = document.createElement("td");
+          const badge = document.createElement("span");
+          badge.className = "badge " + (s.within_budget ? "ok" : "no");
+          badge.textContent = s.within_budget ? "in budget" : "over";
+          badgeTd.appendChild(badge);
+          tr.appendChild(badgeTd);
+          rows.appendChild(tr);
+        });
+
+        const rec = document.getElementById("recommendation");
+        if (data.recommendation) {
+          rec.style.display = "block";
+          const r = data.recommendation;
+          setText("recTitle", r.deal.title);
+          setText(
+            "recMeta",
+            `Profit ${fmt(r.profit)} · margin ${(r.profit_margin * 100).toFixed(0)}% · cost ${fmt(r.deal.acquisition_cost)} · score ${r.score.toFixed(3)}`
+          );
+        } else {
+          rec.style.display = "none";
+        }
+      }
+
+      function renderLog(tableId, emptyId, rowsId, records, columns) {
+        const empty = document.getElementById(emptyId);
+        const table = document.getElementById(tableId);
+        const body = document.getElementById(rowsId);
+        body.replaceChildren();
+        if (!records.length) {
+          empty.style.display = "block";
+          table.style.display = "none";
+          return;
+        }
+        empty.style.display = "none";
+        table.style.display = "table";
+        records.forEach((record) => {
+          const tr = document.createElement("tr");
+          columns(record).forEach((node) => tr.appendChild(node));
+          body.appendChild(tr);
+        });
+      }
+
+      function td(text, className) {
+        const cell = document.createElement("td");
+        if (className) cell.className = className;
+        cell.textContent = text;
+        return cell;
+      }
+
+      function statusCell(status) {
+        const cell = document.createElement("td");
+        const badge = document.createElement("span");
+        badge.className = "badge " + badgeClass(status);
+        badge.textContent = status;
+        cell.appendChild(badge);
+        return cell;
+      }
+
+      async function refreshLogs() {
+        const [outboxRes, inboxRes] = await Promise.all([
+          fetch("/api/transmissions"),
+          fetch("/api/inbox"),
+        ]);
+        const outbox = await outboxRes.json();
+        const inbox = await inboxRes.json();
+        renderLog("outboxTable", "outboxEmpty", "outboxRows", outbox, (r) => [
+          statusCell(r.status),
+          td(destLabel(r)),
+          td(r.recommendation_title || "none"),
+          td(r.note || ""),
+        ]);
+        renderLog("inboxTable", "inboxEmpty", "inboxRows", inbox, (r) => [
+          statusCell(r.status),
+          td(r.recommendation_title || "none"),
+          td(r.note || ""),
+          td(String(r.deal_count), "num"),
+        ]);
+      }
+
+      async function send() {
+        const dest = destination.value;
+        const payload = {
+          budget: Number(document.getElementById("budget").value),
+          profit_weight: Number(weight.value),
+          deals: [],
+          destination: dest,
+          note: document.getElementById("note").value || null,
+          include_ranking: document.getElementById("includeRanking").checked,
+          payload_format: document.getElementById("payloadFormat").value,
+        };
+        if (dest === "webhook") {
+          payload.webhook_url = document.getElementById("webhookUrl").value;
+        }
+        sendStatus.className = "status";
+        sendStatus.textContent = "Sending…";
+        document.getElementById("sendBtn").disabled = true;
+        try {
+          const res = await fetch("/api/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            const detail = data.detail;
+            const message = Array.isArray(detail)
+              ? detail.map((item) => item.msg || JSON.stringify(item)).join("; ")
+              : (detail || res.statusText);
+            throw new Error(message);
+          }
+          sendStatus.className = "status " + (data.status === "failed" ? "err" : "ok");
+          sendStatus.textContent = data.status === "failed"
+            ? ("Send failed: " + (data.error || "destination rejected the payload"))
+            : ("Sent via " + destLabel(data) + (data.recommendation_title ? " — " + data.recommendation_title : ""));
+          await refreshLogs();
+        } catch (err) {
+          sendStatus.className = "status err";
+          sendStatus.textContent = err.message || "Send failed";
+        } finally {
+          document.getElementById("sendBtn").disabled = false;
+        }
+      }
+
+      document.getElementById("rankBtn").addEventListener("click", rank);
+      document.getElementById("sendBtn").addEventListener("click", send);
+      rank();
+      refreshLogs();
+    </script>
+  </body>
+</html>
