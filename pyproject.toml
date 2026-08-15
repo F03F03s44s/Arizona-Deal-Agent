@@ -12,7 +12,8 @@ license = { text = "MIT" }
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=7.0"]
+dev = ["pytest>=7.0", "fastapi>=0.115", "httpx>=0.28"]
+web = ["fastapi>=0.115", "uvicorn[standard]>=0.34", "httpx>=0.28"]
 
 [project.scripts]
 arizona-deal-agent = "arizona_deal_agent.cli:main"
@@ -22,4 +23,4 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]

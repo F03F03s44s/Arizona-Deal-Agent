@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arizona Deal Agent — How to use</title>
+    <style>
+      :root {
+        --sand: #f6efe4;
+        --dusk: #2d2a32;
+        --cactus: #3f7d4e;
+        --sunset: #d9682e;
+        --card: #ffffff;
+        --muted: #6b6570;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        background: linear-gradient(160deg, var(--sand), #efe2cc);
+        color: var(--dusk);
+        min-height: 100vh;
+      }
+      header {
+        padding: 32px 24px 8px;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 2rem;
+        letter-spacing: -0.5px;
+      }
+      header p { color: var(--muted); margin: 8px 0 0; }
+      main {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 16px 24px 48px;
+      }
+      .howto {
+        background: var(--card);
+        padding: 18px 20px;
+        border-radius: 14px;
+        box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08);
+        margin-bottom: 16px;
+      }
+      .howto h2 {
+        margin: 0 0 8px;
+        font-size: 1.05rem;
+      }
+      .howto ol {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--dusk);
+      }
+      .howto li { margin: 4px 0; }
+      .howto .hint {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: flex-end;
+        background: var(--card);
+        padding: 20px;
+        border-radius: 14px;
+        box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08);
+      }
+      .field { display: flex; flex-direction: column; gap: 6px; }
+      .field label { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+      .field input[type="number"] {
+        padding: 8px 10px;
+        border: 1px solid #d8cdbb;
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 160px;
+      }
+      .weight-value { font-variant-numeric: tabular-nums; color: var(--cactus); font-weight: 700; }
+      .slider-labels {
+        display: flex;
+        justify-content: space-between;
+        width: 220px;
+        font-size: 0.72rem;
+        color: var(--muted);
+      }
+      .weight-hint { font-size: 0.8rem; color: var(--muted); max-width: 260px; }
+      .scenarios {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        width: 100%;
+      }
+      .scenarios button {
+        background: #efe6d6;
+        color: var(--dusk);
+        border: 1px solid #d8cdbb;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .scenarios button:hover { background: #e5d8c0; }
+      button.primary {
+        background: var(--sunset);
+        color: white;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.05s ease, background 0.2s;
+      }
+      button.primary:hover { background: #c15a24; }
+      button.primary:active { transform: translateY(1px); }
+      .recommendation {
+        margin: 24px 0 8px;
+        padding: 18px 20px;
+        border-radius: 14px;
+        background: var(--cactus);
+        color: white;
+        box-shadow: 0 6px 18px rgba(63, 125, 78, 0.25);
+      }
+      .recommendation h2 { margin: 0 0 4px; font-size: 1rem; opacity: 0.85; font-weight: 600; }
+      .recommendation .title { font-size: 1.4rem; font-weight: 700; }
+      .recommendation .meta { margin-top: 6px; opacity: 0.92; }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: var(--card);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(45, 42, 50, 0.08);
+      }
+      th, td { padding: 12px 14px; text-align: left; font-size: 0.92rem; }
+      thead th {
+        background: #efe6d6;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 0.72rem;
+        letter-spacing: 0.5px;
+      }
+      tbody tr:nth-child(even) { background: #faf6ee; }
+      tbody tr.over-budget { opacity: 0.5; }
+      .num { text-align: right; font-variant-numeric: tabular-nums; }
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+      .badge.ok { background: #dceede; color: var(--cactus); }
+      .badge.no { background: #f6dcd1; color: #b04a1f; }
+      .rank-num { font-weight: 700; color: var(--sunset); }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>&#127796; Arizona Deal Agent</h1>
+      <p>Finds the lowest-cost, most profitable, most affordable deal for your budget.</p>
+    </header>
+    <main>
+      <section class="howto" id="howto" aria-labelledby="howto-heading">
+        <h2 id="howto-heading">How to use</h2>
+        <ol>
+          <li>Set your cash <strong>Budget ($)</strong>.</li>
+          <li>Slide toward <strong>Affordability</strong> (leftover cash) or <strong>Profit</strong> (fatter margin).</li>
+          <li>Click a scenario or <strong>Rank deals</strong>.</li>
+          <li>Take the green recommendation. Faded rows are over budget and are never picked.</li>
+        </ol>
+        <p class="hint">
+          Empty deal lists use the built-in Arizona sample catalog.
+          Same ranking is available as <code>python -m app</code> and <code>POST /api/rank</code>.
+        </p>
+      </section>
+
+      <div class="controls">
+        <div class="field">
+          <label for="budget">Budget ($)</label>
+          <input id="budget" type="number" min="1" step="100" value="15000" />
+        </div>
+        <div class="field">
+          <label for="weight">
+            Profit vs. affordability: <span id="weightValue" class="weight-value">0.60</span>
+          </label>
+          <input id="weight" type="range" min="0" max="1" step="0.05" value="0.6" style="width: 220px;" />
+          <div class="slider-labels"><span>Affordability</span><span>Profit</span></div>
+          <div id="weightHint" class="weight-hint">
+            Balance profit margin with how much cash the deal uses.
+          </div>
+        </div>
+        <button id="rankBtn" class="primary">Rank deals</button>
+        <div class="scenarios" aria-label="How-to scenarios">
+          <button type="button" data-budget="15000" data-weight="0.6">Balanced</button>
+          <button type="button" data-budget="15000" data-weight="1">Max profit</button>
+          <button type="button" data-budget="15000" data-weight="0">Max affordability</button>
+          <button type="button" data-budget="2000" data-weight="0.5">Tight $2,000</button>
+        </div>
+      </div>
+
+      <div id="recommendation" class="recommendation" style="display: none;">
+        <h2>Agent recommendation</h2>
+        <div class="title" id="recTitle"></div>
+        <div class="meta" id="recMeta"></div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Deal</th>
+            <th>Category</th>
+            <th class="num">Cost</th>
+            <th class="num">Value</th>
+            <th class="num">Profit</th>
+            <th class="num">Score</th>
+            <th>Budget</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </main>
+
+    <script>
+      const weight = document.getElementById("weight");
+      const weightValue = document.getElementById("weightValue");
+      const weightHint = document.getElementById("weightHint");
+
+      function hintFor(value) {
+        if (value <= 0.3) {
+          return "Prefer cheaper deals that leave budget leftover.";
+        }
+        if (value >= 0.8) {
+          return "Prefer the fattest profit margin, as long as it fits the budget.";
+        }
+        return "Balance profit margin with how much cash the deal uses.";
+      }
+
+      function syncWeight() {
+        const value = Number(weight.value);
+        weightValue.textContent = value.toFixed(2);
+        weightHint.textContent = hintFor(value);
+      }
+
+      weight.addEventListener("input", syncWeight);
+
+      const fmt = (n) => "$" + Number(n).toLocaleString(undefined, { maximumFractionDigits: 0 });
+
+      async function rank() {
+        const budget = Number(document.getElementById("budget").value);
+        const profit_weight = Number(weight.value);
+        const res = await fetch("/api/rank", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ budget, profit_weight, deals: [] }),
+        });
+        const data = await res.json();
+        render(data);
+      }
+
+      function render(data) {
+        const rows = document.getElementById("rows");
+        rows.innerHTML = "";
+        data.ranked.forEach((s, i) => {
+          const tr = document.createElement("tr");
+          if (!s.within_budget) tr.className = "over-budget";
+          tr.innerHTML = `
+            <td class="rank-num">${i + 1}</td>
+            <td>${s.deal.title}</td>
+            <td>${s.deal.category}</td>
+            <td class="num">${fmt(s.deal.acquisition_cost)}</td>
+            <td class="num">${fmt(s.deal.market_value)}</td>
+            <td class="num">${fmt(s.profit)}</td>
+            <td class="num">${s.score.toFixed(3)}</td>
+            <td><span class="badge ${s.within_budget ? "ok" : "no"}">${s.within_budget ? "in budget" : "over"}</span></td>`;
+          rows.appendChild(tr);
+        });
+
+        const rec = document.getElementById("recommendation");
+        if (data.recommendation) {
+          rec.style.display = "block";
+          document.getElementById("recTitle").textContent = data.recommendation.deal.title;
+          const r = data.recommendation;
+          document.getElementById("recMeta").textContent =
+            `Profit ${fmt(r.profit)} \u00b7 margin ${(r.profit_margin * 100).toFixed(0)}% \u00b7 cost ${fmt(r.deal.acquisition_cost)} \u00b7 score ${r.score.toFixed(3)}`;
+        } else {
+          rec.style.display = "none";
+        }
+      }
+
+      document.getElementById("rankBtn").addEventListener("click", rank);
+      document.querySelectorAll(".scenarios button").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.getElementById("budget").value = button.dataset.budget;
+          weight.value = button.dataset.weight;
+          syncWeight();
+          rank();
+        });
+      });
+      rank();
+    </script>
+  </body>
+</html>

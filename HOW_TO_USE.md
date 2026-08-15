@@ -1,6 +1,28 @@
 # How to use Arizona Deal Agent
 
-The agent is a **CLI**. Point it at a listings file. It scores every property on
+## Open the page in Chrome or Opera
+
+That page is **not on Google**. It is a local page on your PC: `http://127.0.0.1:8000`.
+
+1. In PowerShell, from the repo folder, start the server (leave the window open):
+
+```powershell
+cd C:\Users\kietl\Arizona-Deal-Agent-main
+.\.venv\Scripts\Activate.ps1
+pip install -e ".[web]"
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+2. Open **Chrome** or **Opera**.
+3. Click the **address bar** at the very top (the box that shows `opera://startpage` or a website URL). Do **not** type in the Google search box on google.com.
+4. Type exactly: `http://127.0.0.1:8000`
+5. Press Enter.
+
+You should see “Arizona Deal Agent”, the How to use steps, and the green recommendation.
+
+Or run `powershell -ExecutionPolicy Bypass -File scripts\open-ui.ps1` from the repo folder; it starts the server and opens the browser.
+
+The agent is also a **CLI**. Point it at a listings file. It scores every property on
 price, profitability, and affordability, ranks them, and can **transmit** the
 top pick as a shareable recommendation.
 
