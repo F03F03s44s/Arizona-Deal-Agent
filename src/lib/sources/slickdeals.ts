@@ -63,7 +63,7 @@ function toDeal(item: RssItem, sourceId: string): Deal | null {
   const askingPrice = parseAskingPrice(blob);
   if (!askingPrice) return null;
 
-  const comp = matchMarket(blob);
+  const comp = matchMarket(blob, askingPrice);
   const city = detectCity(blob) ?? "Statewide";
   const marketPrice = comp?.marketPrice ?? null;
   const estimatedResale = marketPrice ? Math.round(marketPrice * (comp?.resaleHaircut ?? 0.75)) : null;
@@ -73,7 +73,7 @@ function toDeal(item: RssItem, sourceId: string): Deal | null {
     id: `slickdeals:${hashId(url || title)}`,
     title,
     description: description.slice(0, 280),
-    category: comp?.category ?? inferCategory(blob),
+    category: comp?.category ?? inferCategory(blob, askingPrice),
     city,
     askingPrice,
     marketPrice,
