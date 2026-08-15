@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Arizona Deal Scout ranks representative Arizona properties by value, cash flow, and upside."
+    />
+    <title>Arizona Deal Scout — Find the value</title>
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-noise" aria-hidden="true"></div>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#" aria-label="Arizona Deal Scout home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 40 40" fill="none">
+              <path d="M21 5c.8 5.6.76 10.2-.1 13.8 4.03-2.02 7.73-1.7 11.1.96-3.37 2.64-7.07 2.95-11.1.92.85 4.14.89 8.98.1 14.5h-2.13c-.78-5.52-.74-10.36.12-14.5-4.04 2.03-7.74 1.72-11.1-.92 3.36-2.66 7.06-2.98 11.1-.96-.87-3.6-.83-8.2-.12-13.8H21Z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span>Arizona<br /><strong>Deal Scout</strong></span>
+        </a>
+
+        <nav class="primary-nav" aria-label="Primary navigation">
+          <a class="nav-item active" href="#deals">
+            <span class="nav-icon" aria-hidden="true">⌁</span>
+            Discover deals
+          </a>
+          <a class="nav-item" href="#saved">
+            <span class="nav-icon" aria-hidden="true">♡</span>
+            Saved shortlist
+            <span class="nav-count" id="savedNavCount">0</span>
+          </a>
+          <a class="nav-item" href="#method">
+            <span class="nav-icon" aria-hidden="true">◫</span>
+            Value model
+          </a>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+        <section class="market-pulse" aria-labelledby="pulse-title">
+          <div class="eyebrow"><span class="live-dot"></span>Arizona pulse</div>
+          <h2 id="pulse-title">More choices. Less noise.</h2>
+          <p>Start with the listings where price, rent, and local demand agree.</p>
+          <a href="#method">See the model <span aria-hidden="true">→</span></a>
+        </section>
+        <div class="sidebar-user">
+          <div class="user-avatar">KS</div>
+          <div>
+            <strong>Kiet’s workspace</strong>
+            <span>Investor view</span>
+          </div>
+          <button class="more-button" aria-label="Open workspace options">•••</button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <button class="mobile-menu" aria-label="Open navigation">
+            <span></span><span></span>
+          </button>
+          <div class="breadcrumb"><span>Arizona</span><span aria-hidden="true">/</span> Deal explorer</div>
+          <div class="topbar-actions">
+            <button class="icon-button" aria-label="Show notifications">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M18 9a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button class="avatar-button" aria-label="Open account menu">KS</button>
+          </div>
+        </header>
+
+        <section class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow hero-eyebrow"><span class="sun-icon" aria-hidden="true">✦</span> Desert market intelligence</div>
+            <h1>Find the desert’s<br /><em>smartest buy.</em></h1>
+            <p>Explore Arizona opportunities ranked for price advantage, rental strength, and neighborhood momentum.</p>
+            <div class="hero-meta">
+              <span class="demo-chip">Demo market data</span>
+              <span>Value model v1.0</span>
+              <span class="updated-at" id="updatedAt">Updated today</span>
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="hero-sun"></div>
+            <div class="mountain mountain-back"></div>
+            <div class="mountain mountain-front"></div>
+            <div class="cactus cactus-one"><i></i><b></b></div>
+            <div class="cactus cactus-two"><i></i><b></b></div>
+            <div class="hero-caption"><span>33.4° N</span><span>111.9° W</span></div>
+          </div>
+        </section>
+
+        <section class="explorer-controls" aria-label="Search Arizona deals">
+          <div class="market-tabs-wrap">
+            <div class="section-kicker">Explore by market</div>
+            <div class="market-tabs" id="marketTabs" role="tablist" aria-label="Arizona markets"></div>
+          </div>
+          <div class="control-row">
+            <label class="search-field">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="1.8"></circle>
+                <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+              </svg>
+              <span class="sr-only">Search deals</span>
+              <input id="dealSearch" type="search" placeholder="Search neighborhood, city, or deal" autocomplete="off" />
+            </label>
+            <label class="select-field">
+              <span class="sr-only">Property type</span>
+              <select id="typeFilter">
+                <option>All homes</option>
+                <option>Single family</option>
+                <option>Multi-family</option>
+                <option>Townhome</option>
+                <option>Condo</option>
+              </select>
+            </label>
+            <label class="select-field">
+              <span class="sr-only">Maximum price</span>
+              <select id="priceFilter">
+                <option value="">Any price</option>
+                <option value="450000">Up to $450k</option>
+                <option value="550000">Up to $550k</option>
+                <option value="650000">Up to $650k</option>
+              </select>
+            </label>
+            <label class="select-field compact-select">
+              <span class="sr-only">Minimum bedrooms</span>
+              <select id="bedFilter">
+                <option value="0">Any beds</option>
+                <option value="2">2+ beds</option>
+                <option value="3">3+ beds</option>
+                <option value="4">4+ beds</option>
+              </select>
+            </label>
+            <button class="filter-button" id="clearFilters" type="button">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 7h16M7 12h10m-7 5h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+              Reset
+            </button>
+          </div>
+        </section>
+
+        <section class="deals-section" id="deals">
+          <div class="results-header">
+            <div>
+              <div class="section-kicker">Curated for your brief</div>
+              <h2>Best value, first <span id="resultCount">9 deals</span></h2>
+            </div>
+            <button class="refresh-button" id="refreshButton" type="button">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Refresh scores
+            </button>
+          </div>
+
+          <div class="ranking-controls">
+            <div class="lens-control" role="group" aria-label="Value lens">
+              <span>Rank by</span>
+              <button class="lens-button active" data-lens="balanced" type="button">Best value</button>
+              <button class="lens-button" data-lens="cashflow" type="button">Cash flow</button>
+              <button class="lens-button" data-lens="upside" type="button">Upside</button>
+            </div>
+            <label class="sort-select">
+              <span>Sort</span>
+              <select id="sortSelect">
+                <option value="score">Value score</option>
+                <option value="price">Lowest price</option>
+                <option value="yield">Highest net yield</option>
+                <option value="gap">Largest value gap</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="deal-grid" id="dealGrid" aria-live="polite"></div>
+          <div class="empty-state" id="emptyState" hidden>
+            <div class="empty-icon" aria-hidden="true">⌕</div>
+            <h3>No matches yet</h3>
+            <p>Try widening your filters or searching another Arizona market.</p>
+            <button id="emptyReset" type="button">Show every deal</button>
+          </div>
+        </section>
+
+        <section class="method-section" id="method">
+          <div class="method-title">
+            <div class="section-kicker">A transparent first pass</div>
+            <h2>Why these rise to the top.</h2>
+            <p>Each score starts with the listing price, estimated local value, estimated net rent, and market momentum. Change your lens to emphasize what matters most.</p>
+          </div>
+          <div class="method-grid">
+            <article>
+              <span class="method-number">01</span>
+              <h3>Price advantage</h3>
+              <p>We compare asking price with the local value estimate to surface a meaningful gap.</p>
+            </article>
+            <article>
+              <span class="method-number">02</span>
+              <h3>Rental strength</h3>
+              <p>Projected annual rent less operating costs estimates the yield a deal can support.</p>
+            </article>
+            <article>
+              <span class="method-number">03</span>
+              <h3>Market signal</h3>
+              <p>Neighborhood momentum and listing freshness help break close ties.</p>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="deal-modal" id="dealModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-backdrop" data-close-modal></div>
+      <article class="modal-card">
+        <button class="modal-close" data-close-modal aria-label="Close deal analysis">×</button>
+        <div class="modal-image-wrap"><img id="modalImage" alt="" /></div>
+        <div class="modal-copy">
+          <div class="modal-label" id="modalLabel">Top opportunity</div>
+          <h2 id="modalTitle">Deal analysis</h2>
+          <p id="modalLocation"></p>
+          <div class="modal-score-row">
+            <div><span>Value score</span><strong id="modalScore">--</strong></div>
+            <div><span>Value gap</span><strong id="modalGap">--</strong></div>
+            <div><span>Net yield</span><strong id="modalYield">--</strong></div>
+          </div>
+          <p class="modal-insight" id="modalInsight"></p>
+          <div class="modal-actions">
+            <button class="primary-action" id="modalSave" type="button">Save to shortlist</button>
+            <button class="secondary-action" data-close-modal type="button">Keep exploring</button>
+          </div>
+          <p class="modal-disclaimer">Illustrative MVP data only — validate price, rent, costs, and legal use before making an offer.</p>
+        </div>
+      </article>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
