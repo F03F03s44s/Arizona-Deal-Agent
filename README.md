@@ -8,6 +8,17 @@ floats to the top, with a plain-language explanation of why it won.
 
 **Start here:** `arizona-deal-agent howto` or [HOW_TO_USE.md](HOW_TO_USE.md).
 
+There are currently **two front ends in this repository**, built in parallel and
+kept side by side rather than one overwriting the other:
+
+| Front end | Deals it looks at | Where |
+| --------- | ----------------- | ----- |
+| CLI (`arizona-deal-agent`) | Arizona property listings you supply, scored on mortgage, cap rate and DSCR | `src/arizona_deal_agent/` |
+| Web app | Live Phoenix Craigslist for-sale listings, priced against comparable listings | `app/` — see [Web app](#web-app-live-craigslist-deals) |
+
+They share a name and a philosophy, not code. Consolidating them is an open
+decision.
+
 ## How to use
 
 ### 1. Install
@@ -296,15 +307,105 @@ best = deals[0]
 print(best.listing.label, round(best.composite_score, 1), best.notes)
 ```
 
+## Web app: live Craigslist deals
+
+A second front end in `app/` scrapes live Phoenix-area Craigslist listings,
+prices each against comparable listings, and ranks them in a browser UI that
+re-ranks as you drag a profit-vs-affordability slider.
+
+```bash
+pip install -e ".[dev,web]"
+.venv/bin/uvicorn app.main:app --reload --port 8000
+# open http://localhost:8000
+```
+
+### Where the numbers come from
+
+Craigslist only publishes an asking price, so market value is **estimated from
+comparable listings in the same search**: the median asking price of other
+listings whose titles share meaningful words with it. A listing well under that
+median is what the agent treats as profit.
+
+Listings with no real comparables are dropped rather than priced against an
+unrelated cohort — a search for power tools also drags in loafers and used cars,
+and pricing those off the rest of the results would invent margins that do not
+exist. Listings under $20 are ignored as placeholders.
+
+Craigslist's search pages are a JavaScript app and the legacy `format=rss`
+endpoint answers 403, so `app/craigslist.py` reads the JSON search service the
+site's own front end calls, decoding its position-encoded rows.
+
+### API
+
+| Method | Path                           | Description                                    |
+| ------ | ------------------------------ | ---------------------------------------------- |
+| GET    | `/api/health`                  | Health check.                                  |
+| GET    | `/api/deals`                   | Scrape (or serve cached) Phoenix listings.     |
+| POST   | `/api/rank`                    | Rank deals against a budget and profit weight. |
+| GET    | `/api/saved-searches`          | List saved searches.                           |
+| POST   | `/api/saved-searches`          | Save a search and check it immediately.        |
+| POST   | `/api/saved-searches/{id}/run` | Re-run one saved search now.                   |
+| DELETE | `/api/saved-searches/{id}`     | Delete a saved search.                         |
+| GET    | `/api/alerts`                  | Alert emails the agent has sent, newest first. |
+
+```bash
+# Rank live listings
+curl -s http://localhost:8000/api/rank \
+  -H 'Content-Type: application/json' \
+  -d '{"budget": 2000, "profit_weight": 0.6, "query": "power tools"}'
+
+# Get me an email when a cordless drill scores above 0.9
+curl -s http://localhost:8000/api/saved-searches \
+  -H 'Content-Type: application/json' \
+  -d '{"query": "cordless drill", "email": "you@example.com", "min_score": 0.9}'
+```
+
+`GET /api/deals?refresh=true` bypasses the scrape cache. If Craigslist is
+unreachable the agent falls back to the sample deals in `app/data.py` and says
+so in the response's `warning` field.
+
+### Live re-ranking
+
+Scrapes are cached per query (10 minutes by default), so `POST /api/rank` is
+pure arithmetic on cached data. That is what lets the UI re-rank on every slider
+tick without putting a network call in the request path. A new search query is
+the one thing that does re-scrape, so it waits for Enter rather than firing on
+each keystroke.
+
+### Email alerts
+
+Saved searches are polled in the background and each matching listing is emailed
+exactly once. Configure a real mail server with environment variables:
+
+| Variable              | Default                        | Purpose                                   |
+| --------------------- | ------------------------------ | ----------------------------------------- |
+| `SMTP_HOST`           | _unset_                        | Mail server. Unset logs alerts instead.   |
+| `SMTP_PORT`           | `587`                          | Mail server port.                         |
+| `SMTP_USERNAME`       | _unset_                        | Login, if the server requires one.        |
+| `SMTP_PASSWORD`       | _unset_                        | Password for `SMTP_USERNAME`.             |
+| `SMTP_FROM`           | `arizona-deal-agent@localhost` | Envelope sender.                          |
+| `SMTP_STARTTLS`       | `true`                         | Upgrade the connection before sending.    |
+| `ALERT_POLL_SECONDS`  | `900`                          | Saved-search poll interval; `0` disables. |
+| `DEAL_AGENT_DATA_DIR` | `.agent-state`                 | Where saved searches are persisted.       |
+
+With no `SMTP_HOST` set, alerts are written to the application log and still
+recorded in `/api/alerts`, so the feature stays observable without credentials.
+
 ## Development
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[dev,web]"
 pytest
 ```
 
 The suite covers the finance math against hand-checked values, the scoring curves, file
 parsing and every CLI command.
+
+Web app tests live in `tests/web/` and never hit the network: the scraper is
+exercised against a saved real Craigslist response in `tests/web/fixtures/`, and
+the SMTP transport against a throwaway SMTP server in `tests/web/smtp_stub.py`.
+Installing without the `web` extra skips nothing else — the CLI tests do not
+import the web stack.
 
 ## Scope
 

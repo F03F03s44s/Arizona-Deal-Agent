@@ -12,6 +12,15 @@ license = { text = "MIT" }
 dependencies = []
 
 [project.optional-dependencies]
+# The CLI is deliberately stdlib-only; the web app is what needs third-party
+# packages, so installing it stays opt-in.
+web = [
+  "fastapi==0.115.6",
+  "uvicorn[standard]==0.34.0",
+  "pydantic==2.10.4",
+  "email-validator==2.2.0",
+  "httpx==0.28.1",
+]
 dev = ["pytest>=7.0"]
 
 [project.scripts]
